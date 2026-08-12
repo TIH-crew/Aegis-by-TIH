@@ -16,6 +16,7 @@ export type AppCapability =
   | 'settings'
   | 'my_profile'
   | 'my_assets'
+  | 'employee_claim'
 
 export type PortalAppRole = 'admin' | 'employee'
 
@@ -55,7 +56,7 @@ const ADMIN_CAPS: AppCapability[] = [
   'my_assets',
 ]
 
-const EMPLOYEE_CAPS: AppCapability[] = ['my_profile', 'my_assets']
+const EMPLOYEE_CAPS: AppCapability[] = ['employee_claim']
 
 export function capabilitiesForRole(role: PortalAppRole): Set<AppCapability> {
   return new Set(role === 'admin' ? ADMIN_CAPS : EMPLOYEE_CAPS)

@@ -160,3 +160,21 @@ export async function uploadEmployeePhoto(
   await updateEmployee(accountId, employeeId, { image_url: publicUrl })
   return publicUrl
 }
+
+export async function rotateEmployeeClaimToken(
+  accountId: string,
+  employeeId: string,
+): Promise<Employee> {
+  const { data, error } = await supabase
+    .from('portal_employees')
+    .update({
+      claim_access_token: crypto.randomUUID(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('account_id', accountId)
+    .eq('id', employeeId)
+    .select('*')
+    .single()
+  if (error) throw error
+  return mapEmployee(data as Employee)
+}

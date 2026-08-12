@@ -88,13 +88,21 @@ async function searchAccountRelatedLists(
   return []
 }
 
-async function listQuotations(zohoAccountId: string) {
+async function listQuotations(zohoAccountId: string, orgName?: string | null) {
   try {
     let rows: Record<string, unknown>[] = []
 
+    const safeName = (orgName ?? '').replace(/'/g, "''").trim()
+    // Prefer linked Account; many commercial quotes leave Account_Name blank and only name the deal.
+    const nameToken = safeName.split(/\s+/)[0] // e.g. "Medipost"
     const coqlQueries = [
       `select id, Deal_Name, Stage, Quote_Number, Closing_Date, Created_Time, Owner from Deals where Account_Name.id = '${zohoAccountId}' order by Created_Time desc`,
       `select id, Deal_Name, Stage, Quote_Number, Closing_Date, Created_Time, Owner from Deals where Contact_Name.Account_Name.id = '${zohoAccountId}' order by Created_Time desc`,
+      ...(nameToken
+        ? [
+            `select id, Deal_Name, Stage, Quote_Number, Closing_Date, Created_Time, Owner from Deals where Deal_Name like '%${nameToken}%' order by Created_Time desc`,
+          ]
+        : []),
     ]
 
     for (const query of coqlQueries) {
@@ -574,7 +582,7 @@ Deno.serve(async (req) => {
     const id = segments[1]
 
     if (req.method === 'GET' && resource === 'quotations' && !id) {
-      const items = await listQuotations(ctx.zohoAccountId)
+      const items = await listQuotations(ctx.zohoAccountId, ctx.orgName)
       return json({ ok: true, quotations: items })
     }
 

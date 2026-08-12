@@ -47,9 +47,8 @@ export function CollectionsSidebar() {
   )
 
   const employeeLinks = [
-    { label: 'My profile', path: '/me' },
-    { label: 'My linked items', path: '/me/assets' },
-  ].filter((item) => matchesNavLabel(item.label, navQuery))
+    { label: 'Submit claim', path: '/me/claim' },
+  ].filter((item) => matchesNavLabel(item.label, navQuery) && can('employee_claim'))
 
   const hasNavResults =
     filteredCollections.length > 0 ||
@@ -81,10 +80,7 @@ export function CollectionsSidebar() {
         {appRole === 'employee' && employeeLinks.length > 0 && (
           <Section title="My workspace">
             {employeeLinks.map((item) => {
-              const active =
-                item.path === '/me'
-                  ? location.pathname === '/me'
-                  : location.pathname.startsWith(item.path)
+              const active = location.pathname.startsWith(item.path)
               return (
                 <Link
                   key={item.path}

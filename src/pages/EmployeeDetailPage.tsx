@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, MessageCircle, UserRound } from 'lucide-react'
+import { ArrowLeft, MessageCircle, QrCode, UserRound } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useBranches } from '../context/BranchesContext'
 import { useSearch } from '../context/SearchContext'
 import {
   createEmployee,
   getEmployee,
+  rotateEmployeeClaimToken,
   updateEmployee,
   uploadEmployeePhoto,
 } from '../services/employee.service'
 import { DriversLicenceVerifyPanel } from '../components/employees/DriversLicenceVerifyPanel'
+import { employeeClaimUrl } from '../services/employee-claim.service'
 import { whatsappHref } from '../lib/extensions'
 import { formatCurrency, formatDate } from '../lib/utils'
 import type { EmployeeInput } from '../types/employee'
@@ -43,6 +45,7 @@ export function EmployeeDetailPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [employeeId, setEmployeeId] = useState<string | null>(isNew ? null : id ?? null)
+  const [claimToken, setClaimToken] = useState<string | null>(null)
 
   useEffect(() => {
     if (!accountId || isNew || !id) return
@@ -55,6 +58,7 @@ export function EmployeeDetailPage() {
         }
         setEmployeeId(employee.id)
         setImageUrl(employee.image_url)
+        setClaimToken(employee.claim_access_token ?? null)
         setForm({
           full_name: employee.full_name,
           job_title: employee.job_title ?? '',
@@ -156,6 +160,59 @@ export function EmployeeDetailPage() {
         <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </p>
+      )}
+
+      {!isNew && claimToken && (
+        <div
+          id="employee-claim-qr"
+          className="rounded-lg border-2 border-primary/30 bg-accent-light/40 p-4 shadow-sm print:border-0 print:shadow-none"
+        >
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <QrCode size={18} className="text-primary" />
+              <h2 className="font-semibold">Staff claim QR (print this)</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-page"
+                onClick={() => window.print()}
+              >
+                Print
+              </button>
+              <button
+                type="button"
+                className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-page"
+                onClick={() => {
+                  if (!accountId || !employeeId) return
+                  void rotateEmployeeClaimToken(accountId, employeeId)
+                    .then((emp) => setClaimToken(emp.claim_access_token ?? null))
+                    .catch((err) =>
+                      setError(err instanceof Error ? err.message : 'Failed to rotate QR'),
+                    )
+                }}
+              >
+                Rotate QR
+              </button>
+            </div>
+          </div>
+          <p className="mb-3 text-xs text-muted">
+            Staff scan this code on their phone → WhatsApp OTP → lodge claim (photos, GPS, voice).
+            Admins can also create claims under <strong>Claims</strong>.
+          </p>
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-start">
+            <img
+              alt="Employee claim QR code"
+              className="h-44 w-44 rounded-lg border border-border bg-white p-2"
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(employeeClaimUrl(claimToken))}`}
+            />
+            <div className="min-w-0 flex-1 space-y-2 text-sm">
+              <p className="font-medium">{form.full_name}</p>
+              <p className="break-all text-xs text-muted">{employeeClaimUrl(claimToken)}</p>
+              <p className="text-xs text-muted">WhatsApp OTP goes to {form.whatsapp_number || '—'}</p>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="grid gap-6 md:grid-cols-[220px_1fr]">

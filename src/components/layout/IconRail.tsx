@@ -20,7 +20,7 @@ export function IconRail() {
         { icon: Wrench, label: 'Tools' },
         { icon: Settings, label: 'Settings', to: '/settings/organization' },
       ]
-    : [{ icon: User, label: 'My profile', to: '/me' }]
+    : [{ icon: User, label: 'Submit claim', to: '/me/claim' }]
 
   return (
     <aside className="flex w-14 shrink-0 flex-col items-center gap-2 bg-burgundy-dark py-4 text-white">

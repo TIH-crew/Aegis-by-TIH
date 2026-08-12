@@ -15,6 +15,7 @@ export interface Employee {
   branch_name?: string | null
   image_url: string | null
   status: EmployeeStatus
+  claim_access_token?: string | null
   id_number?: string | null
   licence_number?: string | null
   licence_valid_to?: string | null

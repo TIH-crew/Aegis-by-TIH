@@ -20,7 +20,7 @@ export function AppHeader({ breadcrumbs }: AppHeaderProps) {
   return (
     <header className="flex h-14 items-center gap-4 border-b border-border bg-surface px-6">
       <nav className="flex items-center gap-1 text-sm text-muted">
-        <Link to={isAdmin ? '/' : '/me'} className="hover:text-gray-900">
+        <Link to={isAdmin ? '/' : '/me/claim'} className="hover:text-gray-900">
           <Home size={16} />
         </Link>
         {breadcrumbs.map((crumb) => (

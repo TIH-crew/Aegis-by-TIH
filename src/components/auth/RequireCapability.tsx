@@ -10,7 +10,7 @@ export function RequireCapability({ capability }: { capability: AppCapability })
   }
 
   if (!can(capability) && !isAdmin) {
-    return <Navigate to="/me" replace />
+    return <Navigate to="/me/claim" replace />
   }
 
   return <Outlet />

@@ -550,17 +550,55 @@ async function sendPortalBrokerRequest(accountId: string, input: BrokerRequestIn
   }
 }
 
+function mergeQuotationLists(
+  portal: QuotationSummary[],
+  zoho: QuotationSummary[],
+): QuotationSummary[] {
+  const byKey = new Map<string, QuotationSummary>()
+  for (const row of portal) {
+    byKey.set(row.quote_number ?? row.id, row)
+    byKey.set(row.id, row)
+  }
+  for (const row of zoho) {
+    const existing =
+      (row.quote_number ? byKey.get(row.quote_number) : undefined) ?? byKey.get(row.id)
+    if (existing) {
+      byKey.set(existing.id, {
+        ...existing,
+        ...row,
+        id: existing.id,
+        name: row.name || existing.name,
+        stage: row.stage || existing.stage,
+        quote_number: row.quote_number ?? existing.quote_number,
+        broker_name: row.broker_name ?? existing.broker_name,
+        eta_date: row.eta_date ?? existing.eta_date,
+      })
+    } else {
+      byKey.set(row.id, row)
+    }
+  }
+  // Deduplicate by preferred key (portal uuid / zoho id already unique in map values)
+  const seen = new Set<string>()
+  const out: QuotationSummary[] = []
+  for (const row of byKey.values()) {
+    if (seen.has(row.id)) continue
+    seen.add(row.id)
+    out.push(row)
+  }
+  return out
+}
+
 export async function fetchQuotations(): Promise<QuotationSummary[]> {
   const { accountId, zohoAccountId } = await getCrmContext()
-  const portal = () => fetchPortalQuotations(accountId)
-  if (!zohoAccountId) return portal()
+  const portal = await fetchPortalQuotations(accountId)
+  if (!zohoAccountId) return portal
   try {
     const data = await crmFetch<{ quotations: QuotationSummary[] }>('quotations')
-    const items = data.quotations ?? []
-    if (items.length > 0) return items
-    return portal()
+    const zoho = data.quotations ?? []
+    if (zoho.length === 0) return portal
+    return mergeQuotationLists(portal, zoho)
   } catch {
-    return portal()
+    return portal
   }
 }
 

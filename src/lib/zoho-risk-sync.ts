@@ -127,19 +127,39 @@ export function validateZohoFields(
   context: ZohoSyncContext = {},
 ): ZohoValidationIssue[] {
   const issues: ZohoValidationIssue[] = []
+  const mapping = getCategoryZohoMapping(item.category)
   const required = getRequiredZohoFields(item.category)
 
   for (const field of required) {
     const fullItem = item as RiskItem
     let value: unknown
 
-    if (field.portalSource) {
+    if (field.apiName === 'Item_Owned_By') {
+      value = context.zohoAccountId ?? item.zoho_fields?.Item_Owned_By ?? null
+    } else if (field.apiName === 'Risk_Category') {
+      value =
+        item.zoho_fields?.Risk_Category ??
+        mapping?.zohoRiskCategory ??
+        AEGIS_ZOHO_RISK_CATEGORY
+    } else if (field.apiName === 'Risk_Type') {
+      value = item.zoho_fields?.Risk_Type ?? mapping?.zohoRiskType ?? null
+    } else if (field.portalSource) {
       value = resolvePortalValue(field, fullItem, context)
       if (field.portalSource === 'unit_cost') value = item.unit_cost
       if (field.portalSource === 'name') value = item.name?.trim()
       if (field.portalSource === 'branch_address') value = context.branchAddress
     } else if (field.attributeKey) {
       value = item.zoho_fields?.[field.attributeKey] ?? item.zoho_fields?.[field.apiName]
+      // Sum-insured style fields fall back to portal unit cost
+      if (
+        (value === undefined || value === null || value === '') &&
+        (field.apiName === 'Total_Sum_Insured' ||
+          field.apiName === 'Accidental_damage_sum_insured' ||
+          field.apiName === 'Total_Contents_Value') &&
+        item.unit_cost
+      ) {
+        value = item.unit_cost
+      }
     }
 
     const empty =

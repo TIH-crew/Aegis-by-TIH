@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, MessageCircle, Plus, UserRound } from 'lucide-react'
+import { Loader2, MessageCircle, Plus, QrCode, UserRound } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { listEmployees } from '../services/employee.service'
 import { whatsappHref } from '../lib/extensions'
@@ -39,7 +39,9 @@ export function EmployeesPage() {
         <div>
           <h1 className="text-2xl font-semibold">Employees</h1>
           <p className="text-sm text-muted">
-            People who hold company assets. Assign items to them, then check items out and back in.
+            People who hold company assets. Open an employee to view/print their <strong>claim QR</strong>{' '}
+            — staff scan it, verify on WhatsApp, then lodge a claim. Admins can still add claims under
+            Claims.
           </p>
         </div>
         <Link
@@ -95,6 +97,10 @@ export function EmployeesPage() {
                   <p className="mt-2 text-xs text-muted">
                     {employee.item_count ?? 0} attached item
                     {(employee.item_count ?? 0) === 1 ? '' : 's'}
+                  </p>
+                  <p className="mt-2 inline-flex items-center gap-1 rounded-md bg-accent-light px-2 py-1 text-xs font-medium text-primary">
+                    <QrCode size={12} />
+                    Open → print claim QR
                   </p>
                   {employee.drivers_licence_verified_at && (
                     <p className="mt-1 text-xs font-medium text-emerald-700">Licence verified</p>

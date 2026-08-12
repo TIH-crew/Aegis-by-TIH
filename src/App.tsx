@@ -25,12 +25,14 @@ import { EmployeeDetailPage } from './pages/EmployeeDetailPage'
 import { AssignToPage, CheckInPage, CheckOutPage } from './pages/CustodyPages'
 import { MyProfilePage } from './pages/MyProfilePage'
 import { MyAssetsPage } from './pages/MyAssetsPage'
+import { EmployeeClaimPortalPage } from './pages/EmployeeClaimPortalPage'
+import { EmployeeClaimEntryPage } from './pages/EmployeeClaimEntryPage'
 import { useAuth } from './context/AuthContext'
 
 function HomeRedirect() {
   const { isAdmin, loading } = useAuth()
   if (loading) return <p className="p-6 text-sm text-muted">Loading…</p>
-  return <Navigate to={isAdmin ? '/' : '/me'} replace />
+  return <Navigate to={isAdmin ? '/' : '/me/claim'} replace />
 }
 
 export default function App() {
@@ -40,6 +42,8 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          {/* Public employee claim portal — WhatsApp OTP gated */}
+          <Route path="/claim/:token" element={<EmployeeClaimPortalPage />} />
 
           <Route element={<RequireSession />}>
             <Route path="/no-access" element={<NoAccessPage />} />
@@ -54,8 +58,16 @@ export default function App() {
                   </OrganizationProvider>
                 }
               >
-                <Route path="/me" element={<MyProfilePage />} />
-                <Route path="/me/assets" element={<MyAssetsPage />} />
+                <Route element={<RequireCapability capability="employee_claim" />}>
+                  <Route path="/me/claim" element={<EmployeeClaimEntryPage />} />
+                </Route>
+
+                <Route element={<RequireCapability capability="my_profile" />}>
+                  <Route path="/me" element={<MyProfilePage />} />
+                </Route>
+                <Route element={<RequireCapability capability="my_assets" />}>
+                  <Route path="/me/assets" element={<MyAssetsPage />} />
+                </Route>
 
                 <Route element={<RequireCapability capability="dashboard_full" />}>
                   <Route path="/" element={<DashboardPage />} />
