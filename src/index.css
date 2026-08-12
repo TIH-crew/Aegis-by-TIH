@@ -55,3 +55,59 @@ body {
   box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
   font-family: var(--font-sans);
 }
+
+/* Aegis splash — Yoco-style wordmark / pill while context loads */
+@keyframes aegis-splash-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes aegis-splash-breathe {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.88;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes aegis-splash-fade-sub {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.55;
+  }
+}
+
+.aegis-splash-screen {
+  animation: aegis-splash-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.aegis-splash-wordmark {
+  animation: aegis-splash-breathe 1.8s ease-in-out 420ms infinite;
+}
+
+.aegis-splash-sub {
+  animation: aegis-splash-fade-sub 600ms ease-out 280ms both;
+}
+
+.aegis-splash-pill {
+  animation:
+    aegis-splash-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    aegis-splash-breathe 1.8s ease-in-out 380ms infinite;
+}
+

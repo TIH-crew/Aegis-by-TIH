@@ -9,7 +9,9 @@ import { OrganizationProvider } from './context/OrganizationContext'
 import { AddRiskItemPage } from './pages/AddRiskItemPage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { ClaimsPage } from './pages/ClaimsPage'
+import { ClaimDetailPage } from './pages/ClaimDetailPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { ReportsPage } from './pages/ReportsPage'
 import { LoginPage } from './pages/LoginPage'
 import { NewClaimPage } from './pages/NewClaimPage'
 import { NoAccessPage } from './pages/NoAccessPage'
@@ -27,11 +29,12 @@ import { MyProfilePage } from './pages/MyProfilePage'
 import { MyAssetsPage } from './pages/MyAssetsPage'
 import { EmployeeClaimPortalPage } from './pages/EmployeeClaimPortalPage'
 import { EmployeeClaimEntryPage } from './pages/EmployeeClaimEntryPage'
+import { AegisSplashLoader } from './components/brand/AegisSplashLoader'
 import { useAuth } from './context/AuthContext'
 
 function HomeRedirect() {
   const { isAdmin, loading } = useAuth()
-  if (loading) return <p className="p-6 text-sm text-muted">Loading…</p>
+  if (loading) return <AegisSplashLoader />
   return <Navigate to={isAdmin ? '/' : '/me/claim'} replace />
 }
 
@@ -73,6 +76,10 @@ export default function App() {
                   <Route path="/" element={<DashboardPage />} />
                 </Route>
 
+                <Route element={<RequireCapability capability="reports" />}>
+                  <Route path="/reports" element={<ReportsPage />} />
+                </Route>
+
                 <Route element={<RequireCapability capability="settings" />}>
                   <Route path="/settings/organization" element={<OrganizationSettingsPage />} />
                 </Route>
@@ -96,6 +103,7 @@ export default function App() {
                 <Route element={<RequireCapability capability="claims" />}>
                   <Route path="/collections/claims" element={<ClaimsPage />} />
                   <Route path="/collections/claims/new" element={<NewClaimPage />} />
+                  <Route path="/collections/claims/:id" element={<ClaimDetailPage />} />
                 </Route>
 
                 <Route element={<RequireCapability capability="employees" />}>

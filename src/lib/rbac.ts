@@ -14,6 +14,7 @@ export type AppCapability =
   | 'employees'
   | 'forms_custody'
   | 'settings'
+  | 'reports'
   | 'my_profile'
   | 'my_assets'
   | 'employee_claim'
@@ -52,6 +53,7 @@ const ADMIN_CAPS: AppCapability[] = [
   'employees',
   'forms_custody',
   'settings',
+  'reports',
   'my_profile',
   'my_assets',
 ]

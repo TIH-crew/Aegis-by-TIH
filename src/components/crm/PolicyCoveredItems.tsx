@@ -1,15 +1,20 @@
 import { useMemo, useState, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, ChevronRight, Eye, FileWarning } from 'lucide-react'
+import { ChevronDown, ChevronRight, Eye, FileWarning, Pencil, Trash2 } from 'lucide-react'
 import { formatCurrency, formatDate } from '../../lib/utils'
 import { splitScheduleExtensions } from '../../lib/schedule-extensions'
 import { categoryForSection, sectionNoteForCategory } from '../../config/cover-extras'
 import { useAuth } from '../../context/AuthContext'
+import {
+  adjustCoveredItemOnPolicy,
+  removeRiskItemFromPolicy,
+} from '../../services/crm.service'
 import type { CoveredItem, PolicyDetail } from '../../types/crm'
 import { ItemAttachmentsModal } from './ItemAttachmentsModal'
 
 interface PolicyCoveredItemsProps {
   policy: PolicyDetail
+  onPolicyChange?: () => void
 }
 
 function itemKey(item: CoveredItem, index: number): string {
@@ -33,9 +38,11 @@ function claimHref(policy: PolicyDetail, item: CoveredItem, index: number): stri
   return `/collections/claims/new?${params.toString()}`
 }
 
-export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
-  const { canSeeFinancials } = useAuth()
+export function PolicyCoveredItems({ policy, onPolicyChange }: PolicyCoveredItemsProps) {
+  const { canSeeFinancials, isAdmin } = useAuth()
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [busyKey, setBusyKey] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
   const [attachmentsFor, setAttachmentsFor] = useState<{
     name: string
     attachments: CoveredItem['attachments']
@@ -68,6 +75,7 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
 
   return (
     <div className="space-y-4">
+      {actionError && <p className="text-sm text-red-600">{actionError}</p>}
       {canSeeFinancials && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-border bg-surface px-4 py-3 shadow-sm">
@@ -192,6 +200,80 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
                                 <FileWarning size={14} />
                                 Create claim
                               </Link>
+                            )}
+                            {isAdmin && item.risk_item_id && (
+                              <>
+                                <button
+                                  type="button"
+                                  disabled={busyKey === key}
+                                  onClick={async (e) => {
+                                    e.stopPropagation()
+                                    const raw = window.prompt(
+                                      'New sum insured (ZAR)',
+                                      String(item.sum_insured ?? ''),
+                                    )
+                                    if (raw == null) return
+                                    const next = Number(raw.replace(/,/g, ''))
+                                    if (!Number.isFinite(next) || next < 0) {
+                                      setActionError('Enter a valid sum insured amount')
+                                      return
+                                    }
+                                    setBusyKey(key)
+                                    setActionError(null)
+                                    try {
+                                      await adjustCoveredItemOnPolicy({
+                                        policyId: policy.id,
+                                        riskItemId: item.risk_item_id!,
+                                        sumInsured: next,
+                                      })
+                                      onPolicyChange?.()
+                                    } catch (err) {
+                                      setActionError(
+                                        err instanceof Error ? err.message : 'Adjust failed',
+                                      )
+                                    } finally {
+                                      setBusyKey(null)
+                                    }
+                                  }}
+                                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-page disabled:opacity-50"
+                                >
+                                  <Pencil size={14} />
+                                  Adjust value
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={busyKey === key}
+                                  onClick={async (e) => {
+                                    e.stopPropagation()
+                                    if (
+                                      !window.confirm(
+                                        `Remove “${name}” from this policy schedule?`,
+                                      )
+                                    ) {
+                                      return
+                                    }
+                                    setBusyKey(key)
+                                    setActionError(null)
+                                    try {
+                                      await removeRiskItemFromPolicy({
+                                        policyId: policy.id,
+                                        riskItemId: item.risk_item_id!,
+                                      })
+                                      onPolicyChange?.()
+                                    } catch (err) {
+                                      setActionError(
+                                        err instanceof Error ? err.message : 'Remove failed',
+                                      )
+                                    } finally {
+                                      setBusyKey(null)
+                                    }
+                                  }}
+                                  className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
+                                >
+                                  <Trash2 size={14} />
+                                  Remove
+                                </button>
+                              </>
                             )}
                           </div>
 

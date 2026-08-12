@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Plus } from 'lucide-react'
+import { ChevronRight, Loader2, Plus } from 'lucide-react'
 import { StageBadge } from '../components/crm/StageBadge'
 import { useAuth } from '../context/AuthContext'
+import { formatCurrency, formatDate } from '../lib/utils'
 import { fetchClaims } from '../services/crm.service'
 import type { ClaimSummary } from '../types/crm'
 
@@ -27,7 +28,9 @@ export function ClaimsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Claims</h1>
-          <p className="text-sm text-muted">Claims linked to your policies in Zoho CRM.</p>
+          <p className="text-sm text-muted">
+            Open a claim for CRM status, next actions, invoices, quotes and confirmation docs.
+          </p>
         </div>
         <Link
           to="/collections/claims/new"
@@ -57,16 +60,43 @@ export function ClaimsPage() {
             <tr>
               <th className="px-4 py-3">Claim</th>
               <th className="px-4 py-3">Policy</th>
+              <th className="px-4 py-3">Amount</th>
+              <th className="px-4 py-3">Lodged</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody>
             {items.map((c) => (
-              <tr key={c.id} className="border-b border-border last:border-0">
-                <td className="px-4 py-3 font-medium">{c.name}</td>
+              <tr key={c.id} className="border-b border-border last:border-0 hover:bg-page/60">
+                <td className="px-4 py-3">
+                  <Link
+                    to={`/collections/claims/${c.portal_id ?? c.id}`}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    {c.name}
+                  </Link>
+                  {c.schedule_item_name && (
+                    <p className="mt-0.5 text-xs text-muted">{c.schedule_item_name}</p>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-muted">{c.policy_name ?? '—'}</td>
+                <td className="px-4 py-3 tabular-nums text-muted">
+                  {c.claim_amount != null ? formatCurrency(c.claim_amount) : '—'}
+                </td>
+                <td className="px-4 py-3 text-muted">
+                  {c.created_time ? formatDate(c.created_time.slice(0, 10)) : '—'}
+                </td>
                 <td className="px-4 py-3">
                   {c.status ? <StageBadge stage={c.status} /> : '—'}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <Link
+                    to={`/collections/claims/${c.portal_id ?? c.id}`}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                  >
+                    Open <ChevronRight size={14} />
+                  </Link>
                 </td>
               </tr>
             ))}

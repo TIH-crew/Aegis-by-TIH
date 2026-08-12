@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Building2, Shield, FileText, DollarSign, AlertTriangle } from 'lucide-react'
+import { Building2, Shield, FileText, DollarSign, AlertTriangle, Network } from 'lucide-react'
 import { RenewalCountdown } from '../components/dashboard/RenewalCountdown'
+import { OrganizationOrganogram } from '../components/dashboard/OrganizationOrganogram'
+import { LocationsMap } from '../components/maps/LocationsMap'
 import { useAuth } from '../context/AuthContext'
 import { useDataService } from '../hooks/useDataService'
 import { getNextPolicyRenewal } from '../services/account-hierarchy.service'
+import {
+  fetchOrganizationMap,
+  fetchOrgMapItems,
+  type OrgMapData,
+  type OrgMapItemMarker,
+} from '../services/organization-map.service'
 import type { DashboardStats } from '../types'
 import { formatCurrency } from '../lib/utils'
 
@@ -19,6 +27,11 @@ export function DashboardPage() {
     policy_number: string
     insurer: string | null
   } | null>(null)
+  const [orgMap, setOrgMap] = useState<OrgMapData | null>(null)
+  const [mapItems, setMapItems] = useState<OrgMapItemMarker[]>([])
+  const [mapCompanyId, setMapCompanyId] = useState<string | null>(null)
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null)
+  const [orgMapLoading, setOrgMapLoading] = useState(false)
 
   useEffect(() => {
     if (!dataService || !accountId) return
@@ -33,6 +46,55 @@ export function DashboardPage() {
       })
       .finally(() => setLoading(false))
   }, [dataService, accountId])
+
+  useEffect(() => {
+    if (!homeAccountId) return
+    setOrgMapLoading(true)
+    void fetchOrganizationMap({
+      homeAccountId,
+      homeAccountName,
+    })
+      .then((data) => {
+        setOrgMap(data)
+        setMapCompanyId((prev) => prev ?? accountId ?? data.home.id)
+      })
+      .catch(() => setOrgMap(null))
+      .finally(() => setOrgMapLoading(false))
+  }, [homeAccountId, homeAccountName, accountId])
+
+  useEffect(() => {
+    if (!mapCompanyId) return
+    void fetchOrgMapItems(mapCompanyId)
+      .then(setMapItems)
+      .catch(() => setMapItems([]))
+  }, [mapCompanyId])
+
+  const mapCompany = useMemo(() => {
+    if (!orgMap || !mapCompanyId) return null
+    if (orgMap.home.id === mapCompanyId) return orgMap.home
+    return orgMap.subsidiaries.find((s) => s.id === mapCompanyId) ?? orgMap.home
+  }, [orgMap, mapCompanyId])
+
+  const mapBranches = useMemo(() => {
+    if (!mapCompany) return []
+    return mapCompany.branches
+      .filter((b) => b.latitude || b.longitude)
+      .map((b) => ({
+        id: b.id,
+        name: b.name,
+        address: b.address ?? '',
+        latitude: b.latitude,
+        longitude: b.longitude,
+        employeeCount: b.employeeCount,
+        itemCount: b.itemCount,
+        totalValue: b.totalValue,
+      }))
+  }, [mapCompany])
+
+  const visibleMapItems = useMemo(() => {
+    if (!selectedBranchId) return mapItems
+    return mapItems.filter((i) => i.branch_id === selectedBranchId)
+  }, [mapItems, selectedBranchId])
 
   const isParentView = Boolean(
     homeAccountId && accountId === homeAccountId && subsidiaries.length > 0,
@@ -70,6 +132,51 @@ export function DashboardPage() {
           <StatCard icon={DollarSign} label="Total Value" value={formatCurrency(stats.totalValue)} />
         </div>
       )}
+
+      <div className="rounded-lg border border-border bg-surface shadow-sm">
+        <div className="border-b border-border px-4 py-3">
+          <h2 className="flex items-center gap-2 font-semibold">
+            <Network size={16} className="text-primary" />
+            Organization map
+          </h2>
+          <p className="text-xs text-muted">
+            Parent and child companies, staff and insured items by location — click a company or
+            branch to focus the map.
+          </p>
+        </div>
+        <div className="space-y-4 p-4">
+          {orgMapLoading && <p className="text-sm text-muted">Loading organization…</p>}
+          {orgMap && mapCompanyId && (
+            <OrganizationOrganogram
+              data={orgMap}
+              activeAccountId={mapCompanyId}
+              onSelectCompany={(id) => {
+                setMapCompanyId(id)
+                setSelectedBranchId(null)
+                setActiveAccountId(id)
+              }}
+              selectedBranchId={selectedBranchId}
+              onSelectBranch={setSelectedBranchId}
+            />
+          )}
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-gray-900">Locations & asset values</h3>
+            <LocationsMap
+              branches={mapBranches}
+              items={visibleMapItems}
+              highlightBranchId={selectedBranchId}
+              resolveItemPosition={(item) => {
+                if (item.latitude != null && item.longitude != null) {
+                  return { lat: item.latitude, lng: item.longitude }
+                }
+                const branch = mapBranches.find((b) => b.id === item.branch_id)
+                if (!branch) return null
+                return { lat: branch.latitude, lng: branch.longitude }
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
       {isParentView && (
         <div className="rounded-lg border border-border bg-surface shadow-sm">
@@ -131,6 +238,12 @@ export function DashboardPage() {
             className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-page"
           >
             Policies & renewals
+          </Link>
+          <Link
+            to="/reports"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-page"
+          >
+            Policy activity reports
           </Link>
         </div>
       </div>

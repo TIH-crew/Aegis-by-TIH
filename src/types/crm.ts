@@ -103,6 +103,49 @@ export interface ClaimSummary {
   policy_id: string | null
   policy_name: string | null
   created_time: string | null
+  /** Portal row id when known */
+  portal_id?: string | null
+  zoho_claim_id?: string | null
+  claim_amount?: number | null
+  schedule_item_name?: string | null
+}
+
+export interface ClaimDocument {
+  id: string
+  kind: 'invoice' | 'quote' | 'confirmation' | 'other' | string
+  title: string
+  status: string | null
+  amount: number | null
+  file_name: string | null
+  file_url: string | null
+  notes: string | null
+  created_at: string | null
+}
+
+export interface ClaimActionItem {
+  id: string
+  title: string
+  status: string | null
+  due_date: string | null
+  priority: string | null
+  source: 'crm' | 'portal' | 'suggested'
+}
+
+export interface ClaimDetail extends ClaimSummary {
+  description: string | null
+  broker_message: string | null
+  voice_note_url: string | null
+  risk_item_id: string | null
+  risk_item_name: string | null
+  zoho_claim_id: string | null
+  owner_name: string | null
+  claim_address: string | null
+  company_name: string | null
+  modified_time: string | null
+  attachments: { name: string; url: string; type?: string }[]
+  documents: ClaimDocument[]
+  next_actions: ClaimActionItem[]
+  crm_notes: { id: string; title: string | null; content: string | null; created_time: string | null }[]
 }
 
 export interface BrokerRequestInput {

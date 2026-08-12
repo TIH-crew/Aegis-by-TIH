@@ -70,7 +70,12 @@ export function PolicyDetailPage() {
       </div>
 
       <div className="policy-schedule-no-print">
-        <PolicyCoveredItems policy={policy} />
+        <PolicyCoveredItems
+          policy={policy}
+          onPolicyChange={() => {
+            void fetchPolicy(id!).then(setPolicy)
+          }}
+        />
       </div>
 
       <div className="policy-schedule-print-only policy-schedule-print-area -mx-6 -mb-6 overflow-x-auto px-0 pb-6 sm:mx-0">

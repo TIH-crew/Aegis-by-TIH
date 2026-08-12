@@ -16,7 +16,7 @@ export function IconRail() {
   const items = isAdmin
     ? [
         { icon: LayoutGrid, label: 'Dashboard', to: '/' },
-        { icon: BarChart3, label: 'Reports' },
+        { icon: BarChart3, label: 'Reports', to: '/reports' },
         { icon: Wrench, label: 'Tools' },
         { icon: Settings, label: 'Settings', to: '/settings/organization' },
       ]

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Camera, Loader2, MapPin, Mic, MicOff, PhoneCall, ShieldCheck } from 'lucide-react'
+import { Camera, Car, Loader2, MapPin, Mic, MicOff, PhoneCall, ShieldCheck } from 'lucide-react'
 import {
   clearClaimSession,
+  listClaimItems,
   loadClaimSession,
+  matchClaimVehicle,
   resolveClaimQr,
   saveClaimSession,
   sendClaimOtp,
@@ -11,12 +13,14 @@ import {
   uploadClaimMedia,
   verifyClaimOtp,
   type ClaimPhotoMeta,
+  type ClaimRiskItem,
 } from '../services/employee-claim.service'
 import {
   ROADSIDE_PROVIDERS,
   type RoadsideCallPreference,
   type RoadsideProvider,
 } from '../config/roadside-providers'
+import { AegisSplashLoader } from '../components/brand/AegisSplashLoader'
 
 type Step = 'loading' | 'otp' | 'form' | 'done' | 'error'
 
@@ -25,6 +29,10 @@ interface GeoFix {
   longitude: number
   accuracy: number
   captured_at: string
+}
+
+function isMotorCategory(category: string) {
+  return /motor|vehicle/i.test(category)
 }
 
 export function EmployeeClaimPortalPage() {
@@ -37,8 +45,19 @@ export function EmployeeClaimPortalPage() {
   const [sendingOtp, setSendingOtp] = useState(false)
   const [verifying, setVerifying] = useState(false)
   const [devCode, setDevCode] = useState<string | null>(null)
+  const [otpChannel, setOtpChannel] = useState<string | null>(null)
   const [sessionToken, setSessionToken] = useState<string | null>(null)
   const [employeeName, setEmployeeName] = useState('')
+
+  const [items, setItems] = useState<ClaimRiskItem[]>([])
+  const [loadingItems, setLoadingItems] = useState(false)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [zohoPolicyId, setZohoPolicyId] = useState<string | null>(null)
+  const [identifyVehicle, setIdentifyVehicle] = useState(false)
+  const [plateText, setPlateText] = useState('')
+  const [matchingVehicle, setMatchingVehicle] = useState(false)
+  const [matchMessage, setMatchMessage] = useState<string | null>(null)
+  const [extensionHints, setExtensionHints] = useState<string[]>([])
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -58,6 +77,11 @@ export function EmployeeClaimPortalPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<BlobPart[]>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const discInputRef = useRef<HTMLInputElement | null>(null)
+
+  const selectedItem = items.find((i) => i.id === selectedItemId) ?? null
+  const showVehicleId =
+    identifyVehicle || (selectedItem != null && isMotorCategory(selectedItem.category))
 
   const watchGeo = useCallback(() => {
     if (!navigator.geolocation) {
@@ -79,6 +103,21 @@ export function EmployeeClaimPortalPage() {
     )
   }, [])
 
+  const loadItems = useCallback(async (session: string) => {
+    setLoadingItems(true)
+    try {
+      const result = await listClaimItems(session)
+      setItems(result.items)
+      if (result.items.length === 1) {
+        setSelectedItemId(result.items[0]!.id)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load risk items')
+    } finally {
+      setLoadingItems(false)
+    }
+  }, [])
+
   useEffect(() => {
     if (!token) {
       setStep('error')
@@ -97,6 +136,7 @@ export function EmployeeClaimPortalPage() {
           setSessionToken(existing.token)
           setStep('form')
           watchGeo()
+          await loadItems(existing.token)
         } else {
           setStep('otp')
         }
@@ -109,7 +149,7 @@ export function EmployeeClaimPortalPage() {
     return () => {
       cancelled = true
     }
-  }, [token, watchGeo])
+  }, [token, watchGeo, loadItems])
 
   useEffect(() => {
     return () => {
@@ -124,6 +164,7 @@ export function EmployeeClaimPortalPage() {
     try {
       const result = await sendClaimOtp(token)
       setWaMasked(result.whatsapp_masked)
+      setOtpChannel(result.channel)
       if (result.dev_code) setDevCode(result.dev_code)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send OTP')
@@ -143,10 +184,38 @@ export function EmployeeClaimPortalPage() {
       setEmployeeName(result.employee.full_name)
       setStep('form')
       watchGeo()
+      await loadItems(result.session_token)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Verification failed')
     } finally {
       setVerifying(false)
+    }
+  }
+
+  async function runVehicleMatch(opts: { plateText?: string; discFile?: File | null }) {
+    if (!sessionToken) return
+    setMatchingVehicle(true)
+    setMatchMessage(null)
+    setError(null)
+    try {
+      const result = await matchClaimVehicle(sessionToken, opts)
+      if (result.matched && result.item) {
+        setSelectedItemId(result.item.id)
+        setZohoPolicyId(result.policy?.zoho_policy_id ?? null)
+        setExtensionHints(result.extension_notes ?? [])
+        setMatchMessage(`Matched ${result.item.name}${result.plate ? ` (${result.plate})` : ''}`)
+        if (!items.some((i) => i.id === result.item!.id)) {
+          setItems((prev) => [...prev, result.item!])
+        }
+      } else {
+        setMatchMessage(
+          `No insured vehicle matched plate ${result.plate || opts.plateText || ''}. Select an item manually.`,
+        )
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Vehicle match failed')
+    } finally {
+      setMatchingVehicle(false)
     }
   }
 
@@ -155,7 +224,6 @@ export function EmployeeClaimPortalPage() {
     setUploadingPhoto(true)
     setError(null)
     try {
-      // Refresh geo at capture time
       const fix = await new Promise<GeoFix | null>((resolve) => {
         if (!navigator.geolocation) {
           resolve(geo)
@@ -226,6 +294,10 @@ export function EmployeeClaimPortalPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!sessionToken) return
+    if (!selectedItemId) {
+      setError('Select a risk item to claim against.')
+      return
+    }
     setSubmitting(true)
     setError(null)
     try {
@@ -238,10 +310,13 @@ export function EmployeeClaimPortalPage() {
           voiceBlob.type || 'audio/webm',
         )
       }
+      const brokerParts = [brokerMessage.trim(), ...extensionHints].filter(Boolean)
       await submitEmployeeClaim(sessionToken, {
         title: title.trim() || `Claim from ${employeeName || firstName}`,
         description: description.trim(),
-        broker_message: brokerMessage.trim() || undefined,
+        broker_message: brokerParts.join('\n') || undefined,
+        risk_item_id: selectedItemId,
+        zoho_policy_id: zohoPolicyId,
         latitude: geo?.latitude ?? null,
         longitude: geo?.longitude ?? null,
         location_accuracy: geo?.accuracy ?? null,
@@ -278,7 +353,8 @@ export function EmployeeClaimPortalPage() {
           </p>
           <h1 className="mt-2 text-2xl font-semibold">Employee claim</h1>
           <p className="mt-1 text-sm text-rose-100/80">
-            Verify via WhatsApp, then submit photos, location and a voice note.
+            Verify via WhatsApp, choose the insured item, then submit photos, location and a voice
+            note.
           </p>
         </header>
 
@@ -288,11 +364,7 @@ export function EmployeeClaimPortalPage() {
           </p>
         )}
 
-        {step === 'loading' && (
-          <p className="flex items-center justify-center gap-2 text-sm text-rose-100/80">
-            <Loader2 className="animate-spin" size={16} /> Loading…
-          </p>
-        )}
+        {step === 'loading' && <AegisSplashLoader />}
 
         {step === 'error' && (
           <p className="rounded-lg border border-white/10 bg-black/20 p-6 text-center text-sm">
@@ -307,8 +379,7 @@ export function EmployeeClaimPortalPage() {
               <div>
                 <p className="font-medium">Hi {firstName || 'there'}</p>
                 <p className="mt-1 text-sm text-rose-100/80">
-                  We will send a one-time code to WhatsApp {waMasked}. Enter it to open the claim
-                  form.
+                  We will send a one-time code to {waMasked}. Enter it to open the claim form.
                 </p>
               </div>
             </div>
@@ -319,8 +390,19 @@ export function EmployeeClaimPortalPage() {
               disabled={sendingOtp}
               className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[#3d0a16] disabled:opacity-60"
             >
-              {sendingOtp ? 'Sending…' : 'Send WhatsApp OTP'}
+              {sendingOtp ? 'Sending…' : 'Send verification code'}
             </button>
+
+            {otpChannel === 'twilio_sms' && (
+              <p className="rounded-lg bg-white/10 px-3 py-2 text-xs text-rose-100/85">
+                Code sent by SMS (this Twilio number is not WhatsApp-enabled yet).
+              </p>
+            )}
+            {otpChannel?.includes('whatsapp') && (
+              <p className="rounded-lg bg-white/10 px-3 py-2 text-xs text-rose-100/85">
+                Code sent on WhatsApp.
+              </p>
+            )}
 
             {devCode && (
               <p className="rounded-lg bg-amber-500/20 px-3 py-2 text-xs text-amber-100">
@@ -360,6 +442,119 @@ export function EmployeeClaimPortalPage() {
             <p className="text-sm text-rose-100/80">
               Signed in as <span className="font-medium text-white">{employeeName || firstName}</span>
             </p>
+
+            {selectedItem && (
+              <p className="rounded-xl border border-emerald-300/30 bg-emerald-950/40 px-3 py-2 text-sm text-emerald-50">
+                Claiming against: <span className="font-semibold">{selectedItem.name}</span>
+              </p>
+            )}
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Select insured item *</p>
+              {loadingItems ? (
+                <p className="flex items-center gap-2 text-xs text-rose-100/80">
+                  <Loader2 size={12} className="animate-spin" /> Loading your items…
+                </p>
+              ) : items.length === 0 ? (
+                <p className="text-xs text-rose-100/75">
+                  No items are assigned to you yet. Ask your broker to assign risk items, or identify
+                  a vehicle below.
+                </p>
+              ) : (
+                <div className="max-h-56 space-y-2 overflow-y-auto">
+                  {items.map((item) => (
+                    <label
+                      key={item.id}
+                      className={`block cursor-pointer rounded-lg border px-3 py-2 text-xs ${
+                        selectedItemId === item.id
+                          ? 'border-white bg-white/15'
+                          : 'border-white/15 bg-black/20'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="riskItem"
+                        className="sr-only"
+                        checked={selectedItemId === item.id}
+                        onChange={() => {
+                          setSelectedItemId(item.id)
+                          setZohoPolicyId(null)
+                        }}
+                      />
+                      <span className="font-medium text-white">{item.name}</span>
+                      <span className="mt-0.5 block text-rose-100/75">
+                        {item.category}
+                        {item.branch ? ` · ${item.branch}` : ''}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              <label className="flex items-center gap-2 text-xs text-rose-100/85">
+                <input
+                  type="checkbox"
+                  checked={identifyVehicle}
+                  onChange={(e) => setIdentifyVehicle(e.target.checked)}
+                  className="rounded border-white/30"
+                />
+                Identify vehicle by number plate / licence disc
+              </label>
+            </div>
+
+            {showVehicleId && (
+              <div className="space-y-3 rounded-xl border border-white/15 bg-white/5 p-3">
+                <p className="flex items-center gap-2 text-sm font-medium">
+                  <Car size={16} /> Vehicle identification
+                </p>
+                <label className="block text-sm">
+                  <span className="mb-1 block text-xs text-rose-100/80">Number plate</span>
+                  <div className="flex gap-2">
+                    <input
+                      className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white uppercase tracking-wide"
+                      value={plateText}
+                      onChange={(e) => setPlateText(e.target.value.toUpperCase())}
+                      placeholder="e.g. CA123456"
+                    />
+                    <button
+                      type="button"
+                      disabled={matchingVehicle || !plateText.trim()}
+                      onClick={() => void runVehicleMatch({ plateText })}
+                      className="shrink-0 rounded-xl bg-white/15 px-3 py-2 text-xs font-semibold disabled:opacity-60"
+                    >
+                      Match
+                    </button>
+                  </div>
+                </label>
+                <div>
+                  <p className="mb-1 text-xs text-rose-100/80">Or upload licence disc / plate photo</p>
+                  <input
+                    ref={discInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="block w-full text-xs text-rose-100/80 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-[#3d0a16]"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) void runVehicleMatch({ discFile: file, plateText: plateText || undefined })
+                      e.target.value = ''
+                    }}
+                  />
+                </div>
+                {matchingVehicle && (
+                  <p className="flex items-center gap-2 text-xs text-rose-100/80">
+                    <Loader2 size={12} className="animate-spin" /> Matching against schedule…
+                  </p>
+                )}
+                {matchMessage && <p className="text-xs text-rose-100/90">{matchMessage}</p>}
+                {extensionHints.length > 0 && (
+                  <ul className="space-y-1 text-xs text-amber-100/90">
+                    {extensionHints.map((n) => (
+                      <li key={n}>• {n}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
 
             <label className="block text-sm">
               <span className="mb-1 block">What happened? *</span>
@@ -520,9 +715,7 @@ export function EmployeeClaimPortalPage() {
                 <ul className="space-y-2 text-xs text-rose-100/85">
                   {photos.map((p) => (
                     <li key={p.url} className="rounded-lg bg-black/20 px-3 py-2">
-                      <a href={p.url} target="_blank" rel="noreferrer" className="underline">
-                        Photo
-                      </a>{' '}
+                      <span className="underline">Photo</span>{' '}
                       · {new Date(p.captured_at).toLocaleString()}
                       {p.latitude != null && p.longitude != null
                         ? ` · ${p.latitude.toFixed(5)}, ${p.longitude.toFixed(5)}`
@@ -563,6 +756,7 @@ export function EmployeeClaimPortalPage() {
               type="submit"
               disabled={
                 submitting ||
+                !selectedItemId ||
                 (roadsideNeeded && !roadsidePref) ||
                 (roadsideNeeded && roadsidePref === 'broker' && !selectedProvider)
               }

@@ -7,6 +7,8 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 }
 
+const VERIFYNOW_BASE = 'https://www.verifynow.co.za/api/external'
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -25,7 +27,6 @@ function normalizeWa(raw: string): string {
   const digits = raw.replace(/[^\d+]/g, '')
   if (digits.startsWith('+')) return digits
   if (digits.startsWith('0') && digits.length >= 10) {
-    // SA local → E.164
     return `+27${digits.slice(1)}`
   }
   if (digits.startsWith('27')) return `+${digits}`
@@ -36,6 +37,10 @@ function maskWa(wa: string): string {
   const d = wa.replace(/\D/g, '')
   if (d.length < 6) return '***'
   return `+${d.slice(0, 2)}***${d.slice(-3)}`
+}
+
+function normalizePlate(raw: string): string {
+  return raw.toUpperCase().replace(/[^A-Z0-9]/g, '')
 }
 
 async function sha256Hex(value: string): Promise<string> {
@@ -59,7 +64,6 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
   const authToken = Deno.env.get('TWILIO_AUTH_TOKEN')
   const verifySid = Deno.env.get('TWILIO_VERIFY_SERVICE_SID') ?? Deno.env.get('VERIFY_SERVICE_SID')
 
-  // Preferred: Twilio Verify WhatsApp
   if (accountSid && authToken && verifySid) {
     const auth = btoa(`${accountSid}:${authToken}`)
     const body = new URLSearchParams({
@@ -79,20 +83,26 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
     )
     const data = await res.json()
     if (!res.ok) {
-      // Fall through to messaging API / custom
       console.warn('Twilio Verify WhatsApp failed:', data)
     } else {
       return { channel: 'twilio_verify_whatsapp', sid: data.sid }
     }
   }
 
-  // Fallback: Programmable Messaging WhatsApp template/body
-  const fromWa = Deno.env.get('TWILIO_WHATSAPP_FROM') // e.g. whatsapp:+14155238886
-  if (accountSid && authToken && fromWa) {
-    const auth = btoa(`${accountSid}:${authToken}`)
+  if (!accountSid || !authToken) {
+    console.warn('No Twilio credentials — OTP stored only (dev mode)')
+    return { channel: 'dev_log' }
+  }
+
+  const auth = btoa(`${accountSid}:${authToken}`)
+  const fromRaw = (Deno.env.get('TWILIO_WHATSAPP_FROM') ?? Deno.env.get('TWILIO_SMS_FROM') ?? '').trim()
+  const fromE164 = fromRaw.replace(/^whatsapp:/i, '')
+  const fromWa = fromE164 ? `whatsapp:${fromE164.startsWith('+') ? fromE164 : `+${fromE164}`}` : ''
+
+  if (fromWa) {
     const body = new URLSearchParams({
       To: `whatsapp:${toE164}`,
-      From: fromWa.startsWith('whatsapp:') ? fromWa : `whatsapp:${fromWa}`,
+      From: fromWa,
       Body: `Aegis claim verification code: ${code}. Valid for 10 minutes.`,
     })
     const res = await fetch(
@@ -107,13 +117,89 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
       },
     )
     const data = await res.json()
-    if (!res.ok) throw new Error(data.message ?? 'Failed to send WhatsApp OTP')
-    return { channel: 'twilio_whatsapp_message', sid: data.sid }
+    if (res.ok) {
+      return { channel: 'twilio_whatsapp_message', sid: data.sid }
+    }
+    console.warn('Twilio WhatsApp send failed, trying SMS:', data)
   }
 
-  // Dev / misconfigured: still store OTP so flow can be tested
-  console.warn('No Twilio WhatsApp config — OTP stored only (dev mode)')
+  if (fromE164) {
+    const smsFrom = fromE164.startsWith('+') ? fromE164 : `+${fromE164}`
+    const body = new URLSearchParams({
+      To: toE164,
+      From: smsFrom,
+      Body: `Aegis claim verification code: ${code}. Valid for 10 minutes.`,
+    })
+    const res = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${auth}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body,
+      },
+    )
+    const data = await res.json()
+    if (!res.ok) {
+      const msg = String(data.message ?? 'Failed to send OTP')
+      if (/channel with the specified from address/i.test(msg)) {
+        throw new Error(
+          'Twilio number is not enabled for WhatsApp. Enable WhatsApp on this sender (or use the WhatsApp Sandbox), or use a verified SMS-capable From number.',
+        )
+      }
+      throw new Error(msg)
+    }
+    return { channel: 'twilio_sms', sid: data.sid }
+  }
+
+  console.warn('No Twilio From number — OTP stored only (dev mode)')
   return { channel: 'dev_log' }
+}
+
+async function sendBrokerWhatsApp(bodyText: string, mediaUrls: string[] = []): Promise<{ ok: boolean; sid?: string; error?: string }> {
+  const accountSid = Deno.env.get('TWILIO_ACCOUNT_SID')
+  const authToken = Deno.env.get('TWILIO_AUTH_TOKEN')
+  const toRaw = (Deno.env.get('BROKER_WHATSAPP_TO') ?? '+27824567868').trim()
+  const fromRaw = (Deno.env.get('TWILIO_WHATSAPP_FROM') ?? Deno.env.get('TWILIO_SMS_FROM') ?? '').trim()
+
+  if (!accountSid || !authToken || !fromRaw) {
+    console.warn('Broker WhatsApp skipped — Twilio / TWILIO_WHATSAPP_FROM not configured')
+    return { ok: false, error: 'Twilio WhatsApp not configured' }
+  }
+
+  const toE164 = normalizeWa(toRaw)
+  const fromE164 = fromRaw.replace(/^whatsapp:/i, '')
+  const fromWa = `whatsapp:${fromE164.startsWith('+') ? fromE164 : `+${fromE164}`}`
+  const auth = btoa(`${accountSid}:${authToken}`)
+
+  const params = new URLSearchParams({
+    To: `whatsapp:${toE164}`,
+    From: fromWa,
+    Body: bodyText.slice(0, 1500),
+  })
+  for (const url of mediaUrls.slice(0, 5)) {
+    params.append('MediaUrl', url)
+  }
+
+  const res = await fetch(
+    `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params,
+    },
+  )
+  const data = await res.json()
+  if (!res.ok) {
+    console.warn('Broker WhatsApp failed:', data)
+    return { ok: false, error: String(data.message ?? 'WhatsApp send failed') }
+  }
+  return { ok: true, sid: data.sid }
 }
 
 async function checkTwilioVerify(toE164: string, code: string): Promise<boolean | null> {
@@ -177,6 +263,225 @@ async function requireClaimSession(req: Request) {
   return data
 }
 
+function extractPlateFromItem(item: {
+  name: string
+  zoho_fields?: Record<string, unknown> | null
+}): string | null {
+  const zf = item.zoho_fields ?? {}
+  const fromFields = [
+    zf.Registration_Number,
+    zf.registration_number,
+    zf.registrationNumber,
+    (zf as { Vehicle?: Record<string, unknown> }).Vehicle?.registrationNumber,
+  ]
+    .map((v) => (v != null ? normalizePlate(String(v)) : ''))
+    .find((v) => v.length >= 5)
+  if (fromFields) return fromFields
+
+  const name = String(item.name ?? '')
+  const m = name.match(/([A-Z0-9]{2,}\s*[A-Z0-9]{2,}(?:\s*[A-Z]{2})?)\s*$/i)
+  if (m?.[1]) {
+    const plate = normalizePlate(m[1])
+    if (plate.length >= 5 && plate.length <= 12) return plate
+  }
+  // SA plate glued at end e.g. MJ89RBGP
+  const glued = name.match(/([A-Z]{2,3}\d{1,3}[A-Z]{1,3}[A-Z]{2})\s*$/i)
+  if (glued?.[1]) return normalizePlate(glued[1])
+  const trailing = name.trim().split(/\s+/).pop() ?? ''
+  const candidate = normalizePlate(trailing)
+  if (candidate.length >= 6 && candidate.length <= 10 && /[A-Z]/.test(candidate) && /\d/.test(candidate)) {
+    return candidate
+  }
+  return null
+}
+
+async function findLinkedPolicy(admin: ReturnType<typeof getServiceClient>, accountId: string, riskItemId: string, zohoRiskId: string | null) {
+  const { data: policies } = await admin
+    .from('portal_policies')
+    .select('id, zoho_policy_id, policy_number, insurer, covered_items, section_extensions')
+    .eq('account_id', accountId)
+
+  for (const p of policies ?? []) {
+    const covered = Array.isArray(p.covered_items) ? p.covered_items : []
+    for (const c of covered) {
+      if (!c || typeof c !== 'object') continue
+      const row = c as Record<string, unknown>
+      if (String(row.risk_item_id ?? '') === riskItemId) {
+        return {
+          policy_id: p.id,
+          zoho_policy_id: p.zoho_policy_id,
+          policy_number: p.policy_number,
+          insurer: p.insurer,
+          covered_item: row,
+          section_extensions: p.section_extensions,
+        }
+      }
+      if (zohoRiskId && (String(row.zoho_risk_id ?? '') === zohoRiskId || String(row.external_risk_id ?? '') === zohoRiskId)) {
+        return {
+          policy_id: p.id,
+          zoho_policy_id: p.zoho_policy_id,
+          policy_number: p.policy_number,
+          insurer: p.insurer,
+          covered_item: row,
+          section_extensions: p.section_extensions,
+        }
+      }
+    }
+  }
+  // Fallback: first account policy with matching policy_number on risk zoho_fields
+  return null
+}
+
+function extensionNotesFromItem(opts: {
+  item_extensions?: unknown
+  covered_item?: Record<string, unknown> | null
+  section_extensions?: unknown
+}): string[] {
+  const notes: string[] = []
+  const blobs: unknown[] = []
+  if (Array.isArray(opts.item_extensions)) blobs.push(...opts.item_extensions)
+  if (Array.isArray(opts.section_extensions)) blobs.push(...opts.section_extensions)
+  const covered = opts.covered_item
+  if (covered) {
+    if (Array.isArray(covered.selected_extensions)) blobs.push(...covered.selected_extensions)
+    if (Array.isArray(covered.extensions)) blobs.push(...covered.extensions)
+  }
+
+  const haystack = blobs
+    .map((b) => {
+      if (!b || typeof b !== 'object') return String(b ?? '')
+      const o = b as Record<string, unknown>
+      return [o.name, o.code, o.notes, o.label, JSON.stringify(o)].filter(Boolean).join(' ')
+    })
+    .join(' ')
+    .toLowerCase()
+
+  if (/car\s*hire|bryte\s*car\s*hire/.test(haystack)) {
+    notes.push('Vehicle has Car Hire — may need to be provisioned for the client')
+  }
+  if (/accommodation|emergency\s*accommodation/.test(haystack)) {
+    notes.push('Vehicle / policy has Emergency Accommodation — may need to be provisioned for the client')
+  }
+  if (/(?:bryte\s*)?assist|roadside|emergency\s*assist/.test(haystack) && !/sasria/.test(haystack)) {
+    notes.push('Vehicle has Emergency Assistance / Assist — may need to be provisioned for the client')
+  }
+  return [...new Set(notes)]
+}
+
+async function callVerifyNowDisc(imageBase64: string): Promise<{ registrationNumber?: string; raw?: unknown }> {
+  const apiKey =
+    Deno.env.get('VERIFYNOW_API_KEY') ||
+    'vn_live_654f47c37f1a9e1e2f54e468454066db2361eba6bf92d0a42cd969aa420c6bee'
+  const body = {
+    bundle: 'vehicle_licence_disc',
+    report_type: 'barcode',
+    authority_confirmed: true,
+    allow_visual_fallback: true,
+    mode: Deno.env.get('VERIFYNOW_MODE') === 'sandbox' ? 'sandbox' : 'production',
+    image_base64: imageBase64.replace(/^data:[^;]+;base64,/, ''),
+  }
+  const res = await fetch(`${VERIFYNOW_BASE}/vehicle-licence-disc`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': crypto.randomUUID(),
+    },
+    body: JSON.stringify(body),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(data.error || data.message || 'VerifyNow disc scan failed')
+  }
+  const reg =
+    data?.data?.registrationNumber ||
+    data?.registrationNumber ||
+    data?.data?.Registration_Number
+  return { registrationNumber: reg ? String(reg) : undefined, raw: data }
+}
+
+async function createZohoClaimBestEffort(payload: Record<string, unknown>): Promise<string | null> {
+  try {
+    const clientId = Deno.env.get('ZOHO_CLIENT_ID')
+    const clientSecret = Deno.env.get('ZOHO_CLIENT_SECRET')
+    const refreshToken = Deno.env.get('ZOHO_REFRESH_TOKEN')
+    const accountsUrl = Deno.env.get('ZOHO_ACCOUNTS_URL') ?? 'https://accounts.zoho.com'
+    const apiDomain = Deno.env.get('ZOHO_API_DOMAIN') ?? 'www.zohoapis.com'
+    if (!clientId || !clientSecret || !refreshToken) return null
+
+    const tokenRes = await fetch(
+      `${accountsUrl}/oauth/v2/token?${new URLSearchParams({
+        refresh_token: refreshToken,
+        client_id: clientId,
+        client_secret: clientSecret,
+        grant_type: 'refresh_token',
+      })}`,
+      { method: 'POST' },
+    )
+    const tokenData = await tokenRes.json()
+    if (!tokenRes.ok || !tokenData.access_token) {
+      console.warn('Zoho token refresh failed for employee claim')
+      return null
+    }
+
+    const insertRes = await fetch(`https://${apiDomain}/crm/v2/Claims`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Zoho-oauthtoken ${tokenData.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: [payload] }),
+    })
+    const insertData = await insertRes.json()
+    if (!insertRes.ok) {
+      console.warn('Zoho Claims insert failed:', insertData)
+      return null
+    }
+    const row = insertData.data?.[0]
+    const id = row?.details?.id ?? row?.id
+    return id != null ? String(id) : null
+  } catch (err) {
+    console.warn('Zoho Claims best-effort failed:', err)
+    return null
+  }
+}
+
+async function signAttachmentUrls(
+  admin: ReturnType<typeof getServiceClient>,
+  paths: string[],
+): Promise<string[]> {
+  const urls: string[] = []
+  const sevenDays = 60 * 60 * 24 * 7
+  for (const path of paths) {
+    if (!path) continue
+    if (/^https?:\/\//i.test(path)) {
+      urls.push(path)
+      continue
+    }
+    const { data, error } = await admin.storage
+      .from('claim-attachments')
+      .createSignedUrl(path, sevenDays)
+    if (!error && data?.signedUrl) urls.push(data.signedUrl)
+  }
+  return urls
+}
+
+function serializeItem(row: Record<string, unknown>) {
+  return {
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    branch: row.branch,
+    branch_id: row.branch_id,
+    zoho_risk_id: row.zoho_risk_id,
+    asset_tag: row.asset_tag,
+    registration_hint: extractPlateFromItem({
+      name: String(row.name ?? ''),
+      zoho_fields: (row.zoho_fields as Record<string, unknown>) ?? {},
+    }),
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
@@ -211,7 +516,6 @@ Deno.serve(async (req) => {
       const usingTwilioVerify = sendResult.channel === 'twilio_verify_whatsapp'
 
       const admin = getServiceClient()
-      // If Twilio Verify manages the code, store a placeholder hash (verification via Twilio check)
       await admin.from('portal_claim_otp_sessions').insert({
         employee_id: emp.id,
         account_id: emp.account_id,
@@ -226,7 +530,6 @@ Deno.serve(async (req) => {
         expires_in_seconds: 600,
         channel: sendResult.channel,
       }
-      // Only expose code when Twilio is not configured (local/dev)
       if (sendResult.channel === 'dev_log') {
         payload.dev_code = code
       }
@@ -293,6 +596,106 @@ Deno.serve(async (req) => {
       })
     }
 
+    // GET|POST /items — risk items for the verified employee
+    if ((req.method === 'GET' || req.method === 'POST') && action === 'items') {
+      const session = await requireClaimSession(req)
+      const admin = getServiceClient()
+      const { data: items, error } = await admin
+        .from('portal_risk_items')
+        .select('id, name, category, branch, branch_id, zoho_risk_id, asset_tag, zoho_fields, item_extensions')
+        .eq('account_id', session.account_id)
+        .eq('employee_id', session.employee_id)
+        .order('category', { ascending: true })
+        .order('name', { ascending: true })
+      if (error) throw error
+      return json({
+        ok: true,
+        items: (items ?? []).map((row) => serializeItem(row as Record<string, unknown>)),
+      })
+    }
+
+    // POST /match-vehicle — plate text and/or licence disc image → matched item + policy
+    if (req.method === 'POST' && action === 'match-vehicle') {
+      const session = await requireClaimSession(req)
+      const body = await req.json()
+      let plateText = String(body.plate_text ?? body.registration_number ?? '').trim()
+      const imageBase64 = body.image_base64 ? String(body.image_base64) : ''
+      let verifynow: unknown = null
+
+      if (!plateText && imageBase64) {
+        const disc = await callVerifyNowDisc(imageBase64)
+        verifynow = disc.raw
+        if (disc.registrationNumber) plateText = disc.registrationNumber
+      }
+      if (!plateText) throw new Error('Provide plate_text or a licence disc image')
+
+      const needle = normalizePlate(plateText)
+      const admin = getServiceClient()
+      const { data: candidates, error } = await admin
+        .from('portal_risk_items')
+        .select('id, name, category, branch, branch_id, zoho_risk_id, asset_tag, zoho_fields, item_extensions, employee_id')
+        .eq('account_id', session.account_id)
+      if (error) throw error
+
+      type Cand = (typeof candidates extends (infer T)[] | null ? T : never) & Record<string, unknown>
+      let matched: Cand | null = null
+      for (const row of (candidates ?? []) as Cand[]) {
+        const plate = extractPlateFromItem({
+          name: String(row.name ?? ''),
+          zoho_fields: (row.zoho_fields as Record<string, unknown>) ?? {},
+        })
+        if (plate && plate === needle) {
+          matched = row
+          break
+        }
+        if (normalizePlate(String(row.name ?? '')).includes(needle) && needle.length >= 6) {
+          matched = row
+          break
+        }
+      }
+
+      if (!matched) {
+        return json({
+          ok: true,
+          matched: false,
+          plate: plateText,
+          registration_normalized: needle,
+          verifynow,
+          item: null,
+          policy: null,
+        })
+      }
+
+      const policy = await findLinkedPolicy(
+        admin,
+        session.account_id,
+        String(matched.id),
+        matched.zoho_risk_id ? String(matched.zoho_risk_id) : null,
+      )
+
+      return json({
+        ok: true,
+        matched: true,
+        plate: plateText,
+        registration_normalized: needle,
+        verifynow,
+        item: serializeItem(matched as Record<string, unknown>),
+        policy: policy
+          ? {
+              policy_id: policy.policy_id,
+              zoho_policy_id: policy.zoho_policy_id,
+              policy_number: policy.policy_number,
+              insurer: policy.insurer,
+            }
+          : null,
+        extension_notes: extensionNotesFromItem({
+          item_extensions: matched.item_extensions,
+          covered_item: policy?.covered_item ?? null,
+          section_extensions: policy?.section_extensions,
+        }),
+      })
+    }
+
     // POST /submit — claim form after OTP
     if (req.method === 'POST' && action === 'submit') {
       const session = await requireClaimSession(req)
@@ -301,11 +704,14 @@ Deno.serve(async (req) => {
       const description = String(body.description ?? '').trim()
       if (!title) throw new Error('title is required')
 
+      const riskItemId = body.risk_item_id ? String(body.risk_item_id) : null
+      if (!riskItemId) throw new Error('risk_item_id is required — select an item to claim against')
+
       const latitude = body.latitude != null ? Number(body.latitude) : null
       const longitude = body.longitude != null ? Number(body.longitude) : null
       const location_accuracy = body.location_accuracy != null ? Number(body.location_accuracy) : null
       const photo_meta = Array.isArray(body.photo_meta) ? body.photo_meta : []
-      const attachments = Array.isArray(body.attachments) ? body.attachments : []
+      const attachments = Array.isArray(body.attachments) ? body.attachments.map(String) : []
       const voice_note_url = body.voice_note_url ? String(body.voice_note_url) : null
       const claim_amount = body.claim_amount != null ? Number(body.claim_amount) : null
       const roadside_needed = body.roadside_needed === true
@@ -319,11 +725,67 @@ Deno.serve(async (req) => {
           : null
 
       const admin = getServiceClient()
+      const { data: risk, error: riskErr } = await admin
+        .from('portal_risk_items')
+        .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id')
+        .eq('id', riskItemId)
+        .eq('account_id', session.account_id)
+        .maybeSingle()
+      if (riskErr) throw riskErr
+      if (!risk) throw new Error('Risk item not found for this account')
+
+      const policy =
+        (await findLinkedPolicy(
+          admin,
+          session.account_id,
+          risk.id,
+          risk.zoho_risk_id ? String(risk.zoho_risk_id) : null,
+        )) ?? null
+
+      let zohoPolicyId = body.zoho_policy_id ? String(body.zoho_policy_id) : policy?.zoho_policy_id ?? null
+
+      const extNotes = extensionNotesFromItem({
+        item_extensions: risk.item_extensions,
+        covered_item: policy?.covered_item ?? null,
+        section_extensions: policy?.section_extensions,
+      })
+
+      const userBroker = body.broker_message ? String(body.broker_message).trim() : ''
+      const brokerParts = [userBroker, ...extNotes].filter(Boolean)
+      const broker_message = brokerParts.join('\n') || null
+
+      const { data: employee } = await admin
+        .from('portal_employees')
+        .select('id, full_name, whatsapp_number, email, job_title')
+        .eq('id', session.employee_id)
+        .maybeSingle()
+
+      let zohoClaimId: string | null = null
+      if (zohoPolicyId) {
+        zohoClaimId = await createZohoClaimBestEffort({
+          Name: title,
+          Claim_Status: 'Submitted',
+          Client_Name: zohoPolicyId,
+          Claim_Address: [
+            description,
+            `Risk item: ${risk.name} (${risk.category})`,
+            risk.zoho_risk_id ? `Zoho risk: ${risk.zoho_risk_id}` : '',
+            employee?.full_name ? `Employee: ${employee.full_name}` : '',
+            broker_message ? `Broker notes:\n${broker_message}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n'),
+        })
+      }
+
       const { data: claim, error } = await admin
         .from('portal_claims')
         .insert({
           account_id: session.account_id,
           employee_id: session.employee_id,
+          risk_item_id: risk.id,
+          zoho_policy_id: zohoPolicyId,
+          zoho_claim_id: zohoClaimId,
           title,
           description,
           status: 'Submitted',
@@ -335,20 +797,65 @@ Deno.serve(async (req) => {
           location_accuracy,
           photo_meta,
           submitted_via: 'employee_qr',
-          broker_message: body.broker_message ? String(body.broker_message) : null,
+          broker_message,
           roadside_needed,
           roadside_call_preference: roadside_needed ? roadside_call_preference : null,
           roadside_provider:
             roadside_needed && roadside_call_preference === 'broker' ? roadside_provider : null,
         })
-        .select('id, title, status, created_at')
+        .select('id, title, status, created_at, zoho_claim_id, risk_item_id, zoho_policy_id')
         .single()
       if (error) throw error
 
-      return json({ ok: true, claim })
+      const signedUrls = await signAttachmentUrls(admin, [
+        ...attachments,
+        ...(voice_note_url ? [voice_note_url] : []),
+      ])
+
+      const locationLine =
+        latitude != null && longitude != null
+          ? `${latitude.toFixed(5)}, ${longitude.toFixed(5)}${location_accuracy != null ? ` (±${Math.round(location_accuracy)}m)` : ''}`
+          : 'Not captured'
+
+      const roadsideLine = roadside_needed
+        ? `Yes — preference: ${roadside_call_preference ?? 'unspecified'}${
+            roadside_provider && typeof roadside_provider === 'object' && 'name' in roadside_provider
+              ? ` · provider: ${(roadside_provider as { name?: string }).name}`
+              : ''
+          }`
+        : 'No'
+
+      const waBody = [
+        'Aegis employee claim submitted',
+        `Employee: ${employee?.full_name ?? session.employee_id}`,
+        employee?.whatsapp_number ? `Employee WA: ${employee.whatsapp_number}` : null,
+        `Item: ${risk.name} (${risk.category})`,
+        risk.branch ? `Branch: ${risk.branch}` : null,
+        zohoPolicyId
+          ? `Policy: ${policy?.policy_number ?? zohoPolicyId}${policy?.insurer ? ` · ${policy.insurer}` : ''}`
+          : 'Policy: (not linked)',
+        `Title: ${title}`,
+        description ? `Details: ${description}` : null,
+        `Location: ${locationLine}`,
+        `Roadside: ${roadsideLine}`,
+        broker_message ? `Extension / broker notes:\n${broker_message}` : null,
+        signedUrls.length ? `Attachments:\n${signedUrls.map((u, i) => `${i + 1}. ${u}`).join('\n')}` : null,
+        `Claim id: ${claim.id}`,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+      const waResult = await sendBrokerWhatsApp(waBody, signedUrls.filter((u) => /\.(jpe?g|png|gif|webp)(\?|$)/i.test(u) || u.includes('claim-attachments')))
+
+      return json({
+        ok: true,
+        claim,
+        extension_notes: extNotes,
+        broker_whatsapp: waResult,
+      })
     }
 
-    // POST /upload-url — signed upload path for photos/voice (optional helper)
+    // POST /upload-url — signed upload path for photos/voice
     if (req.method === 'POST' && action === 'upload-url') {
       const session = await requireClaimSession(req)
       const body = await req.json()

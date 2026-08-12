@@ -60,6 +60,31 @@ export interface ClaimPhotoMeta {
   accuracy: number | null
 }
 
+export interface ClaimRiskItem {
+  id: string
+  name: string
+  category: string
+  branch: string | null
+  branch_id: string | null
+  zoho_risk_id: string | null
+  asset_tag: string
+  registration_hint: string | null
+}
+
+export interface ClaimMatchVehicleResult {
+  matched: boolean
+  plate: string
+  registration_normalized: string
+  item: ClaimRiskItem | null
+  policy: {
+    policy_id: string
+    zoho_policy_id: string
+    policy_number: string | null
+    insurer: string | null
+  } | null
+  extension_notes?: string[]
+}
+
 export function saveClaimSession(token: string, expiresAt: string) {
   sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token, expiresAt }))
 }
@@ -101,6 +126,35 @@ export function verifyClaimOtp(token: string, code: string) {
   })
 }
 
+export function listClaimItems(sessionToken: string) {
+  return claimFetch<{ ok: true; items: ClaimRiskItem[] }>('items', {
+    method: 'GET',
+    sessionToken,
+  })
+}
+
+async function fileToBase64(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer()
+  const bytes = new Uint8Array(buffer)
+  let binary = ''
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]!)
+  return btoa(binary)
+}
+
+export async function matchClaimVehicle(
+  sessionToken: string,
+  opts: { plateText?: string; discFile?: File | null },
+) {
+  const payload: Record<string, unknown> = {}
+  if (opts.plateText?.trim()) payload.plate_text = opts.plateText.trim()
+  if (opts.discFile) payload.image_base64 = await fileToBase64(opts.discFile)
+  return claimFetch<ClaimMatchVehicleResult & { ok: true }>('match-vehicle', {
+    method: 'POST',
+    sessionToken,
+    body: JSON.stringify(payload),
+  })
+}
+
 export async function uploadClaimMedia(
   sessionToken: string,
   file: Blob,
@@ -128,7 +182,6 @@ export async function uploadClaimMedia(
   })
   if (!put.ok) throw new Error('Failed to upload media')
 
-  // Private bucket — store object path; portal/admin resolves via signed download later.
   return signed.path
 }
 
@@ -138,6 +191,8 @@ export function submitEmployeeClaim(
     title: string
     description: string
     broker_message?: string
+    risk_item_id: string
+    zoho_policy_id?: string | null
     claim_amount?: number | null
     latitude?: number | null
     longitude?: number | null

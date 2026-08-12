@@ -306,9 +306,16 @@ async function getPolicyDetail(policyId: string) {
 
 async function listClaims(zohoAccountId: string) {
   try {
-    const rows = await zohoCoql(
-      `select id, Name, Claim_Status, Client_Name, Created_Time from Claims where Client_Name.Policy_Holder1.id = '${zohoAccountId}' order by Created_Time desc`,
-    )
+    let rows: Record<string, unknown>[] = []
+    try {
+      rows = await zohoCoql(
+        `select id, Name, Claim_Status, Client_Name, Company, Created_Time, Modified_Time from Claims where Company.id = '${zohoAccountId}' order by Created_Time desc`,
+      )
+    } catch {
+      rows = await zohoCoql(
+        `select id, Name, Claim_Status, Client_Name, Created_Time from Claims where Client_Name.Policy_Holder1.id = '${zohoAccountId}' order by Created_Time desc`,
+      )
+    }
     return rows.map((r) => ({
       id: String(r.id),
       name: String(r.Name ?? 'Claim'),
@@ -316,9 +323,59 @@ async function listClaims(zohoAccountId: string) {
       policy_id: lookupId(r.Client_Name),
       policy_name: lookupName(r.Client_Name),
       created_time: r.Created_Time ?? null,
+      modified_time: r.Modified_Time ?? null,
+      company_name: lookupName(r.Company),
     }))
   } catch {
     return []
+  }
+}
+
+async function getClaimDetail(zohoClaimId: string) {
+  const claim = await zohoGetRecord(
+    'Claims',
+    zohoClaimId,
+    'Name,Claim_Status,Client_Name,Company,Claim_Address,Owner,Created_Time,Modified_Time,Email,Policy_Contact',
+  )
+
+  const [attachments, tasks, notes] = await Promise.all([
+    zohoGetAttachments('Claims', zohoClaimId),
+    zohoSearchRelated('Claims', zohoClaimId, 'Tasks'),
+    zohoSearchRelated('Claims', zohoClaimId, 'Notes'),
+  ])
+
+  return {
+    id: zohoClaimId,
+    name: String(claim.Name ?? 'Claim'),
+    status: claim.Claim_Status ? String(claim.Claim_Status) : null,
+    policy_id: lookupId(claim.Client_Name),
+    policy_name: lookupName(claim.Client_Name),
+    company_name: lookupName(claim.Company),
+    owner_name: lookupName(claim.Owner),
+    claim_address: claim.Claim_Address ? String(claim.Claim_Address) : null,
+    email: claim.Email ? String(claim.Email) : null,
+    policy_contact: lookupName(claim.Policy_Contact),
+    created_time: claim.Created_Time ? String(claim.Created_Time) : null,
+    modified_time: claim.Modified_Time ? String(claim.Modified_Time) : null,
+    attachments: attachments.map((a) => ({
+      id: String(a.id),
+      file_name: String(a.File_Name ?? a.file_name ?? 'Attachment'),
+      size: a.Size ?? a.size ?? null,
+      created_time: a.Created_Time ?? null,
+    })),
+    tasks: tasks.map((t) => ({
+      id: String(t.id),
+      title: String(t.Subject ?? 'Task'),
+      status: t.Status ? String(t.Status) : null,
+      due_date: t.Due_Date ? String(t.Due_Date) : null,
+      priority: t.Priority ? String(t.Priority) : null,
+    })),
+    notes: notes.map((n) => ({
+      id: String(n.id),
+      title: n.Note_Title ? String(n.Note_Title) : null,
+      content: n.Note_Content ? String(n.Note_Content) : null,
+      created_time: n.Created_Time ? String(n.Created_Time) : null,
+    })),
   }
 }
 
@@ -606,9 +663,14 @@ Deno.serve(async (req) => {
       return json({ ok: true, policy: detail })
     }
 
-    if (req.method === 'GET' && resource === 'claims') {
+    if (req.method === 'GET' && resource === 'claims' && !id) {
       const items = await listClaims(ctx.zohoAccountId)
       return json({ ok: true, claims: items })
+    }
+
+    if (req.method === 'GET' && resource === 'claims' && id) {
+      const detail = await getClaimDetail(id)
+      return json({ ok: true, claim: detail })
     }
 
     if (req.method === 'GET' && resource === 'contacts') {

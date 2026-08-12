@@ -3,8 +3,11 @@ import { getStoredActiveAccountId } from '../lib/active-account'
 import { parsePolicySectionExtensions, defaultPolicyExtensionsForSections } from '../lib/extensions'
 import { defaultInsuranceSection } from '../config/cover-extras'
 import { getOrganization, updateOrganization } from './organization.service'
+import { logPolicyActivity } from './policy-activity.service'
 import type {
   BrokerRequestInput,
+  ClaimDetail,
+  ClaimDocument,
   ClaimSummary,
   ContactSummary,
   CoveredItem,
@@ -16,6 +19,7 @@ import type {
   ZohoAccountSnapshot,
 } from '../types/crm'
 import type { Organization } from '../types/organization'
+import { suggestedClaimActions } from '../lib/claim-next-actions'
 
 function crmBaseUrl() {
   const functionsBase = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL
@@ -447,7 +451,9 @@ async function fetchPortalPolicy(accountId: string, id: string): Promise<PolicyD
 async function fetchPortalClaims(accountId: string): Promise<ClaimSummary[]> {
   const { data, error } = await supabase
     .from('portal_claims')
-    .select('id, title, status, zoho_claim_id, zoho_policy_id, created_at')
+    .select(
+      'id, title, status, zoho_claim_id, zoho_policy_id, claim_amount, schedule_item_name, created_at',
+    )
     .eq('account_id', accountId)
     .order('created_at', { ascending: false })
 
@@ -471,13 +477,55 @@ async function fetchPortalClaims(accountId: string): Promise<ClaimSummary[]> {
   }
 
   return (data ?? []).map((row) => ({
-    id: row.zoho_claim_id ?? row.id,
+    id: row.id,
+    portal_id: row.id,
+    zoho_claim_id: row.zoho_claim_id,
     name: row.title,
     status: row.status,
     policy_id: row.zoho_policy_id,
     policy_name: row.zoho_policy_id ? (policyMap[row.zoho_policy_id] ?? null) : null,
     created_time: row.created_at,
+    claim_amount: row.claim_amount != null ? Number(row.claim_amount) : null,
+    schedule_item_name: row.schedule_item_name,
   }))
+}
+
+function mergeClaimLists(portal: ClaimSummary[], zoho: ClaimSummary[]): ClaimSummary[] {
+  const out: ClaimSummary[] = []
+  const usedZoho = new Set<string>()
+
+  for (const p of portal) {
+    const match = zoho.find(
+      (z) =>
+        z.id === p.zoho_claim_id ||
+        z.id === p.id ||
+        (p.policy_id && z.policy_id === p.policy_id && z.name === p.name),
+    )
+    if (match) {
+      usedZoho.add(match.id)
+      out.push({
+        ...p,
+        id: p.portal_id ?? p.id,
+        portal_id: p.portal_id ?? p.id,
+        name: match.name || p.name,
+        status: match.status || p.status,
+        policy_id: match.policy_id ?? p.policy_id,
+        policy_name: match.policy_name ?? p.policy_name,
+        created_time: match.created_time ?? p.created_time,
+      })
+    } else {
+      out.push({ ...p, id: p.portal_id ?? p.id })
+    }
+  }
+
+  for (const z of zoho) {
+    if (usedZoho.has(z.id)) continue
+    // Also skip if portal already linked via zoho id stored separately in list id history
+    if (out.some((o) => o.id === z.id)) continue
+    out.push({ ...z, portal_id: null })
+  }
+
+  return out.sort((a, b) => String(b.created_time ?? '').localeCompare(String(a.created_time ?? '')))
 }
 
 async function createPortalClaim(accountId: string, input: CreateClaimInput) {
@@ -508,14 +556,36 @@ async function createPortalClaim(accountId: string, input: CreateClaimInput) {
     .single()
 
   if (error) throw error
-  return {
+
+  const result = {
     claim: {
       id: data.id,
       title: data.title,
       status: data.status,
-      zoho_claim_id: null,
+      zoho_claim_id: null as string | null,
     },
   }
+  await logClaimLodged(accountId, result.claim, input)
+  return result
+}
+
+async function logClaimLodged(
+  accountId: string,
+  claim: { id: string; title: string },
+  input: CreateClaimInput,
+) {
+  await logPolicyActivity({
+    accountId,
+    zohoPolicyId: input.zoho_policy_id ?? null,
+    eventType: 'claim_lodged',
+    summary: `Claim lodged: ${claim.title}`,
+    details: {
+      claim_id: claim.id,
+      risk_item_id: input.risk_item_id ?? null,
+      schedule_item_name: input.schedule_item_name ?? null,
+      claim_amount: input.claim_amount ?? null,
+    },
+  })
 }
 
 async function sendPortalBrokerRequest(accountId: string, input: BrokerRequestInput) {
@@ -714,15 +784,216 @@ export async function fetchPolicy(id: string): Promise<PolicyDetail> {
 
 export async function fetchClaims(): Promise<ClaimSummary[]> {
   const { accountId, zohoAccountId } = await getCrmContext()
-  const portal = () => fetchPortalClaims(accountId)
-  if (!zohoAccountId) return portal()
+  const portal = await fetchPortalClaims(accountId)
+  if (!zohoAccountId) return portal
   try {
     const data = await crmFetch<{ claims: ClaimSummary[] }>('claims')
-    const items = data.claims ?? []
-    if (items.length > 0) return items
-    return portal()
+    return mergeClaimLists(portal, data.claims ?? [])
   } catch {
-    return portal()
+    return portal
+  }
+}
+
+export async function fetchClaim(id: string): Promise<ClaimDetail> {
+  const { accountId, zohoAccountId } = await getCrmContext()
+
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
+
+  let portalRow: Record<string, unknown> | null = null
+  {
+    let query = supabase.from('portal_claims').select('*').eq('account_id', accountId)
+    query = isUuid ? query.eq('id', id) : query.eq('zoho_claim_id', id)
+    const { data } = await query.maybeSingle()
+    portalRow = data
+    if (!portalRow && isUuid === false) {
+      const { data: byId } = await supabase
+        .from('portal_claims')
+        .select('*')
+        .eq('account_id', accountId)
+        .eq('id', id)
+        .maybeSingle()
+      portalRow = byId
+    }
+  }
+
+  // Also allow lookup by zoho id when path used portal id that stores zoho_claim_id
+  if (!portalRow) {
+    const { data } = await supabase
+      .from('portal_claims')
+      .select('*')
+      .eq('account_id', accountId)
+      .or(`id.eq.${id},zoho_claim_id.eq.${id}`)
+      .maybeSingle()
+    portalRow = data
+  }
+
+  let riskItemName: string | null = null
+  if (portalRow?.risk_item_id) {
+    const { data: risk } = await supabase
+      .from('portal_risk_items')
+      .select('name')
+      .eq('id', String(portalRow.risk_item_id))
+      .maybeSingle()
+    riskItemName = risk?.name ?? null
+  }
+
+  let policyName: string | null = null
+  const zohoPolicyId = portalRow?.zoho_policy_id ? String(portalRow.zoho_policy_id) : null
+  if (zohoPolicyId) {
+    const { data: policy } = await supabase
+      .from('portal_policies')
+      .select('policy_number')
+      .eq('account_id', accountId)
+      .eq('zoho_policy_id', zohoPolicyId)
+      .maybeSingle()
+    policyName = policy?.policy_number ?? null
+  }
+
+  const portalClaimId = portalRow?.id ? String(portalRow.id) : null
+  let documents: ClaimDocument[] = []
+  if (portalClaimId) {
+    const { data: docs } = await supabase
+      .from('portal_claim_documents')
+      .select('*')
+      .eq('claim_id', portalClaimId)
+      .eq('account_id', accountId)
+      .order('created_at', { ascending: false })
+    documents = (docs ?? []).map((d) => ({
+      id: d.id,
+      kind: d.kind,
+      title: d.title,
+      status: d.status,
+      amount: d.amount != null ? Number(d.amount) : null,
+      file_name: d.file_name,
+      file_url: d.file_url,
+      notes: d.notes,
+      created_at: d.created_at,
+    }))
+  }
+
+  const portalAttachments = Array.isArray(portalRow?.attachments)
+    ? (portalRow!.attachments as { name: string; url: string; type?: string }[])
+    : []
+
+  const zohoClaimId =
+    (portalRow?.zoho_claim_id ? String(portalRow.zoho_claim_id) : null) ||
+    (!isUuid ? id : null)
+
+  let crm: {
+    name?: string
+    status?: string | null
+    policy_id?: string | null
+    policy_name?: string | null
+    company_name?: string | null
+    owner_name?: string | null
+    claim_address?: string | null
+    created_time?: string | null
+    modified_time?: string | null
+    attachments?: { id: string; file_name: string }[]
+    tasks?: { id: string; title: string; status: string | null; due_date: string | null; priority: string | null }[]
+    notes?: { id: string; title: string | null; content: string | null; created_time: string | null }[]
+  } | null = null
+
+  if (zohoAccountId && zohoClaimId && !String(zohoClaimId).startsWith('dummy-')) {
+    try {
+      const data = await crmFetch<{ claim: typeof crm }>(`claims/${zohoClaimId}`)
+      crm = data.claim
+    } catch {
+      crm = null
+    }
+  }
+
+  // Zoho-only claim (no portal row yet)
+  if (!portalRow && !crm && zohoAccountId && !isUuid) {
+    try {
+      const data = await crmFetch<{ claim: NonNullable<typeof crm> }>(`claims/${id}`)
+      crm = data.claim
+    } catch {
+      /* ignore */
+    }
+  }
+
+  if (!portalRow && !crm) {
+    throw new Error('Claim not found')
+  }
+
+  const status = crm?.status ?? (portalRow?.status ? String(portalRow.status) : null)
+  const crmActions =
+    crm?.tasks?.map((t) => ({
+      id: t.id,
+      title: t.title,
+      status: t.status,
+      due_date: t.due_date,
+      priority: t.priority,
+      source: 'crm' as const,
+    })) ?? []
+
+  const next_actions = [...crmActions, ...suggestedClaimActions(status)]
+
+  // Promote typed portal attachments into documents if not already present
+  for (const att of portalAttachments) {
+    const kind =
+      att.type === 'invoice' || att.type === 'quote' || att.type === 'confirmation'
+        ? att.type
+        : 'other'
+    if (documents.some((d) => d.file_url === att.url && d.title === att.name)) continue
+    documents.push({
+      id: `att-${att.url}`,
+      kind,
+      title: att.name,
+      status: null,
+      amount: null,
+      file_name: att.name,
+      file_url: att.url,
+      notes: null,
+      created_at: null,
+    })
+  }
+
+  // CRM file attachments without URLs still listed as confirmation/other placeholders
+  for (const att of crm?.attachments ?? []) {
+    if (documents.some((d) => d.title === att.file_name)) continue
+    documents.push({
+      id: `crm-att-${att.id}`,
+      kind: 'confirmation',
+      title: att.file_name,
+      status: 'On CRM',
+      amount: null,
+      file_name: att.file_name,
+      file_url: null,
+      notes: 'Stored as a Zoho CRM attachment on this claim',
+      created_at: null,
+    })
+  }
+
+  return {
+    id: portalClaimId ?? zohoClaimId ?? id,
+    portal_id: portalClaimId,
+    name: crm?.name ?? (portalRow?.title ? String(portalRow.title) : 'Claim'),
+    status,
+    policy_id: crm?.policy_id ?? zohoPolicyId,
+    policy_name: crm?.policy_name ?? policyName,
+    created_time:
+      crm?.created_time ?? (portalRow?.created_at ? String(portalRow.created_at) : null),
+    claim_amount: portalRow?.claim_amount != null ? Number(portalRow.claim_amount) : null,
+    schedule_item_name: portalRow?.schedule_item_name
+      ? String(portalRow.schedule_item_name)
+      : null,
+    description: portalRow?.description ? String(portalRow.description) : null,
+    broker_message: portalRow?.broker_message ? String(portalRow.broker_message) : null,
+    voice_note_url: portalRow?.voice_note_url ? String(portalRow.voice_note_url) : null,
+    risk_item_id: portalRow?.risk_item_id ? String(portalRow.risk_item_id) : null,
+    risk_item_name: riskItemName,
+    zoho_claim_id: zohoClaimId,
+    owner_name: crm?.owner_name ?? null,
+    claim_address: crm?.claim_address ?? null,
+    company_name: crm?.company_name ?? null,
+    modified_time: crm?.modified_time ?? (portalRow?.updated_at ? String(portalRow.updated_at) : null),
+    attachments: portalAttachments,
+    documents,
+    next_actions,
+    crm_notes: crm?.notes ?? [],
   }
 }
 
@@ -764,7 +1035,7 @@ export async function attachRiskItemToPolicy(opts: {
   const { accountId } = await getCrmContext()
   const { data: policy, error } = await supabase
     .from('portal_policies')
-    .select('id, covered_items')
+    .select('id, policy_number, zoho_policy_id, covered_items, premium')
     .eq('id', opts.policyId)
     .eq('account_id', accountId)
     .maybeSingle()
@@ -813,16 +1084,205 @@ export async function attachRiskItemToPolicy(opts: {
     })
     .eq('id', opts.riskItem.id)
     .eq('account_id', accountId)
+
+  await logPolicyActivity({
+    accountId,
+    policyId: policy.id,
+    zohoPolicyId: policy.zoho_policy_id,
+    policyNumber: policy.policy_number,
+    eventType: 'item_added',
+    summary: `Added “${opts.riskItem.name}” to schedule`,
+    details: {
+      item_name: opts.riskItem.name,
+      risk_item_id: opts.riskItem.id,
+      section: nextItem.section,
+      sum_insured: opts.riskItem.unit_cost,
+      branch: opts.riskItem.branch ?? null,
+    },
+  })
+}
+
+/** Remove a risk item from a portal policy schedule. */
+export async function removeRiskItemFromPolicy(opts: {
+  policyId: string
+  riskItemId: string
+}): Promise<void> {
+  const { accountId } = await getCrmContext()
+  const { data: policy, error } = await supabase
+    .from('portal_policies')
+    .select('id, policy_number, zoho_policy_id, covered_items')
+    .eq('id', opts.policyId)
+    .eq('account_id', accountId)
+    .maybeSingle()
+
+  if (error) throw error
+  if (!policy) throw new Error('Policy not found')
+
+  const existing = mapStoredCoveredItems(policy.covered_items)
+  const removed = existing.find((item) => item.risk_item_id === opts.riskItemId)
+  if (!removed) return
+
+  const next = existing.filter((item) => item.risk_item_id !== opts.riskItemId)
+  const { error: updateError } = await supabase
+    .from('portal_policies')
+    .update({
+      covered_items: next,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', opts.policyId)
+    .eq('account_id', accountId)
+
+  if (updateError) throw updateError
+
+  await supabase
+    .from('portal_risk_items')
+    .update({
+      insurance_status: 'Uninsured',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', opts.riskItemId)
+    .eq('account_id', accountId)
+
+  await logPolicyActivity({
+    accountId,
+    policyId: policy.id,
+    zohoPolicyId: policy.zoho_policy_id,
+    policyNumber: policy.policy_number,
+    eventType: 'item_removed',
+    summary: `Removed “${removed.risk_item_name}” from schedule`,
+    details: {
+      item_name: removed.risk_item_name,
+      risk_item_id: opts.riskItemId,
+      section: removed.section,
+      sum_insured: removed.sum_insured,
+    },
+  })
+}
+
+/** Adjust sum insured (and optional item premium) on a covered schedule item. */
+export async function adjustCoveredItemOnPolicy(opts: {
+  policyId: string
+  riskItemId: string
+  sumInsured?: number
+  premiumExcl?: number | null
+}): Promise<void> {
+  const { accountId } = await getCrmContext()
+  const { data: policy, error } = await supabase
+    .from('portal_policies')
+    .select('id, policy_number, zoho_policy_id, covered_items, premium')
+    .eq('id', opts.policyId)
+    .eq('account_id', accountId)
+    .maybeSingle()
+
+  if (error) throw error
+  if (!policy) throw new Error('Policy not found')
+
+  const existing = mapStoredCoveredItems(policy.covered_items)
+  const idx = existing.findIndex((item) => item.risk_item_id === opts.riskItemId)
+  if (idx < 0) throw new Error('Covered item not found on policy')
+
+  const previous = existing[idx]
+  const nextItem: CoveredItem = {
+    ...previous,
+    sum_insured:
+      opts.sumInsured != null ? opts.sumInsured : previous.sum_insured,
+    premium_excl:
+      opts.premiumExcl !== undefined ? opts.premiumExcl : previous.premium_excl,
+  }
+  const next = [...existing]
+  next[idx] = nextItem
+
+  const { error: updateError } = await supabase
+    .from('portal_policies')
+    .update({
+      covered_items: next,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', opts.policyId)
+    .eq('account_id', accountId)
+
+  if (updateError) throw updateError
+
+  if (opts.sumInsured != null) {
+    await supabase
+      .from('portal_risk_items')
+      .update({
+        unit_cost: opts.sumInsured,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', opts.riskItemId)
+      .eq('account_id', accountId)
+  }
+
+  await logPolicyActivity({
+    accountId,
+    policyId: policy.id,
+    zohoPolicyId: policy.zoho_policy_id,
+    policyNumber: policy.policy_number,
+    eventType: 'item_adjusted',
+    summary: `Adjusted “${previous.risk_item_name}” on schedule`,
+    details: {
+      item_name: previous.risk_item_name,
+      risk_item_id: opts.riskItemId,
+      previous_sum_insured: previous.sum_insured,
+      new_sum_insured: nextItem.sum_insured,
+      previous_premium: previous.premium_excl,
+      new_premium: nextItem.premium_excl,
+    },
+  })
+}
+
+/** Record a policy-level premium change. */
+export async function updatePolicyPremium(opts: {
+  policyId: string
+  premium: number
+}): Promise<void> {
+  const { accountId } = await getCrmContext()
+  const { data: policy, error } = await supabase
+    .from('portal_policies')
+    .select('id, policy_number, zoho_policy_id, premium')
+    .eq('id', opts.policyId)
+    .eq('account_id', accountId)
+    .maybeSingle()
+
+  if (error) throw error
+  if (!policy) throw new Error('Policy not found')
+
+  const previous = policy.premium != null ? Number(policy.premium) : null
+  const { error: updateError } = await supabase
+    .from('portal_policies')
+    .update({
+      premium: opts.premium,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', opts.policyId)
+    .eq('account_id', accountId)
+
+  if (updateError) throw updateError
+
+  await logPolicyActivity({
+    accountId,
+    policyId: policy.id,
+    zohoPolicyId: policy.zoho_policy_id,
+    policyNumber: policy.policy_number,
+    eventType: 'premium_changed',
+    summary: `Policy premium updated`,
+    details: {
+      previous_premium: previous,
+      new_premium: opts.premium,
+    },
+  })
 }
 
 export async function createClaim(input: CreateClaimInput) {
   const { accountId, zohoAccountId } = await getCrmContext()
   if (!zohoAccountId) return createPortalClaim(accountId, input)
   try {
-    return await crmFetch<{ claim: { id: string; title: string; status: string; zoho_claim_id: string | null } }>(
-      'claims',
-      { method: 'POST', body: JSON.stringify(input) },
-    )
+    const result = await crmFetch<{
+      claim: { id: string; title: string; status: string; zoho_claim_id: string | null }
+    }>('claims', { method: 'POST', body: JSON.stringify(input) })
+    await logClaimLodged(accountId, result.claim, input)
+    return result
   } catch {
     return createPortalClaim(accountId, input)
   }

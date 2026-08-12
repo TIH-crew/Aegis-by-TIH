@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { AegisSplashLoader } from '../brand/AegisSplashLoader'
 import { useAuth } from '../../context/AuthContext'
 
 export function RequireSession() {
@@ -6,11 +7,7 @@ export function RequireSession() {
   const location = useLocation()
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-page text-sm text-muted">
-        Loading session...
-      </div>
-    )
+    return <AegisSplashLoader />
   }
 
   if (!session) {

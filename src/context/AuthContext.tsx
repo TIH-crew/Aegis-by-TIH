@@ -31,6 +31,7 @@ import {
   type AppCapability,
   type PortalAppRole,
 } from '../lib/rbac'
+import { AegisSplashLoader } from '../components/brand/AegisSplashLoader'
 
 interface AuthContextValue {
   session: Session | null
@@ -233,7 +234,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ],
   )
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{loading ? <AegisSplashLoader /> : children}</AuthContext.Provider>
 }
 
 export function useAuth() {
