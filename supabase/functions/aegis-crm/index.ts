@@ -392,10 +392,12 @@ async function createBrokerRequest(
   const taskSubjectOverride = body.task_subject ? String(body.task_subject).trim() : ''
   const notifyEmail = body.notify_email
     ? String(body.notify_email).trim()
-    : body.nimbis_add
+    : body.nimbis_add || body.request_type === 'remove_items'
       ? 'jananda@theinsurancehub.co.za'
       : ''
   const nimbisAdd = Boolean(body.nimbis_add)
+  const requestTypeRaw = body.request_type ? String(body.request_type) : ''
+  const isRemoveRequest = requestTypeRaw === 'remove_items'
 
   if (!contextType || !contextZohoId) {
     throw new Error('context_type and context_zoho_id are required')
@@ -407,7 +409,7 @@ async function createBrokerRequest(
   const admin = getServiceClient()
   let riskSummary = ''
   let riskDetailLines: string[] = []
-  if (riskItemId) {
+  if (!isRemoveRequest && riskItemId) {
     const { data: risk } = await admin
       .from('portal_risk_items')
       .select(
@@ -417,7 +419,7 @@ async function createBrokerRequest(
       .eq('account_id', ctx.accountId)
       .maybeSingle()
     if (risk) {
-      riskSummary = `Existing risk item: ${risk.name} (${risk.category}) — Zoho ${risk.zoho_risk_id ?? 'not synced'}`
+      riskSummary = `Existing risk item: ${risk.name} (${risk.category}) — ref ${risk.zoho_risk_id ?? risk.asset_tag ?? '—'}`
       const zohoFields = (risk.zoho_fields as Record<string, unknown>) ?? {}
       const reg =
         zohoFields.Registration_Number != null ? String(zohoFields.Registration_Number) : null
@@ -434,19 +436,26 @@ async function createBrokerRequest(
             : '',
       ].filter(Boolean)
     }
-  } else if (draftItem && typeof draftItem === 'object') {
+  } else if (!isRemoveRequest && draftItem && typeof draftItem === 'object') {
     const d = draftItem as Record<string, unknown>
     riskSummary = `New item request: ${d.name ?? 'Unnamed'} (${d.category ?? '—'})`
   }
 
-  const nimbisInstruction = nimbisAdd
+  const nimbisInstruction = isRemoveRequest
     ? [
-        'ACTION REQUIRED: Add this item to the policy on Nimbis.',
+        'ACTION REQUIRED: Remove the listed item(s) from the policy schedule / Nimbis.',
         notifyEmail ? `Notify / action owner: ${notifyEmail}` : '',
       ]
         .filter(Boolean)
         .join('\n')
-    : ''
+    : nimbisAdd
+      ? [
+          'ACTION REQUIRED: Add this item to the policy on Nimbis.',
+          notifyEmail ? `Notify / action owner: ${notifyEmail}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n')
+      : ''
 
   const description = [
     'Client request from Aegis portal',
@@ -455,7 +464,7 @@ async function createBrokerRequest(
     riskSummary,
     ...riskDetailLines,
     nimbisInstruction,
-    message ? `Note: ${message}` : '',
+    message ? (isRemoveRequest ? message : `Note: ${message}`) : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -463,9 +472,11 @@ async function createBrokerRequest(
   const zohoModule = contextType === 'quotation' ? 'Deals' : 'Policies'
   const subject =
     taskSubjectOverride ||
-    (nimbisAdd
-      ? `Aegis: Add item to Nimbis${contextLabel ? ` — ${contextLabel}` : ''}`
-      : `Aegis: Add risk item${contextLabel ? ` — ${contextLabel}` : ''}`)
+    (isRemoveRequest
+      ? `Aegis: Remove items from policy${contextLabel ? ` — ${contextLabel}` : ''}`
+      : nimbisAdd
+        ? `Aegis: Add item to Nimbis${contextLabel ? ` — ${contextLabel}` : ''}`
+        : `Aegis: Add risk item${contextLabel ? ` — ${contextLabel}` : ''}`)
 
   const taskPayload: Record<string, unknown> = {
     Subject: subject,
@@ -535,7 +546,11 @@ async function createBrokerRequest(
     .from('portal_broker_requests')
     .insert({
       account_id: ctx.accountId,
-      request_type: nimbisAdd ? 'nimbis_add_item' : 'add_item',
+      request_type: isRemoveRequest
+        ? 'remove_items'
+        : nimbisAdd
+          ? 'nimbis_add_item'
+          : 'add_item',
       context_type: contextType,
       context_zoho_id: contextZohoId,
       context_label: contextLabel || null,

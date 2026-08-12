@@ -93,13 +93,13 @@ export function SendToBrokerModal({
       <div className="w-full max-w-lg rounded-xl border border-border bg-surface p-6 shadow-lg">
         <h2 className="text-lg font-semibold">Send to Broker</h2>
         <p className="mt-1 text-sm text-muted">
-          Request your broker to add a risk item to <span className="font-medium">{contextLabel}</span>.
-          A task will be created in Zoho CRM.
+          Request your broker to add a risk item to{' '}
+          <span className="font-medium">{contextLabel}</span>.
         </p>
 
         {success ? (
           <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-            Request sent. Your broker will follow up in Zoho CRM.
+            Request sent. Your broker will follow up shortly.
             <button
               type="button"
               onClick={onClose}

@@ -11,7 +11,6 @@ import {
   updateEmployee,
   uploadEmployeePhoto,
 } from '../services/employee.service'
-import { DriversLicenceVerifyPanel } from '../components/employees/DriversLicenceVerifyPanel'
 import { employeeClaimUrl } from '../services/employee-claim.service'
 import { whatsappHref } from '../lib/extensions'
 import { formatCurrency, formatDate } from '../lib/utils'
@@ -343,34 +342,6 @@ export function EmployeeDetailPage() {
           </Field>
         </div>
       </div>
-
-      <DriversLicenceVerifyPanel
-        onVerified={async (payload) => {
-          const next = {
-            ...form,
-            full_name: payload.full_name || form.full_name,
-            id_number: payload.id_number ?? form.id_number,
-            licence_number: payload.licence_number ?? form.licence_number,
-            licence_valid_to: payload.licence_valid_to ?? form.licence_valid_to,
-            licence_categories: payload.licence_categories ?? form.licence_categories,
-            drivers_licence_verified_at: new Date().toISOString(),
-            drivers_licence_verification: payload.drivers_licence_verification as Record<
-              string,
-              unknown
-            >,
-            image_url: payload.image_url ?? form.image_url,
-          }
-          setForm(next)
-          if (payload.image_url) setImageUrl(payload.image_url)
-          if (accountId && employeeId) {
-            try {
-              await updateEmployee(accountId, employeeId, next)
-            } catch (err) {
-              setError(err instanceof Error ? err.message : 'Failed to save licence details')
-            }
-          }
-        }}
-      />
 
       {form.drivers_licence_verified_at && (
         <p className="text-xs text-muted">

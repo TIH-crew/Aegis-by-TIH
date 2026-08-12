@@ -44,7 +44,7 @@ export function OrganizationSettingsPage() {
     void fetchContacts()
       .then(setContacts)
       .catch((err) =>
-        setContactsError(err instanceof Error ? err.message : 'Failed to load contacts from Zoho'),
+        setContactsError(err instanceof Error ? err.message : 'Failed to load contacts'),
       )
       .finally(() => setContactsLoading(false))
   }, [organization?.zoho_account_id])
@@ -107,9 +107,8 @@ export function OrganizationSettingsPage() {
           Manage your company profile and branches.
         </p>
         {organization?.zoho_account_id && (
-          <p className="mt-2 text-xs text-amber-800">
-            Company details, contacts, policies, and quotations are loaded from Zoho CRM for your
-            linked account.
+          <p className="mt-2 text-xs text-muted">
+            Company details, contacts, policies, and quotations are synced for your linked account.
           </p>
         )}
       </div>
@@ -279,8 +278,8 @@ export function OrganizationSettingsPage() {
 
       {organization?.zoho_account_id && (
         <section className="rounded-lg border border-border bg-surface p-6 shadow-sm">
-          <h2 className="text-lg font-semibold">Zoho contacts</h2>
-          <p className="mt-1 text-sm text-muted">Contacts linked to your account in Zoho CRM.</p>
+          <h2 className="text-lg font-semibold">Contacts</h2>
+          <p className="mt-1 text-sm text-muted">Contacts linked to your account.</p>
 
           {contactsLoading && (
             <p className="mt-4 flex items-center gap-2 text-sm text-muted">
@@ -290,7 +289,7 @@ export function OrganizationSettingsPage() {
           {contactsError && <p className="mt-4 text-sm text-red-600">{contactsError}</p>}
 
           {!contactsLoading && !contactsError && contacts.length === 0 && (
-            <p className="mt-4 text-sm text-muted">No contacts found for this account in Zoho CRM.</p>
+            <p className="mt-4 text-sm text-muted">No contacts found for this account.</p>
           )}
 
           {contacts.length > 0 && (

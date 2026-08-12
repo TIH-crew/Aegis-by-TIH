@@ -87,7 +87,7 @@ export function ClaimDetailPage() {
           label="Lodged"
           value={claim.created_time ? formatDate(claim.created_time.slice(0, 10)) : '—'}
         />
-        <MetaCard label="CRM owner" value={claim.owner_name ?? '—'} />
+        <MetaCard label="Handler" value={claim.owner_name ?? '—'} />
       </div>
 
       <section className="rounded-lg border border-border bg-surface p-5 shadow-sm">
@@ -99,8 +99,8 @@ export function ClaimDetailPage() {
           <Detail label="Company" value={claim.company_name} />
           <Detail label="Policy" value={claim.policy_name} />
           <Detail label="Item claimed" value={claim.schedule_item_name || claim.risk_item_name} />
-          <Detail label="CRM claim ID" value={claim.zoho_claim_id} />
-          <Detail label="Claim address / notes from CRM" value={claim.claim_address} />
+          <Detail label="Claim reference" value={claim.zoho_claim_id} />
+          <Detail label="Location / address notes" value={claim.claim_address} />
           <Detail
             label="Last updated"
             value={
@@ -153,7 +153,7 @@ export function ClaimDetailPage() {
                 <div>
                   <p className="font-medium text-gray-900">{action.title}</p>
                   <p className="mt-0.5 text-xs text-muted">
-                    {action.source === 'crm' ? 'CRM task' : 'Suggested'}
+                    {action.source === 'crm' ? 'Broker task' : 'Suggested'}
                     {action.priority ? ` · ${action.priority}` : ''}
                     {action.due_date ? ` · Due ${formatDate(action.due_date.slice(0, 10))}` : ''}
                   </p>
@@ -188,7 +188,7 @@ export function ClaimDetailPage() {
 
       {claim.crm_notes.length > 0 && (
         <section className="rounded-lg border border-border bg-surface p-5 shadow-sm">
-          <h2 className="mb-3 font-semibold">CRM notes</h2>
+          <h2 className="mb-3 font-semibold">Broker notes</h2>
           <ul className="space-y-3">
             {claim.crm_notes.map((note) => (
               <li key={note.id} className="rounded-lg border border-border bg-page px-3 py-3">

@@ -29,7 +29,7 @@ export function ClaimsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Claims</h1>
           <p className="text-sm text-muted">
-            Open a claim for CRM status, next actions, invoices, quotes and confirmation docs.
+            Open a claim for status, next actions, invoices, quotes and confirmation docs.
           </p>
         </div>
         <Link

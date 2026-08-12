@@ -45,7 +45,8 @@ export function PolicyDetailPage() {
           </Link>
           <h1 className="mt-2 text-2xl font-semibold">{policy.policy_number}</h1>
           <p className="mt-1 text-sm text-muted">
-            Expand any item for extensions, attachments, and claim actions.
+            Sum insured, premium, cover sections, and scheduled assets. Filter and request removals
+            in bulk.
             {policy.insurer_policy_number ? ` Insurer ref ${policy.insurer_policy_number}.` : ''}
           </p>
         </div>

@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { INSURANCE_STATUSES, RISK_CATEGORIES } from '../config/collections'
 import { BROKER_NOTIFY_EMAIL } from '../config/motor-rental'
-import { CategoryZohoFields } from '../components/risk-items/CategoryZohoFields'
 import {
   MotorRentalPanel,
   resolveRentalCompany,
@@ -17,13 +16,10 @@ import {
   validateExtrasQuestionnaire,
   type ExtrasQuestionnaireAnswers,
 } from '../components/risk-items/ItemExtrasQuestionnaire'
-import { MotorVerifyPanel } from '../components/risk-items/MotorVerifyPanel'
 import { useBranches } from '../context/BranchesContext'
 import { useSearch } from '../context/SearchContext'
-import { useOrganization } from '../context/OrganizationContext'
 import { useAuth } from '../context/AuthContext'
 import { useDataService } from '../hooks/useDataService'
-import { validateZohoFields } from '../lib/zoho-risk-sync'
 import {
   attachRiskItemToPolicy,
   fetchPolicies,
@@ -45,7 +41,6 @@ export function AddRiskItemPage() {
   const navigate = useNavigate()
   const { branches, loading: branchesLoading } = useBranches()
   const { refreshRiskItems } = useSearch()
-  const { organization } = useOrganization()
   const { accountId } = useAuth()
   const dataService = useDataService()
   const [saving, setSaving] = useState(false)
@@ -128,25 +123,6 @@ export function AddRiskItemPage() {
       return
     }
 
-    const branch = branches.find((b) => b.id === form.branch_id)
-    const zohoIssues = validateZohoFields(
-      {
-        name: form.name,
-        category: form.category,
-        unit_cost: form.unit_cost,
-        serial_number: form.serial_number,
-        description: form.description,
-        insurance_status: form.insurance_status,
-        asset_tag: '',
-        zoho_fields: form.zoho_fields,
-      },
-      { branchAddress: branch?.address, zohoAccountId: organization?.zoho_account_id },
-    )
-    if (zohoIssues.length > 0) {
-      setError(zohoIssues.map((i) => i.message).join(' '))
-      return
-    }
-
     setSaving(true)
     setError(null)
     try {
@@ -226,7 +202,7 @@ export function AddRiskItemPage() {
           }
         } else {
           brokerNote =
-            'Item added to policy. No Zoho policy link — create the Nimbis task manually for the broker.'
+            'Item added to policy. Ask your broker to add it on Nimbis if required.'
         }
 
         await refreshRiskItems()
@@ -393,25 +369,9 @@ export function AddRiskItemPage() {
                 ))}
               </select>
               <span className="mt-1 block text-xs text-muted">
-                Creates a Nimbis add-item task for {BROKER_NOTIFY_EMAIL} after save.
+                Creates an add-item task for {BROKER_NOTIFY_EMAIL} after save.
               </span>
             </label>
-
-            <MotorVerifyPanel
-              registrationNumber={String(form.zoho_fields.Registration_Number ?? '')}
-              onApply={(payload) => {
-                setForm((prev) => ({
-                  ...prev,
-                  name: payload.name || prev.name,
-                  serial_number: payload.serial_number ?? prev.serial_number,
-                  zoho_fields: { ...prev.zoho_fields, ...payload.zoho_fields },
-                  vehicle_verification: {
-                    ...prev.vehicle_verification,
-                    ...payload.vehicle_verification,
-                  },
-                }))
-              }}
-            />
           </>
         )}
 
@@ -419,12 +379,6 @@ export function AddRiskItemPage() {
           category={form.category}
           value={extras}
           onChange={setExtras}
-        />
-
-        <CategoryZohoFields
-          category={form.category}
-          values={form.zoho_fields}
-          onChange={(zoho_fields) => setForm({ ...form, zoho_fields })}
         />
 
         <div className="flex justify-end gap-3 pt-2">
@@ -441,7 +395,7 @@ export function AddRiskItemPage() {
             disabled={saving || !branches.length}
             className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-accent-hover disabled:opacity-60"
           >
-            {saving ? 'Saving...' : isMotor ? 'Save & notify broker' : 'Save to Supabase'}
+            {saving ? 'Saving...' : isMotor ? 'Save & notify broker' : 'Save'}
           </button>
         </div>
       </div>

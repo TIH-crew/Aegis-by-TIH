@@ -161,6 +161,8 @@ export interface BrokerRequestInput {
   notify_email?: string
   /** When true, task asks broker to add the item on Nimbis */
   nimbis_add?: boolean
+  /** add_item | nimbis_add_item | remove_items */
+  request_type?: 'add_item' | 'nimbis_add_item' | 'remove_items'
 }
 
 export interface CreateClaimInput {

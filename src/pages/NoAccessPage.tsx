@@ -25,8 +25,8 @@ export function NoAccessPage() {
         </p>
 
         <p className="mt-3 text-sm text-muted">
-          Ask your TIH broker to send an invite from the Account record in Zoho CRM, then sign in
-          with the invited email address.
+          Ask your TIH broker to send an invite for your organisation, then sign in with the invited
+          email address.
         </p>
 
         <div className="mt-6 flex flex-col gap-2">

@@ -1,55 +1,30 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, MoreVertical, Sparkles, Upload } from 'lucide-react'
-import { INSURANCE_STATUSES, RISK_CATEGORIES } from '../config/collections'
-import { ZOHO_LAYOUTS } from '../config/zoho-risk-field-mappings'
-import { CategoryZohoFields } from '../components/risk-items/CategoryZohoFields'
-import {
-  MotorRentalPanel,
-  resolveRentalCompany,
-  validateMotorRental,
-  type MotorRentalValue,
-} from '../components/risk-items/MotorRentalPanel'
-import { MotorVerifyPanel } from '../components/risk-items/MotorVerifyPanel'
-import { RENTAL_COMPANIES } from '../config/motor-rental'
+import { Link, useLocation, useParams } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
 import { useBranches } from '../context/BranchesContext'
-import { useSearch } from '../context/SearchContext'
-import { useOrganization } from '../context/OrganizationContext'
 import { useAuth } from '../context/AuthContext'
 import { useDataService } from '../hooks/useDataService'
-import { buildZohoClientRiskPayload, validateZohoFields } from '../lib/zoho-risk-sync'
 import { listEmployees } from '../services/employee.service'
 import type { RiskItem } from '../types'
 import type { Employee } from '../types/employee'
-import { formatCurrency } from '../lib/utils'
+import { formatCurrency, formatDate } from '../lib/utils'
 
 type Tab = 'details' | 'activity' | 'linked'
 
 export function RiskItemDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
   const location = useLocation()
   const { branches } = useBranches()
-  const { refreshRiskItems } = useSearch()
-  const { organization } = useOrganization()
   const { accountId } = useAuth()
   const dataService = useDataService()
   const [item, setItem] = useState<RiskItem | null>(null)
   const [employees, setEmployees] = useState<Employee[]>([])
   const [tab, setTab] = useState<Tab>('details')
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(
     (location.state as { toast?: string } | null)?.toast ?? null,
   )
-  const [rental, setRental] = useState<MotorRentalValue>({
-    is_rental: false,
-    rental_company: '',
-    rental_company_other: '',
-    rental_start_date: '',
-    rental_end_date: '',
-  })
 
   useEffect(() => {
     if (!id || !dataService) return
@@ -58,20 +33,7 @@ export function RiskItemDetailPage() {
     dataService
       .getRiskItem(id)
       .then((data) => {
-        if (!cancelled && data) {
-          setItem(data)
-          setRental({
-            is_rental: Boolean(data.is_rental),
-            rental_company: data.rental_company ?? '',
-            rental_company_other:
-              data.rental_company &&
-              !(RENTAL_COMPANIES as readonly string[]).includes(data.rental_company)
-                ? data.rental_company
-                : '',
-            rental_start_date: data.rental_start_date ?? '',
-            rental_end_date: data.rental_end_date ?? '',
-          })
-        }
+        if (!cancelled && data) setItem(data)
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load record')
@@ -91,65 +53,16 @@ export function RiskItemDetailPage() {
     )
   }, [accountId])
 
-  async function handleSave() {
-    if (!item || !id || !dataService) return
-
-    if (item.category === 'Motor') {
-      const rentalError = validateMotorRental(rental)
-      if (rentalError) {
-        setError(rentalError)
-        return
-      }
-    }
-
-    const branch = branches.find((b) => b.id === item.branch_id)
-    const zohoIssues = validateZohoFields(item, {
-      branchAddress: branch?.address,
-      zohoAccountId: organization?.zoho_account_id,
-    })
-    if (zohoIssues.length > 0) {
-      setError(zohoIssues.map((i) => i.message).join(' '))
-      return
-    }
-
-    setSaving(true)
-    setError(null)
-    try {
-      const rentalCompany = resolveRentalCompany(rental)
-      const updated = await dataService.updateRiskItem(id, {
-        name: item.name,
-        category: item.category,
-        unit_cost: item.unit_cost,
-        repair_cost: item.repair_cost,
-        record_date: item.record_date,
-        employee_name: item.employee_name,
-        employee_id: item.employee_id,
-        item_extensions: item.item_extensions,
-        vehicle_verification: item.vehicle_verification,
-        assignment_status: item.assignment_status,
-        insurance_status: item.insurance_status,
-        description: item.description,
-        serial_number: item.serial_number,
-        branch_id: item.branch_id,
-        zoho_fields: item.zoho_fields,
-        is_rental: item.category === 'Motor' ? rental.is_rental : false,
-        rental_company: item.category === 'Motor' && rental.is_rental ? rentalCompany : null,
-        rental_start_date:
-          item.category === 'Motor' && rental.is_rental ? rental.rental_start_date : null,
-        rental_end_date:
-          item.category === 'Motor' && rental.is_rental ? rental.rental_end_date : null,
-      })
-      setItem(updated)
-      await refreshRiskItems()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save')
-    } finally {
-      setSaving(false)
-    }
-  }
-
   if (loading) return <p className="text-sm text-muted">Loading record...</p>
   if (!item) return <p className="text-sm text-red-600">Record not found.</p>
+
+  const branchName = branches.find((b) => b.id === item.branch_id)?.name
+  const assignee =
+    employees.find((e) => e.id === item.employee_id)?.full_name ?? item.employee_name
+
+  const extraFields = Object.entries(item.zoho_fields ?? {}).filter(
+    ([, value]) => value != null && String(value).trim() !== '',
+  )
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -180,38 +93,12 @@ export function RiskItemDetailPage() {
         </p>
       )}
 
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">{item.name}</h1>
-          <p className="text-xs text-muted">Ref {item.asset_tag}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => navigate('/collections/risk-items')}
-            className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm hover:bg-gray-50"
-          >
-            <Sparkles size={16} />
-            AI autofill
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-accent-hover disabled:opacity-60"
-          >
-            {saving ? 'Saving...' : 'Save'}
-          </button>
-          <button type="button" className="rounded-lg border border-border p-2 hover:bg-gray-50">
-            <MoreVertical size={16} />
-          </button>
-        </div>
+      <div className="mb-4">
+        <h1 className="text-2xl font-semibold">{item.name}</h1>
+        <p className="text-xs text-muted">Ref {item.asset_tag}</p>
+        <p className="mt-1 text-sm text-muted">
+          View only — changes to insured items are requested via your broker on the policy.
+        </p>
       </div>
 
       <div className="mb-6 flex gap-6 border-b border-border">
@@ -226,11 +113,7 @@ export function RiskItemDetailPage() {
                 : 'border-transparent text-muted hover:text-gray-900'
             }`}
           >
-            {t === 'details'
-              ? 'Record details'
-              : t === 'linked'
-                ? 'Linked records'
-                : 'Activity'}
+            {t === 'details' ? 'Record details' : t === 'linked' ? 'Linked records' : 'Activity'}
           </button>
         ))}
       </div>
@@ -247,233 +130,89 @@ export function RiskItemDetailPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <Field label="Item Name">
-              <input
-                className="field-input"
-                value={item.name}
-                onChange={(e) => setItem({ ...item, name: e.target.value })}
-              />
-            </Field>
-            <Field label="Unit Cost">
-              <input
-                className="field-input"
-                type="number"
-                value={item.unit_cost}
-                onChange={(e) => setItem({ ...item, unit_cost: Number(e.target.value) })}
-              />
-            </Field>
-            <Field label="Repair Cost">
-              <input
-                className="field-input"
-                type="number"
-                value={item.repair_cost}
-                onChange={(e) => setItem({ ...item, repair_cost: Number(e.target.value) })}
-              />
-            </Field>
-            <Field label="Record Date">
-              <input
-                className="field-input"
-                type="date"
-                value={item.record_date}
-                onChange={(e) => setItem({ ...item, record_date: e.target.value })}
-              />
-            </Field>
-            <Field label="Category">
-              <select
-                className="field-input"
-                value={
-                  RISK_CATEGORIES.includes(item.category as (typeof RISK_CATEGORIES)[number])
-                    ? item.category
-                    : RISK_CATEGORIES[0]
-                }
-                onChange={(e) => setItem({ ...item, category: e.target.value })}
-              >
-                {!RISK_CATEGORIES.includes(item.category as (typeof RISK_CATEGORIES)[number]) &&
-                  item.category && (
-                    <option value={item.category}>{item.category}</option>
-                  )}
-                {RISK_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Insurance Status">
-              <select
-                className="field-input"
-                value={item.insurance_status}
-                onChange={(e) => setItem({ ...item, insurance_status: e.target.value })}
-              >
-                {INSURANCE_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Assign to">
-              <select
-                className="field-input"
-                value={item.employee_id ?? ''}
-                onChange={(e) => {
-                  const nextId = e.target.value || null
-                  const employee = employees.find((row) => row.id === nextId)
-                  setItem({
-                    ...item,
-                    employee_id: nextId,
-                    employee_name: employee?.full_name ?? null,
-                    assignment_status: nextId ? 'assigned' : 'unassigned',
-                  })
-                }}
-              >
-                <option value="">Unassigned</option>
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.full_name}
-                    {employee.branch_name ? ` · ${employee.branch_name}` : ''}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Branch">
-              <select
-                className="field-input"
-                value={item.branch_id ?? ''}
-                onChange={(e) => setItem({ ...item, branch_id: e.target.value || null })}
-              >
-                <option value="">Select branch</option>
-                {branches.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Serial Number">
-              <input
-                className="field-input"
-                value={item.serial_number ?? ''}
-                onChange={(e) => setItem({ ...item, serial_number: e.target.value })}
-              />
-            </Field>
-            <Field label="Attachments">
-              <div className="flex items-center gap-2 rounded-lg border border-dashed border-border p-4 text-sm text-muted">
-                <Upload size={16} />
-                Upload attachment (Phase 2)
-              </div>
-            </Field>
-            <div className="md:col-span-2">
-              <Field label="Description">
-                <textarea
-                  className="field-input min-h-24"
-                  value={item.description ?? ''}
-                  onChange={(e) => setItem({ ...item, description: e.target.value })}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <ReadonlyField label="Item name" value={item.name} />
+            <ReadonlyField label="Unit cost" value={formatCurrency(item.unit_cost)} />
+            <ReadonlyField label="Repair cost" value={formatCurrency(item.repair_cost)} />
+            <ReadonlyField
+              label="Record date"
+              value={item.record_date ? formatDate(item.record_date) : '—'}
+            />
+            <ReadonlyField label="Category" value={item.category || '—'} />
+            <ReadonlyField label="Insurance status" value={item.insurance_status || '—'} />
+            <ReadonlyField label="Assigned to" value={assignee || 'Unassigned'} />
+            <ReadonlyField label="Branch" value={branchName || '—'} />
+            <ReadonlyField label="Serial number" value={item.serial_number || '—'} />
+            {item.category === 'Motor' && (
+              <>
+                <ReadonlyField
+                  label="Rental vehicle"
+                  value={item.is_rental ? 'Yes' : 'No'}
                 />
-              </Field>
+                {item.is_rental && (
+                  <>
+                    <ReadonlyField label="Rental company" value={item.rental_company || '—'} />
+                    <ReadonlyField
+                      label="Rental period"
+                      value={
+                        item.rental_start_date || item.rental_end_date
+                          ? `${item.rental_start_date ?? '?'} – ${item.rental_end_date ?? '?'}`
+                          : '—'
+                      }
+                    />
+                  </>
+                )}
+              </>
+            )}
+            <div className="md:col-span-2">
+              <ReadonlyField label="Description" value={item.description || '—'} />
             </div>
           </div>
 
-          <div className="mt-6">
-            <CategoryZohoFields
-              category={item.category}
-              values={item.zoho_fields ?? {}}
-              onChange={(zoho_fields) => setItem({ ...item, zoho_fields })}
-            />
-          </div>
-
-          {item.category === 'Motor' && (
-            <div className="mt-6 space-y-4">
-              <MotorRentalPanel value={rental} onChange={setRental} />
-              <MotorVerifyPanel
-                registrationNumber={String(item.zoho_fields?.Registration_Number ?? '')}
-                onApply={(payload) => {
-                  setItem({
-                    ...item,
-                    name: payload.name || item.name,
-                    serial_number: payload.serial_number ?? item.serial_number,
-                    zoho_fields: { ...(item.zoho_fields ?? {}), ...payload.zoho_fields },
-                    vehicle_verification: {
-                      ...(item.vehicle_verification ?? {}),
-                      ...payload.vehicle_verification,
-                    },
-                  })
-                }}
-              />
+          {extraFields.length > 0 && (
+            <div className="mt-6 border-t border-border pt-6">
+              <h3 className="mb-3 text-sm font-semibold text-gray-900">Additional details</h3>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {extraFields.map(([key, value]) => (
+                  <ReadonlyField
+                    key={key}
+                    label={key.replace(/_/g, ' ')}
+                    value={String(value)}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
-          <ZohoSyncPreview
-            item={item}
-            branchAddress={branches.find((b) => b.id === item.branch_id)?.address}
-            zohoAccountId={organization?.zoho_account_id}
-          />
-
           <p className="mt-4 text-xs text-muted">
-            Current value: {formatCurrency(item.unit_cost)} · Stored in Supabase
+            Current value: {formatCurrency(item.unit_cost)}
           </p>
         </div>
       )}
 
       {tab === 'activity' && (
         <div className="rounded-lg border border-border bg-surface p-6 text-sm text-muted">
-          Activity feed will sync from Zoho CRM in a later phase.
+          Activity for this item appears in Reports when schedule changes are logged.
         </div>
       )}
 
       {tab === 'linked' && (
         <div className="rounded-lg border border-border bg-surface p-6 text-sm text-muted">
-          Linked quotations and policies from Zoho CRM appear in their collections. Use Send to Broker from a quotation or policy to request new items.
+          Linked quotations and policies appear under their collections. Use Send to Broker from a
+          quotation or policy to request new items.
         </div>
       )}
     </div>
   )
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function ReadonlyField({ label, value }: { label: string; value: string }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-gray-700">{label}</span>
-      {children}
-    </label>
-  )
-}
-
-function ZohoSyncPreview({
-  item,
-  branchAddress,
-  zohoAccountId,
-}: {
-  item: RiskItem
-  branchAddress?: string
-  zohoAccountId?: string | null
-}) {
-  const issues = validateZohoFields(item, { branchAddress, zohoAccountId })
-  const payload = buildZohoClientRiskPayload(item, { branchAddress, zohoAccountId })
-
-  return (
-    <div className="mt-4 rounded-lg border border-dashed border-border bg-page p-4 text-xs">
-      <p className="mb-2 font-medium text-gray-700">
-        Zoho CRM sync preview (Client_Risks · {ZOHO_LAYOUTS.clientRisksCommercialAssets.displayName})
+    <div>
+      <p className="mb-1 text-sm font-medium text-gray-700">{label}</p>
+      <p className="rounded-lg border border-border bg-page px-3 py-2 text-sm text-gray-900">
+        {value}
       </p>
-      {!zohoAccountId && (
-        <p className="mb-2 text-amber-800">
-          Missing organization Zoho Account ID. Set it on the portal account before syncing.
-        </p>
-      )}
-      {issues.length > 0 ? (
-        <ul className="mb-2 list-disc pl-4 text-amber-800">
-          {issues.map((issue) => (
-            <li key={issue.apiName}>{issue.message}</li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mb-2 text-green-700">All required broker fields are present.</p>
-      )}
-      <pre className="max-h-40 overflow-auto rounded bg-surface p-2 text-[11px] text-muted">
-        {JSON.stringify(payload, null, 2)}
-      </pre>
     </div>
   )
 }

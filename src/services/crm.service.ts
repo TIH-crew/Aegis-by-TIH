@@ -593,11 +593,15 @@ async function sendPortalBrokerRequest(accountId: string, input: BrokerRequestIn
     data: { user },
   } = await supabase.auth.getUser()
 
+  const requestType =
+    input.request_type ??
+    (input.nimbis_add ? 'nimbis_add_item' : 'add_item')
+
   const { data, error } = await supabase
     .from('portal_broker_requests')
     .insert({
       account_id: accountId,
-      request_type: 'add_item',
+      request_type: requestType,
       context_type: input.context_type,
       context_zoho_id: input.context_zoho_id,
       context_label: input.context_label ?? null,
@@ -880,7 +884,7 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
     (portalRow?.zoho_claim_id ? String(portalRow.zoho_claim_id) : null) ||
     (!isUuid ? id : null)
 
-  let crm: {
+  type CrmClaimPayload = {
     name?: string
     status?: string | null
     policy_id?: string | null
@@ -891,13 +895,26 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
     created_time?: string | null
     modified_time?: string | null
     attachments?: { id: string; file_name: string }[]
-    tasks?: { id: string; title: string; status: string | null; due_date: string | null; priority: string | null }[]
-    notes?: { id: string; title: string | null; content: string | null; created_time: string | null }[]
-  } | null = null
+    tasks?: {
+      id: string
+      title: string
+      status: string | null
+      due_date: string | null
+      priority: string | null
+    }[]
+    notes?: {
+      id: string
+      title: string | null
+      content: string | null
+      created_time: string | null
+    }[]
+  }
+
+  let crm: CrmClaimPayload | null = null
 
   if (zohoAccountId && zohoClaimId && !String(zohoClaimId).startsWith('dummy-')) {
     try {
-      const data = await crmFetch<{ claim: typeof crm }>(`claims/${zohoClaimId}`)
+      const data = await crmFetch<{ claim: CrmClaimPayload }>(`claims/${zohoClaimId}`)
       crm = data.claim
     } catch {
       crm = null
@@ -907,7 +924,7 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
   // Zoho-only claim (no portal row yet)
   if (!portalRow && !crm && zohoAccountId && !isUuid) {
     try {
-      const data = await crmFetch<{ claim: NonNullable<typeof crm> }>(`claims/${id}`)
+      const data = await crmFetch<{ claim: CrmClaimPayload }>(`claims/${id}`)
       crm = data.claim
     } catch {
       /* ignore */
@@ -962,7 +979,7 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
       amount: null,
       file_name: att.file_name,
       file_url: null,
-      notes: 'Stored as a Zoho CRM attachment on this claim',
+      notes: 'Attachment stored on the claim record',
       created_at: null,
     })
   }
