@@ -1,0 +1,12 @@
+{
+  "resource_type": "specific",
+  "resources": [
+    {
+      "resource_type": "layouts",
+      "resources": [
+        { "api_name": "Client_Risks.Commercial_Assets" },
+        { "api_name": "Deals.Commercial_Assets" }
+      ]
+    }
+  ]
+}

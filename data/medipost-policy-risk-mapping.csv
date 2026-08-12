@@ -1,0 +1,107 @@
+nimbis_risk_id,section,description,sum_insured,premium_excl,match_status,zoho_risk_id,zoho_risk_name,portal_risk_id,action
+59170,Office Contents,"Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",139150.29,50.504855,exact,7351644000001857129,"Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",,link
+59174,Accidental Damage,"Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002 Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",1515533,631.66471,manual,7351644000001857129,"Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",,review
+59176,Electronic Equipment,USB Scanners,384347,968.10882,exact,7351644000001857044,USB Scanners,,link
+59177,Electronic Equipment,"Samsung 35"" LED TV",3504,42.250369,created,7351644000003957001,"Samsung 35"" LED TV",,link
+59178,Electronic Equipment,Monitor Screens,9138,53.507625,exact,7351644000001857046,Monitor Screens,,link
+59179,Electronic Equipment,Desktop Computers & Accessories,286457,721.539516,exact,7351644000001857047,Desktop Computers & Accessories,,link
+59180,Electronic Equipment,Printers,514944,1297.061843,exact,7351644000001857048,Printers,,link
+59181,Electronic Equipment,Harddrives,10719,35.970789,exact,7351644000001857049,Harddrives,,link
+59182,Electronic Equipment,Laptops,261303,2189.07535,exact,7351644000001857050,Laptops,,link
+59183,Electronic Equipment,Tablets,7812,65.445313,exact,7351644000001857051,Tablets,,link
+59184,Electronic Equipment,Celeron Laptop & Bag - N2840,4218,33.756226,exact,7351644000001857052,Celeron Laptop & Bag - N2840,,link
+59185,Electronic Equipment,Honeydew USB Scanners @ R1248.30 Each,3745,8.982301,normalized,7351644000001857053,Honeydew USB Scanners,,link
+59186,Electronic Equipment,Honeywell Scanners @ R1248.30 Each,37449,89.611658,created,7351644000003957002,Honeywell Scanners @ R1248.30 Each,,link
+59187,Electronic Equipment,Honeywell USB Scanners @ R1397 Each,41910,100.286378,normalized,7351644000001857055,Honeywell USB Scanners,,link
+59188,Electronic Equipment,HP Laserjet Printer P2035,3000,6.744261,exact,7351644000001857056,HP Laserjet Printer P2035,,link
+59189,Electronic Equipment,HP Laserjet Printer,4093,9.794134,exact,7351644000001857057,HP Laserjet Printer,,link
+59190,Electronic Equipment,Lenovo Celeron laptop - ML-PC2896,4480,35.706574,exact,7351644000001857058,Lenovo Celeron laptop - ML-PC2896,,link
+59191,Electronic Equipment,Longrange CCD USB Scanners @ R627 Each,25080,60.213809,normalized,7351644000001857059,Longrange CCD USB Scanners,,link
+59192,Electronic Equipment,Mecer PC,5284,12.681983,exact,7351644000001857060,Mecer PC,,link
+59193,Electronic Equipment,Mecer PC With Mecer Screens @ R12000 Rach,36000,86.431304,normalized,7351644000001857061,Mecer PC With Mecer Screens,,link
+59194,Electronic Equipment,Mecer PC's With Accesories & Software,15185,36.336164,exact,7351644000001857062,Mecer PC's With Accesories & Software,,link
+59195,Electronic Equipment,Multifunction DFN Printer,3187,7.623627,exact,7351644000001857063,Multifunction DFN Printer,,link
+59196,Electronic Equipment,Samsung Galaxy Tab (Dian Bester),5000,39.847101,exact,7351644000001857064,Samsung Galaxy Tab (Dian Bester),,link
+59197,Electronic Equipment,Software Office 2016 Home and Business Microsoft,3938,9.460902,exact,7351644000001857065,Software Office 2016 Home and Business Microsoft,,link
+59198,Electronic Equipment,Zebra Printers @ 4330.86 Each,17323,41.562647,normalized,7351644000001857066,Zebra Printers,,link
+59199,Electronic Equipment,7012300 Esquire 00929260 x2 PC Boxes CCMDD,15458,98.585075,exact,7351644000001857067,7012300 Esquire 00929260 x2 PC Boxes CCMDD,,link
+59200,Electronic Equipment,7012400 Esquire Tech 929262 x1 PC Box,7825,49.904788,exact,7351644000001857068,7012400 Esquire Tech 929262 x1 PC Box,,link
+59201,Electronic Equipment,1320302 Esquire 00929261x6 MS Office,18777,119.737391,exact,7351644000001857079,1320302 Esquire 00929261x6 MS Office,,link
+59202,Electronic Equipment,1320303 Esquire 00929271 SSD Steyn,607,3.874112,exact,7351644000001857080,1320303 Esquire 00929271 SSD Steyn,,link
+59203,Electronic Equipment,1320310 Esquire Tech 930055 x1 PC Box - BI,6580,41.964665,exact,7351644000001857071,1320310 Esquire Tech 930055 x1 PC Box - BI,,link
+59204,Electronic Equipment,1320310 Esquire Tech 930060 x1 SSD - BI,868,5.538532,exact,7351644000001857072,1320310 Esquire Tech 930060 x1 SSD - BI,,link
+59205,Electronic Equipment,1320310 First Tech 590735 x5 Wireless keyboard/m,1281,8.168696,exact,7351644000001857073,1320310 First Tech 590735 x5 Wireless keyboard/m,,link
+59206,Electronic Equipment,1320311 Strategix SIT - INV11643 x62 MSP Licences,14206,90.588986,exact,7351644000001857074,1320311 Strategix SIT - INV11643 x62 MSP Licences,,link
+59207,Electronic Equipment,1320311 Esquire Tech 929272 x10 Screens,10252,65.375072,exact,7351644000001857075,1320311 Esquire Tech 929272 x10 Screens,,link
+59208,Electronic Equipment,1320312 Netlogix INV126433 Asus Battery,480,3.06087,exact,7351644000001857076,1320312 Netlogix INV126433 Asus Battery,,link
+59209,Electronic Equipment,7012400 Esquire Tech 925719 x1 ASUS PC Box,6955,44.356268,exact,7351644000001857077,7012400 Esquire Tech 925719 x1 ASUS PC Box,,link
+59210,Electronic Equipment,7012400 Esquire Tech 925721 x1 MS Office,3129,19.953043,exact,7351644000001857078,7012400 Esquire Tech 925721 x1 MS Office,,link
+59211,Electronic Equipment,1320302 Esquire 00929261x6 MS Office,18777,89.803043,manual,7351644000001857079,1320302 Esquire 00929261x6 MS Office,,review
+59212,Electronic Equipment,1320303 Esquire 00929271 SSD Steyn,607,3.874112,manual,7351644000001857080,1320303 Esquire 00929271 SSD Steyn,,review
+59213,Electronic Equipment,7012300 Esquire Tech 925912 x1 ASUS Laptop,13912,88.714203,token,7351644000001857086,1320303 Esquire Tech 923670 x1 RAM,,review
+59214,Electronic Equipment,7012300 First Tech 588805 x2 Zebra Printers,30182,192.464928,exact,7351644000001857082,7012300 First Tech 588805 x2 Zebra Printers,,link
+59215,Electronic Equipment,1320302 First Tech 588804 x1 Screen,2473,15.773798,exact,7351644000001857083,1320302 First Tech 588804 x1 Screen,,link
+59216,Electronic Equipment,1320303 Netlogix IN125910 x1 Laptop charger/plug,400,2.553913,exact,7351644000001857084,1320303 Netlogix IN125910 x1 Laptop charger/plug,,link
+59217,Electronic Equipment,1320303 Esquire Tech 925722 x3 Mini PC's,9910,63.194203,exact,7351644000001857085,1320303 Esquire Tech 925722 x3 Mini PC's,,link
+59218,Electronic Equipment,1320303 Esquire Tech 923670 x1 RAM,312,1.989565,exact,7351644000001857086,1320303 Esquire Tech 923670 x1 RAM,,link
+59219,Electronic Equipment,1320311 Esquire Tech 927586 x5 Screens,5647,36.014356,exact,7351644000001857087,1320311 Esquire Tech 927586 x5 Screens,,link
+59220,Electronic Equipment,1320311 Netlogix IN126155 Nakivo backup & Replic,35460,226.121739,exact,7351644000001857088,1320311 Netlogix IN126155 Nakivo backup & Replic,,link
+59221,Electronic Equipment,1320311 Netlogix IN125620 x14 HDD HP SAS 75GB,28070,178.997101,exact,7351644000001857089,1320311 Netlogix IN125620 x14 HDD HP SAS 75GB,,link
+59222,Electronic Equipment,1320311 Netlogix IN126128 x2 HDD HP SAS 75G,4010,25.567818,exact,7351644000001857090,1320311 Netlogix IN126128 x2 HDD HP SAS 75G,,link
+59223,Electronic Equipment,1320311 Esquite Tech 925824 x5 Screens,5647,36.014356,exact,7351644000001857091,1320311 Esquite Tech 925824 x5 Screens,,link
+59224,Electronic Equipment,1320311 Esquire Tech 923708 x10 Keyboard/Mouse,1904,12.14752,exact,7351644000001857092,1320311 Esquire Tech 923708 x10 Keyboard/Mouse,,link
+59225,Electronic Equipment,1320434 Esquire Tech 925723 x12 USB Keyboards,1241,7.919558,exact,7351644000001857093,1320434 Esquire Tech 925723 x12 USB Keyboards,,link
+59226,Business All Risks,4 x Nuvi 42 LM GPS,5360,34.260887,exact,7351644000001857094,4 x Nuvi 42 LM GPS,,link
+59227,Business All Risks,Huawei Mate 20 Lite (Timothy Botha),6840,65.589652,exact,7351644000001857095,Huawei Mate 20 Lite (Timothy Botha),,link
+59228,Business All Risks,Huawei Mate 20 Lite (Jonathan Komape),6840,65.589652,exact,7351644000001857096,Huawei Mate 20 Lite (Jonathan Komape),,link
+59229,Business All Risks,Huawei Mate 20 Lite (Aidan Muruvan),6840,65.589652,exact,7351644000001857097,Huawei Mate 20 Lite (Aidan Muruvan),,link
+59230,Business All Risks,CAT S31 Smarphone (Quintin Els),5780,58.184914,exact,7351644000001857098,CAT S31 Smarphone (Quintin Els),,link
+59231,Business All Risks,Huawei Y6 2019 (Nick),2710,27.28047,exact,7351644000001857099,Huawei Y6 2019 (Nick),,link
+59232,Business All Risks,Huawei Y6 2019 (Natasha),2710,27.28047,exact,7351644000001857100,Huawei Y6 2019 (Natasha),,link
+59233,Business All Risks,Huawei Y6 2019 (Brandon),2710,27.28047,exact,7351644000001857101,Huawei Y6 2019 (Brandon),,link
+59234,Business All Risks,Huawei Y6 2019 (Nlotando),2710,27.28047,exact,7351644000001857102,Huawei Y6 2019 (Nlotando),,link
+59235,Business All Risks,Huawei Y6 2019 (Damien),2710,27.28047,exact,7351644000001857103,Huawei Y6 2019 (Damien),,link
+59236,Business All Risks,Huawei Y6 2019 (Adnew),2710,27.28047,exact,7351644000001857104,Huawei Y6 2019 (Adnew),,link
+59237,Business All Risks,Huawei Y6 2019 (MIchelle),2710,27.28047,exact,7351644000001857105,Huawei Y6 2019 (MIchelle),,link
+59238,Business All Risks,Huawei Y6 2019 (Zama),2710,27.28047,exact,7351644000001857106,Huawei Y6 2019 (Zama),,link
+59239,Business All Risks,Huawei Y6 2019 (Tonqo),2710,27.28047,exact,7351644000001857107,Huawei Y6 2019 (Tonqo),,link
+59240,Business All Risks,Huawei Y6 2019 (Tyonn),2710,27.28047,exact,7351644000001857108,Huawei Y6 2019 (Tyonn),,link
+59241,Business All Risks,Huawei Y6 2019 (Ian),2710,27.28047,exact,7351644000001857109,Huawei Y6 2019 (Ian),,link
+59242,Business All Risks,Huawei Y6 2019 (Andile),2710,27.28047,exact,7351644000001857110,Huawei Y6 2019 (Andile),,link
+59243,Business All Risks,Huawei Y6 2019 (Savesh),2710,27.28047,exact,7351644000001857111,Huawei Y6 2019 (Savesh),,link
+59244,Business All Risks,Huawei Y6 2019 (Tshepo),2710,27.28047,exact,7351644000001857112,Huawei Y6 2019 (Tshepo),,link
+59245,Business All Risks,Huawei Y6 2019 (Bessie),2710,27.28047,exact,7351644000001857113,Huawei Y6 2019 (Bessie),,link
+59246,Business All Risks,Huawei Y6 2019 (Cedric),2710,27.28047,exact,7351644000001857114,Huawei Y6 2019 (Cedric),,link
+59247,Business All Risks,LG K10 Smartphone (Munene),2000,20.134783,exact,7351644000001857115,LG K10 Smartphone (Munene),,link
+59249,Business All Risks,21x Ulefone Armor X6 16GB Dual Sim,43339,436.310672,manual,7351644000001857119,16x Ulefone Armor X6 16GB Sim Rugged,,review
+59250,Business All Risks,I Phone 13 Pro,23499,236.573628,exact,7351644000001857117,I Phone 13 Pro,,link
+59251,Business All Risks,"79x PM75 Mobile Device @ R9,123 each",720717,7255.740059,normalized,7351644000001857118,79x PM75 Mobile Device,,link
+59252,Business All Risks,"16x Ulefone Armor X6 16GB Sim Rugged @ R2,399 each",38384,372.658574,normalized,7351644000001857119,16x Ulefone Armor X6 16GB Sim Rugged,,link
+59253,Business All Risks,"2x CryoVacc units @ R126,500 each",253000,625.166667,normalized,7351644000001857120,2x CryoVacc units,,link
+59254,Business All Risks,Fridge Master,8500,34.561123,exact,7351644000001857121,Fridge Master,,link
+59255,Business All Risks,Samsung Tablet,5000,40.452899,exact,7351644000001857122,Samsung Tablet,,link
+59256,Business All Risks,7002300 Coldfront CIC-4809 DR Zulu Onco Fridge,15587,99.395362,exact,7351644000001857123,7002300 Coldfront CIC-4809 DR Zulu Onco Fridge,,link
+59257,Business All Risks,7002400 UTrackIt SI207883 Design time R&M inst,85750,546.811594,exact,7351644000001857124,7002400 UTrackIt SI207883 Design time R&M inst,,link
+59258,Business All Risks,7002400 Pure Water Systems 116096 Grundfos Scala,14484,92.361739,created,7351644000003957003,7002400 Pure Water Systems 116096 Grundfos Scala,,link
+59259,Business All Risks,7002400 Pure Water Systems 116096 Ozone generato,10775,68.710145,exact,7351644000001857126,7002400 Pure Water Systems 116096 Ozone generato,,link
+59260,Business All Risks,1320307 My Frifge Online IN123159 Wifi logger ex,1400,8.924188,exact,7351644000001857127,1320307 My Frifge Online IN123159 Wifi logger ex,,link
+59261,Business All Risks,1320434 Pure Water Systems 116096 HC480 UV Balla,4678,29.834453,exact,7351644000001857128,1320434 Pure Water Systems 116096 HC480 UV Balla,,link
+59262,Public Liability,"Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",20000000,63.768116,exact,7351644000001857129,"Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",,link
+59263,Public Liability,"Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493",20000000,63.768116,exact,7351644000001857130,"Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493",,link
+62527,Electronic Equipment,iMat Manufacturing IN125936,28680,83.130435,exact,7351644000001857131,iMat Manufacturing IN125936,,link
+62529,Fire,"Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493 Brutes Air Sol IN133118 x2 Delcos Pro",102294,15.566478,exact,7351644000001857132,"Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493 Brutes Air Sol IN133118 x2 Delcos Pro",,link
+62530,Electronic Equipment,Netlogix IN129799 x1 Mercer desktop PC,9392,27.223188,manual,7351644000001857133,7012300 Netlogix IN129799 x1 Mercer desktop PC,,review
+62531,Electronic Equipment,Netlogix IN129799 x1 Mercer desktop PC,7102,20.585507,manual,7351644000001857134,7012300 Netlogix IN129799 x1 Mercer desktop PC,,review
+62533,Electronic Equipment,Netlogix IN128855 x10 Mercer Monitors,11754,34.069565,ref,7351644000001857135,1320311 Netlogix IN128855 x10 Mercer Monitors,,review
+62534,Electronic Equipment,Strategix SIT-INV112722 x82 Veeam backup,15416,44.684058,exact,7351644000001857136,Strategix SIT-INV112722 x82 Veeam backup,,link
+62535,Electronic Equipment,Strategix SIT-INV112722 x18 Fileshare li,2700,7.826087,exact,7351644000001857137,Strategix SIT-INV112722 x18 Fileshare li,,link
+62536,Electronic Equipment,Netlogix IN129646 x5 Mercer 19.5  Monito,5822,16.875362,normalized,7351644000001857138,Netlogix IN129646 x5 Mercer 19.5 Monito,,link
+62537,Electronic Equipment,Netlogix IN129648 x4 Mercer 19.5' Monito,4658,13.501449,exact,7351644000001857139,Netlogix IN129648 x4 Mercer 19.5' Monito,,link
+62538,Electronic Equipment,Netlogix IN129794 x1 SSD Drive/Adaptor/U,2398.04,6.950841,exact,7351644000001857140,Netlogix IN129794 x1 SSD Drive/Adaptor/U,,link
+62539,Electronic Equipment,Netlogix IN129693 x2 Hand scanners,4743.32,13.748754,exact,7351644000001857141,Netlogix IN129693 x2 Hand scanners,,link
+62540,Electronic Equipment,Netlogix IN129694 x1 Zebra Thermal print,6016.91,17.440319,exact,7351644000001857142,Netlogix IN129694 x1 Zebra Thermal print,,link
+62541,Electronic Equipment,Netlogix IN129695 x5 Barcode scanners,6041.75,17.512319,exact,7351644000001857143,Netlogix IN129695 x5 Barcode scanners,,link
+62542,Electronic Equipment,Netlogix IN129715 x10 Keyboard combo's,1955.3,5.667536,exact,7351644000001857144,Netlogix IN129715 x10 Keyboard combo's,,link
+62543,Electronic Equipment,Netlogix IN129716 x5 SSD drives,4476.4,12.975072,exact,7351644000001857145,Netlogix IN129716 x5 SSD drives,,link
+62544,Electronic Equipment,Netlogix IN129661 x2 HPE 600GB SAS HDD,8525.78,24.712406,exact,7351644000001857146,Netlogix IN129661 x2 HPE 600GB SAS HDD,,link
+64687,Electronic Equipment,P3155DN Printers x 32 (R19000.00 each),608000,1531.455072,exact,7351644000001857147,P3155DN Printers x 32 (R19000.00 each),,link

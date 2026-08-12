@@ -1,0 +1,9 @@
+{
+  "name": "Commercial Assets",
+  "api_name": "Commercial_Assets",
+  "profiles": [
+    { "id": "7351644000000026011" },
+    { "id": "7351644000001821353" },
+    { "id": "7351644000001821572" }
+  ]
+}

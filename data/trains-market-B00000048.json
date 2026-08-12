@@ -1,0 +1,3030 @@
+{
+    "policyId": 15786,
+    "policyNumber": "B00000048",
+    "insurerPolicyNumber": "GC2895315",
+    "policyHolder": {
+        "type": "CompanyClient",
+        "Name": "Trains Market",
+        "CompanyCode": "",
+        "TradingAs": "Trains Market",
+        "VATNumber": "000000",
+        "RegNumber": "1990/000001/01",
+        "InternalCompanyId": 0,
+        "ClientId": 9010,
+        "IsVIP": false,
+        "ClientStatus": 2,
+        "Owner": "The Insurance Advisors Hub",
+        "Contacts": [
+            {
+                "contactType": "Phone",
+                "contactDetail": "+27 (0)00 456128",
+                "isPrimary": true,
+                "isDuringBusinessHours": true,
+                "internalContactId": 12453
+            },
+            {
+                "contactType": "CellNumber",
+                "contactDetail": "+27 (0)00 698559",
+                "isPrimary": true,
+                "isDuringBusinessHours": true,
+                "internalContactId": 12454
+            },
+            {
+                "contactType": "Email",
+                "contactDetail": "c37fc0ac@trainsmarket.com",
+                "isPrimary": true,
+                "isDuringBusinessHours": true,
+                "internalContactId": 12455
+            }
+        ],
+        "Addresses": [
+            {
+                "$type": "Concourse.Nimbis.Model.Api.Contracts.Common.Address.StreetAddress, Concourse.Nimbis.Model.Api.Contracts",
+                "addressType": "Street",
+                "complex": "",
+                "building": "",
+                "street": "83 New Boulevard",
+                "suburbName": "Pretoria",
+                "postCode": "",
+                "city": "Gezina",
+                "provinceName": "Gauteng",
+                "countryName": "South Africa",
+                "countryCode": "ZAF",
+                "latitude": "",
+                "longitude": ""
+            },
+            {
+                "$type": "Concourse.Nimbis.Model.Api.Contracts.Common.Address.StreetAddress, Concourse.Nimbis.Model.Api.Contracts",
+                "addressType": "Street",
+                "complex": "",
+                "building": "",
+                "street": "273 Kings Crescent",
+                "suburbName": "Belhar",
+                "postCode": "",
+                "city": "Ravensmead",
+                "provinceName": "Western Cape",
+                "countryName": "South Africa",
+                "countryCode": "ZAF",
+                "latitude": "",
+                "longitude": ""
+            }
+        ],
+        "InternalBrokerID": 0,
+        "PolicyNumbers": [
+            "B00000048"
+        ]
+    },
+    "inceptionDate": "2025-07-01T00:00:00",
+    "renewalDate": "2026-09-01T00:00:00",
+    "status": "Active",
+    "frequency": "Monthly",
+    "product": "Bryte Commercial (Kolonie)",
+    "insurer": "Bryte Insurance Company South Africa",
+    "clientID": 9010,
+    "totalPremium": 24174.625688,
+    "totalSectionExtensionPremium": 0.000000,
+    "totalSasriaPremium": 144.538825,
+    "totalFeePremium": 95.6500000,
+    "outstandingAmount": 0.00000000,
+    "paymentMethod": {
+        "paymentType": 3,
+        "strikeDay": 1,
+        "account": {
+            "bank": {
+                "internalBankID": 1,
+                "name": "Absa",
+                "description": null
+            },
+            "accountType": 2,
+            "accountHolder": "Hidden",
+            "accountNumber": "9999838734",
+            "branchCode": "99999",
+            "creditorCode": "",
+            "bankName": null
+        }
+    },
+    "risks": [
+        {
+            "trackingId": "d60549e0-4037-46c6-bacc-85edc4b175b3",
+            "riskId": 59170,
+            "section": "Office Contents",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 139150.29000000,
+            "premium": 50.504855,
+            "premiumIncl": 58.080583250000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "security": "Unspecified",
+                        "building Type": ""
+                    }
+                },
+                {
+                    "group": "Subsection A - Contents",
+                    "questionAnswer": {
+                        "rate": "0.236900%",
+                        "burglar Alarm Warranty applicable": "0"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "85b7e7cf-c81d-4830-94b7-774c5046b58d",
+            "riskId": 59174,
+            "section": "Accidental Damage",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002 Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002 ",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 1515533.00000000,
+            "premium": 631.664710,
+            "premiumIncl": 726.414416500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "0.080300%",
+                        "description": "Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002 ",
+                        "basis of Cover": "Full Value"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "a4c93999-d979-4c2c-9d10-9e2d0b3d57e7",
+            "riskId": 59176,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "USB Scanners",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 384347.00000000,
+            "premium": 968.108820,
+            "premiumIncl": 1113.325143000000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "USB Scanners",
+                        "rate": "3.476000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "9a332a4c-afe6-4e98-9f1f-13af29031242",
+            "riskId": 59177,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Samsung 35\" LED TV",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 3504.00000000,
+            "premium": 42.250369,
+            "premiumIncl": 48.587924350000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Samsung 35\" LED TV",
+                        "rate": "16.639700%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "1c6cf397-e65f-480f-aa5e-2a03993a9f84",
+            "riskId": 59178,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Monitor Screens",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 9138.00000000,
+            "premium": 53.507625,
+            "premiumIncl": 61.533768750000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Monitor Screens",
+                        "rate": "8.080600%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "0a275015-4309-4e5b-8a98-e14fcb527a50",
+            "riskId": 59179,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Desktop Computers & Accessories",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 286457.00000000,
+            "premium": 721.539516,
+            "premiumIncl": 829.770443400000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Desktop Computers & Accessories",
+                        "rate": "3.476000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "b730a791-9a11-4fcd-8e95-cc4fa151cc9b",
+            "riskId": 59180,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Printers",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 514944.00000000,
+            "premium": 1297.061843,
+            "premiumIncl": 1491.621119450000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Printers",
+                        "rate": "3.476000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "af4c0701-82d3-4edc-975a-707db39fb8e0",
+            "riskId": 59181,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Harddrives",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 10719.00000000,
+            "premium": 35.970789,
+            "premiumIncl": 41.366407350000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Harddrives",
+                        "rate": "4.631000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d4d82894-8e5b-48c2-ba82-8366dd1ef776",
+            "riskId": 59182,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Laptops",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 261303.00000000,
+            "premium": 2189.075350,
+            "premiumIncl": 2517.436652500000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Laptops",
+                        "rate": "11.561000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "363a573b-e51b-4ea5-b334-efc98568bc42",
+            "riskId": 59183,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Tablets",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 7812.00000000,
+            "premium": 65.445313,
+            "premiumIncl": 75.262109950000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Tablets",
+                        "rate": "11.561000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "5d57f545-1d0b-4c08-9ac2-425016311f25",
+            "riskId": 59184,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Celeron Laptop & Bag - N2840",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4218.00000000,
+            "premium": 33.756226,
+            "premiumIncl": 38.819659900000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Celeron Laptop & Bag - N2840",
+                        "rate": "11.044000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "9e6930a6-b3ae-4022-87a7-cb9eefeae25f",
+            "riskId": 59185,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Honeydew USB Scanners @ R1248.30 Each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 3745.00000000,
+            "premium": 8.982301,
+            "premiumIncl": 10.329646150000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Honeydew USB Scanners @ R1248.30 Each",
+                        "rate": "3.309900%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "00e0bece-7a14-4b0f-ac1b-0666d971a6d1",
+            "riskId": 59186,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Honeywell Scanners @ R1248.30 Each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 37449.00000000,
+            "premium": 89.611658,
+            "premiumIncl": 103.053406700000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Honeywell Scanners @ R1248.30 Each",
+                        "rate": "3.302200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "db55e489-93d1-4dba-bdc7-b52c8736013c",
+            "riskId": 59187,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Honeywell USB Scanners @ R1397 Each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 41910.00000000,
+            "premium": 100.286378,
+            "premiumIncl": 115.329334700000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Honeywell USB Scanners @ R1397 Each",
+                        "rate": "3.302200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "2c2af535-2a0d-4f2e-8973-850bd3bdd950",
+            "riskId": 59188,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "HP Laserjet Printer P2035",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 3000.00000000,
+            "premium": 6.744261,
+            "premiumIncl": 7.755900150000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "HP Laserjet Printer P2035",
+                        "rate": "3.102360%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "423379d2-847e-4268-995a-674513a46124",
+            "riskId": 59189,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "HP Laserjet Printer",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4093.00000000,
+            "premium": 9.794134,
+            "premiumIncl": 11.263254100000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "HP Laserjet Printer",
+                        "rate": "3.302200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d4ad857a-a0a7-4017-9ea9-b49fa162cd21",
+            "riskId": 59190,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Lenovo Celeron laptop - ML-PC2896",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4480.00000000,
+            "premium": 35.706574,
+            "premiumIncl": 41.062560100000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Lenovo Celeron laptop - ML-PC2896",
+                        "rate": "10.998900%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "R910WN2T"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "33b964d7-352d-4c4e-9be2-18551446779b",
+            "riskId": 59191,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Longrange CCD USB Scanners @ R627 Each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 25080.00000000,
+            "premium": 60.213809,
+            "premiumIncl": 69.245880350000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Longrange CCD USB Scanners @ R627 Each",
+                        "rate": "3.313200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "2783e34b-dc6a-41f2-bf21-61ea0f4112f2",
+            "riskId": 59192,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Mecer PC",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5284.00000000,
+            "premium": 12.681983,
+            "premiumIncl": 14.584280450000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Mecer PC",
+                        "rate": "3.312100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "f3b831be-cc58-412c-8f36-f7f41ce90fce",
+            "riskId": 59193,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Mecer PC With Mecer Screens @ R12000 Rach",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 36000.00000000,
+            "premium": 86.431304,
+            "premiumIncl": 99.395999600000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Mecer PC With Mecer Screens @ R12000 Rach",
+                        "rate": "3.313200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "209d1e86-41c5-4b82-837c-1adaf2b37c55",
+            "riskId": 59194,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Mecer PC's With Accesories & Software",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 15185.00000000,
+            "premium": 36.336164,
+            "premiumIncl": 41.786588600000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Mecer PC's With Accesories & Software",
+                        "rate": "3.302200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "eb3bc67e-a261-4252-b03a-84235c38077d",
+            "riskId": 59195,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Multifunction DFN Printer",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 3187.00000000,
+            "premium": 7.623627,
+            "premiumIncl": 8.767171050000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Multifunction DFN Printer",
+                        "rate": "3.301100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "a15145b1-8f94-4198-aabc-addd2def1751",
+            "riskId": 59196,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Samsung Galaxy Tab (Dian Bester)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5000.00000000,
+            "premium": 39.847101,
+            "premiumIncl": 45.824166150000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Samsung Galaxy Tab (Dian Bester)",
+                        "rate": "10.997800%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "0cee4910-ab1b-428a-9179-ab125bf38912",
+            "riskId": 59197,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Software Office 2016 Home and Business Microsoft",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 3938.00000000,
+            "premium": 9.460902,
+            "premiumIncl": 10.880037300000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Software Office 2016 Home and Business Microsoft",
+                        "rate": "3.315400%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d49a0e63-7e10-4e0a-b578-7c14c6591f3a",
+            "riskId": 59198,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Zebra Printers @ 4330.86 Each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 17323.00000000,
+            "premium": 41.562647,
+            "premiumIncl": 47.797044050000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Zebra Printers @ 4330.86 Each",
+                        "rate": "3.311000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3c666c0c-0166-4889-b640-87eea2d8e8d6",
+            "riskId": 59199,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7012300 Esquire 00929260 x2 PC Boxes CCMDD",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 15458.00000000,
+            "premium": 98.585075,
+            "premiumIncl": 113.372836250000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "7012300 Esquire 00929260 x2 PC Boxes CCMDD",
+                        "rate": "8.801100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54076"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "f44a8581-925b-4b2c-8116-f4f855840f32",
+            "riskId": 59200,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": " 7012400 Esquire Tech 929262 x1 PC Box",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 7825.00000000,
+            "premium": 49.904788,
+            "premiumIncl": 57.390506200000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": " 7012400 Esquire Tech 929262 x1 PC Box",
+                        "rate": "8.801100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45493"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "882245cd-6227-4bb2-a6e1-2a91395425c3",
+            "riskId": 59201,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320302 Esquire 00929261x6 MS Office",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 18777.00000000,
+            "premium": 119.737391,
+            "premiumIncl": 137.697999650000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320302 Esquire 00929261x6 MS Office",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54075"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "af23e797-2820-48e9-9829-1e9b48b994cf",
+            "riskId": 59202,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320303 Esquire 00929271 SSD Steyn",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 607.00000000,
+            "premium": 3.874112,
+            "premiumIncl": 4.455228800000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320303 Esquire 00929271 SSD Steyn",
+                        "rate": "8.807700%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54074"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "129fdb82-44c2-44b8-8d2e-8bcf1b5e7761",
+            "riskId": 59203,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320310 Esquire Tech 930055 x1 PC Box - BI",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6580.00000000,
+            "premium": 41.964665,
+            "premiumIncl": 48.259364750000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320310 Esquire Tech 930055 x1 PC Box - BI",
+                        "rate": "8.801100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45495"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3966d184-0e79-4487-b560-ff965ad8d3d8",
+            "riskId": 59204,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320310 Esquire Tech 930060 x1 SSD - BI",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 868.00000000,
+            "premium": 5.538532,
+            "premiumIncl": 6.369311800000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320310 Esquire Tech 930060 x1 SSD - BI",
+                        "rate": "8.805500%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45496"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "ba22e608-a720-40b4-a026-afca848c7b1c",
+            "riskId": 59205,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320310 First Tech 590735 x5 Wireless keyboard/m",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 1281.00000000,
+            "premium": 8.168696,
+            "premiumIncl": 9.394000400000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320310 First Tech 590735 x5 Wireless keyboard/m",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45618"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "a9791694-5bc3-472b-90fc-fdaa29ab978f",
+            "riskId": 59206,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Strategix SIT - INV11643 x62 MSP Licences",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 14206.00000000,
+            "premium": 90.588986,
+            "premiumIncl": 104.177333900000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Strategix SIT - INV11643 x62 MSP Licences",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54094"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "faf66684-3784-41b4-a4fa-f63efd4e785f",
+            "riskId": 59207,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Esquire Tech 929272 x10 Screens",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 10252.00000000,
+            "premium": 65.375072,
+            "premiumIncl": 75.181332800000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Esquire Tech 929272 x10 Screens",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45494"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "b75efd01-5d1c-4a1e-b778-0f8402e73525",
+            "riskId": 59208,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320312 Netlogix INV126433 Asus Battery",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 480.00000000,
+            "premium": 3.060870,
+            "premiumIncl": 3.520000500000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320312 Netlogix INV126433 Asus Battery",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54073"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "8c8db0d4-671d-4ee4-ab26-2204cf900769",
+            "riskId": 59209,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7012400 Esquire Tech 925719 x1 ASUS PC Box",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6955.00000000,
+            "premium": 44.356268,
+            "premiumIncl": 51.009708200000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "7012400 Esquire Tech 925719 x1 ASUS PC Box",
+                        "rate": "8.801100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45390"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "9685e1c2-352a-4fe7-b27b-37601558df1a",
+            "riskId": 59210,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7012400 Esquire Tech 925721 x1 MS Office",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 3129.00000000,
+            "premium": 19.953043,
+            "premiumIncl": 22.945999450000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "7012400 Esquire Tech 925721 x1 MS Office",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45395"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "c18a54b7-466c-4af1-a479-d02b964c1a22",
+            "riskId": 59211,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320302 Esquire 00929261x6 MS Office",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 18777.00000000,
+            "premium": 89.803043,
+            "premiumIncl": 103.273499450000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320302 Esquire 00929261x6 MS Office",
+                        "rate": "6.600000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54075"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3212ce42-73e7-4480-bbef-430398a4b5cd",
+            "riskId": 59212,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320303 Esquire 00929271 SSD Steyn",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 607.00000000,
+            "premium": 3.874112,
+            "premiumIncl": 4.455228800000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320303 Esquire 00929271 SSD Steyn",
+                        "rate": "8.807700%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA54074"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "5e34342b-f9d0-43f8-b3ee-bf8016af2781",
+            "riskId": 59213,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7012300 Esquire Tech 925912 x1 ASUS Laptop",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 13912.00000000,
+            "premium": 88.714203,
+            "premiumIncl": 102.021333450000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "7012300 Esquire Tech 925912 x1 ASUS Laptop",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45394"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "9d5c6272-17bc-495c-9adc-31287b690125",
+            "riskId": 59214,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7012300 First Tech 588805 x2 Zebra Printers",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 30182.00000000,
+            "premium": 192.464928,
+            "premiumIncl": 221.334667200000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "7012300 First Tech 588805 x2 Zebra Printers",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45408"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "fc359b31-9e66-4230-9934-7e27e526e827",
+            "riskId": 59215,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320302 First Tech 588804 x1 Screen",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2473.00000000,
+            "premium": 15.773798,
+            "premiumIncl": 18.139867700000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320302 First Tech 588804 x1 Screen",
+                        "rate": "8.802200%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45407"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "87467427-22db-434c-b5f6-0c377ed1334d",
+            "riskId": 59216,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320303 Netlogix IN125910 x1 Laptop charger/plug",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 400.00000000,
+            "premium": 2.553913,
+            "premiumIncl": 2.936999950000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320303 Netlogix IN125910 x1 Laptop charger/plug",
+                        "rate": "8.811000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45332"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "9bcff911-e652-44da-afd0-d6225c2f5c34",
+            "riskId": 59217,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320303 Esquire Tech 925722 x3 Mini PC's",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 9910.00000000,
+            "premium": 63.194203,
+            "premiumIncl": 72.673333450000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320303 Esquire Tech 925722 x3 Mini PC's",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45392"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "1f1572fd-aa85-48ce-ad95-1ad2e40815ec",
+            "riskId": 59218,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320303 Esquire Tech 923670 x1 RAM",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 312.00000000,
+            "premium": 1.989565,
+            "premiumIncl": 2.287999750000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320303 Esquire Tech 923670 x1 RAM",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45393"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "74275856-d592-4058-9737-4dd4d6ba021a",
+            "riskId": 59219,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Esquire Tech 927586 x5 Screens",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5647.00000000,
+            "premium": 36.014356,
+            "premiumIncl": 41.416509400000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Esquire Tech 927586 x5 Screens",
+                        "rate": "8.801100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45472"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "68a5b129-5429-4a78-8f66-c37f9b024dc6",
+            "riskId": 59220,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Netlogix IN126155 Nakivo backup & Replic",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 35460.00000000,
+            "premium": 226.121739,
+            "premiumIncl": 260.039999850000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Netlogix IN126155 Nakivo backup & Replic",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45307"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "2afbd9e0-9532-47bf-8226-31ff82004ff5",
+            "riskId": 59221,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Netlogix IN125620 x14 HDD HP SAS 75GB",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 28070.00000000,
+            "premium": 178.997101,
+            "premiumIncl": 205.846666150000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Netlogix IN125620 x14 HDD HP SAS 75GB",
+                        "rate": "8.800000%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45331"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "27f74e6d-0467-4f67-92f1-502d9a446ed4",
+            "riskId": 59222,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Netlogix IN126128 x2 HDD HP SAS 75G",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4010.00000000,
+            "premium": 25.567818,
+            "premiumIncl": 29.402990700000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Netlogix IN126128 x2 HDD HP SAS 75G",
+                        "rate": "8.798900%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45331"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "db1292fa-62ba-4b71-af3e-6816d3f7862a",
+            "riskId": 59223,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Esquite Tech 925824 x5 Screens",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5647.00000000,
+            "premium": 36.014356,
+            "premiumIncl": 41.416509400000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Esquite Tech 925824 x5 Screens",
+                        "rate": "8.801100%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45389"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "f7feec51-0242-4422-a702-d75693a769a0",
+            "riskId": 59224,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320311 Esquire Tech 923708 x10 Keyboard/Mouse",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 1904.00000000,
+            "premium": 12.147520,
+            "premiumIncl": 13.969648000000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320311 Esquire Tech 923708 x10 Keyboard/Mouse",
+                        "rate": "8.804400%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45391"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "4b05330f-c580-440e-92f0-e7d7a30343b6",
+            "riskId": 59225,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320434 Esquire Tech 925723 x12 USB Keyboards",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 1241.00000000,
+            "premium": 7.919558,
+            "premiumIncl": 9.107491700000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "1320434 Esquire Tech 925723 x12 USB Keyboards",
+                        "rate": "8.806600%",
+                        "equipment Type": "",
+                        "make and Model": "",
+                        "serial number": "PNA45396"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "a5aee507-af3e-4a27-a3ee-54872c5f3af3",
+            "riskId": 59226,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "4 x Nuvi 42 LM GPS",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5360.00000000,
+            "premium": 34.260887,
+            "premiumIncl": 39.400020050000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.820900%",
+                        "description": "4 x Nuvi 42 LM GPS",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "4da085da-fa6c-4e9b-86fd-19b92125ca73",
+            "riskId": 59227,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Mate 20 Lite (Timothy Botha)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6840.00000000,
+            "premium": 65.589652,
+            "premiumIncl": 75.428099800000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.233000%",
+                        "description": "Huawei Mate 20 Lite (Timothy Botha)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "31dd52af-bdc5-4b52-afbe-c97a959be186",
+            "riskId": 59228,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Mate 20 Lite (Jonathan Komape)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6840.00000000,
+            "premium": 65.589652,
+            "premiumIncl": 75.428099800000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.233000%",
+                        "description": "Huawei Mate 20 Lite (Jonathan Komape)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "074e6ad1-3b41-4185-b522-df240b16679e",
+            "riskId": 59229,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Mate 20 Lite (Aidan Muruvan)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6840.00000000,
+            "premium": 65.589652,
+            "premiumIncl": 75.428099800000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.233000%",
+                        "description": "Huawei Mate 20 Lite (Aidan Muruvan)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d5820507-7bda-4e93-915e-7ba7a5704c18",
+            "riskId": 59230,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "CAT S31 Smarphone (Quintin Els)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5780.00000000,
+            "premium": 58.184914,
+            "premiumIncl": 66.912651100000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "CAT S31 Smarphone (Quintin Els)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "4a877550-8400-4d3d-a6aa-cf05a401702f",
+            "riskId": 59231,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Nick)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Nick)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "e9e79b4f-74cf-455c-84d1-3c4eb72e60c5",
+            "riskId": 59232,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Natasha)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Natasha)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "a671045c-5759-4d31-9e0f-09ea26454428",
+            "riskId": 59233,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Brandon)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Brandon)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "8cbb72b5-068c-49d8-85e2-534bfe412927",
+            "riskId": 59234,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Nlotando)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Nlotando)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "40c6925b-4294-4fcd-b20f-df8f5a6f81a9",
+            "riskId": 59235,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Damien)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Damien)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "671df1eb-174c-4b42-8f76-d4ea9749ba20",
+            "riskId": 59236,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Adnew)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Adnew)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "1d4af5d3-2933-4bf4-b4ad-9df560bddb8a",
+            "riskId": 59237,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (MIchelle)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (MIchelle)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "2a58be57-7961-4f61-92d1-d061b8de5fbc",
+            "riskId": 59238,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Zama)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Zama)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "c7a9a5c3-f23c-4994-939f-1d3082d12cca",
+            "riskId": 59239,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Tonqo)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Tonqo)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "22a6352e-a387-4cd1-9747-4f266a06f9ae",
+            "riskId": 59240,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Tyonn)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Tyonn)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "0157a8a2-b6ba-474d-b496-9155a698e3d9",
+            "riskId": 59241,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Ian)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Ian)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "dc9915ba-1166-4dda-99ba-5459b7e914ab",
+            "riskId": 59242,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Andile)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Andile)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3b086981-13cd-4a10-b055-c81290b8cde2",
+            "riskId": 59243,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": " Huawei Y6 2019 (Savesh)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": " Huawei Y6 2019 (Savesh)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "5d478826-c29a-4dcf-b817-5794af976f34",
+            "riskId": 59244,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Tshepo)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Tshepo)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "87039209-a6ea-4b8b-ad66-09a3ac202a7c",
+            "riskId": 59245,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Bessie)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Bessie)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "24472118-17d9-48f6-b7e0-f8dc6d1234e7",
+            "riskId": 59246,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Huawei Y6 2019 (Cedric)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2710.00000000,
+            "premium": 27.280470,
+            "premiumIncl": 31.372540500000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.891900%",
+                        "description": "Huawei Y6 2019 (Cedric)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "b98f9641-5dba-4039-822d-b085fe885d70",
+            "riskId": 59247,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "LG K10 Smartphone (Munene)",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2000.00000000,
+            "premium": 20.134783,
+            "premiumIncl": 23.155000450000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.893000%",
+                        "description": "LG K10 Smartphone (Munene)",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3991244c-44ff-46b8-81b5-66475523304e",
+            "riskId": 59249,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": " 21x Ulefone Armor X6 16GB Dual Sim",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 43339.00000000,
+            "premium": 436.310672,
+            "premiumIncl": 501.757272800000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.893000%",
+                        "description": " 21x Ulefone Armor X6 16GB Dual Sim",
+                        "serial Number": "Excel list attached with IMEI and Serial",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "622d90e5-a46c-4d74-9412-4d7ed64ecf8b",
+            "riskId": 59250,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "I Phone 13 Pro",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 23499.00000000,
+            "premium": 236.573628,
+            "premiumIncl": 272.059672200000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.893000%",
+                        "description": "I Phone 13 Pro",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "254a2fb9-16fb-4ffd-8e41-9c68a9bc46ed",
+            "riskId": 59251,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "79x PM75 Mobile Device @ R9,123 each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 720717.00000000,
+            "premium": 7255.740059,
+            "premiumIncl": 8344.101067850000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.893000%",
+                        "description": "79x PM75 Mobile Device @ R9,123 each",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "32e55668-d016-4ad7-9c04-5377d6e348b0",
+            "riskId": 59252,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "16x Ulefone Armor X6 16GB Sim Rugged @ R2,399 each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 38384.00000000,
+            "premium": 372.658574,
+            "premiumIncl": 428.557360100000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "13.398000%",
+                        "description": "16x Ulefone Armor X6 16GB Sim Rugged @ R2,399 each",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "c57832f6-2b16-48a1-9dc9-8a9c13c8b468",
+            "riskId": 59253,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "2x CryoVacc units @ R126,500 each",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 253000.00000000,
+            "premium": 625.166667,
+            "premiumIncl": 718.941667050000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "3.410000%",
+                        "description": "2x CryoVacc units @ R126,500 each",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d3d4ddad-05b8-46ce-af7c-3e55d9364927",
+            "riskId": 59254,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Fridge Master",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 8500.00000000,
+            "premium": 34.561123,
+            "premiumIncl": 39.745291450000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "5.611100%",
+                        "description": "Fridge Master",
+                        "serial Number": "114X04",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3c5a47c7-3a06-4048-abe6-90855d01fbdd",
+            "riskId": 59255,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Samsung Tablet",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5000.00000000,
+            "premium": 40.452899,
+            "premiumIncl": 46.520833850000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "11.165000%",
+                        "description": "Samsung Tablet",
+                        "serial Number": "",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "e36f5697-e230-4f74-afe4-32225e45f448",
+            "riskId": 59256,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7002300 Coldfront CIC-4809 DR Zulu Onco Fridge",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 15587.00000000,
+            "premium": 99.395362,
+            "premiumIncl": 114.304666300000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.800000%",
+                        "description": "7002300 Coldfront CIC-4809 DR Zulu Onco Fridge",
+                        "serial Number": "PNA54064",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "f1d2bbef-3641-4e27-bc08-059e666f7534",
+            "riskId": 59257,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7002400 UTrackIt SI207883 Design time R&M inst",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 85750.00000000,
+            "premium": 546.811594,
+            "premiumIncl": 628.833333100000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.800000%",
+                        "description": "7002400 UTrackIt SI207883 Design time R&M inst",
+                        "serial Number": "PNA45552",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "fd7196d8-cda3-4ddc-9f65-0352a02a832e",
+            "riskId": 59258,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7002400 Pure Water Systems 116096 Grundfos Scala",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 14484.00000000,
+            "premium": 92.361739,
+            "premiumIncl": 106.215999850000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.800000%",
+                        "description": "7002400 Pure Water Systems 116096 Grundfos Scala",
+                        "serial Number": "PNA45595",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d661cb4c-5cca-4067-8cd3-424306cfe892",
+            "riskId": 59259,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "7002400 Pure Water Systems 116096 Ozone generato",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 10775.00000000,
+            "premium": 68.710145,
+            "premiumIncl": 79.016666750000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.800000%",
+                        "description": "7002400 Pure Water Systems 116096 Ozone generato",
+                        "serial Number": "PNA45595",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "acca8d23-652d-4ae2-899e-7f36b3ae0c85",
+            "riskId": 59260,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320307 My Frifge Online IN123159 Wifi logger ex",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 1400.00000000,
+            "premium": 8.924188,
+            "premiumIncl": 10.262816200000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.796700%",
+                        "description": "1320307 My Frifge Online IN123159 Wifi logger ex",
+                        "serial Number": "PNA45593",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "09aef55e-d69b-4389-8ae6-aeb179c007e1",
+            "riskId": 59261,
+            "section": "Business All Risks",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "1320434 Pure Water Systems 116096 HC480 UV Balla",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4678.00000000,
+            "premium": 29.834453,
+            "premiumIncl": 34.309620950000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "8.801100%",
+                        "description": "1320434 Pure Water Systems 116096 HC480 UV Balla",
+                        "serial Number": "PNA45595",
+                        "category": "",
+                        "article type": "",
+                        "additional Information": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "ee7db6cf-7796-430b-8bf2-1c8627ee1e18",
+            "riskId": 59262,
+            "section": "Public Liability",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 20000000.00000000,
+            "premium": 63.768116,
+            "premiumIncl": 73.333333400000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "0.004400%",
+                        "basis of Cover": "Claims Made",
+                        "retroactive Cover Date (if applicable)": ""
+                    }
+                },
+                {
+                    "group": "Cover",
+                    "questionAnswer": {
+                        "territorial limits": "Anywhere in the world but not in connection with (i) any business carried on by the Insured at or from premises outside or  (ii) any contract for the performance of work outside  the Republic of South Africa, Namibia, Botswana, Lesotho, Swaziland, Zimbabwe"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "55902e74-0098-42c5-88af-b2b86444ea75",
+            "riskId": 59263,
+            "section": "Public Liability",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493",
+            "inceptionDate": "2025-07-01T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 20000000.00000000,
+            "premium": 63.768116,
+            "premiumIncl": 73.333333400000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "0.004400%",
+                        "basis of Cover": "Claims Made",
+                        "retroactive Cover Date (if applicable)": ""
+                    }
+                },
+                {
+                    "group": "Cover",
+                    "questionAnswer": {
+                        "territorial limits": "Anywhere in the world but not in connection with (i) any business carried on by the Insured at or from premises outside or  (ii) any contract for the performance of work outside  the Republic of South Africa, Namibia, Botswana, Lesotho, Swaziland, Zimbabwe"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "2c0351d5-d346-45c5-8cf0-0bc877e2a057",
+            "riskId": 62527,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "iMat Manufacturing IN125936",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 28680.00000000,
+            "premium": 83.130435,
+            "premiumIncl": 95.600000250000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "iMat Manufacturing IN125936",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "iMat Manufacturing IN125936",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "bb2d8614-7d9e-4586-8892-fa018409e716",
+            "riskId": 62529,
+            "section": "Fire",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493 Brutes Air Sol IN133118 x2 Delcos Pro",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 102294.00000000,
+            "premium": 15.566478,
+            "premiumIncl": 17.901449700000,
+            "ratingFactors": [
+                {
+                    "group": "",
+                    "questionAnswer": {
+                        "rate": "0.210000%",
+                        "description": "Brutes Air Sol IN133118 x2 Delcos Pro",
+                        "number of months": "",
+                        "security": "",
+                        "occupied As": "Standard",
+                        "stock and materials in trade": "",
+                        "roof Construction": ""
+                    }
+                },
+                {
+                    "group": "Building",
+                    "questionAnswer": {
+                        "building Type": "Commercial"
+                    }
+                },
+                {
+                    "group": "Insured perils",
+                    "questionAnswer": {
+                        "earthquake": "Yes",
+                        "special perils": "Yes"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "8f38fcab-dcd3-4568-9423-c0e8d6a1a9d6",
+            "riskId": 62530,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129799 x1 Mercer desktop PC",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 9392.00000000,
+            "premium": 27.223188,
+            "premiumIncl": 31.306666200000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129799 x1 Mercer desktop PC",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "7012300 Netlogix IN129799 x1 Mercer desktop PC",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "cb05aadc-3501-48fb-9df5-aa6fc5608fd9",
+            "riskId": 62531,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129799 x1 Mercer desktop PC",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 7102.00000000,
+            "premium": 20.585507,
+            "premiumIncl": 23.673333050000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129799 x1 Mercer desktop PC",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "7012300 Netlogix IN129799 x1 Mercer desktop PC",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "7c4b5e92-5fe3-4f48-b8bf-b172a7bde4c0",
+            "riskId": 62533,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN128855 x10 Mercer Monitors",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 11754.00000000,
+            "premium": 34.069565,
+            "premiumIncl": 39.179999750000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN128855 x10 Mercer Monitors",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "1320311 Netlogix IN128855 x10 Mercer Monitors",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "3b843a4a-2d68-4d4e-9318-40850ce22ffc",
+            "riskId": 62534,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Strategix SIT-INV112722 x82 Veeam backup",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 15416.00000000,
+            "premium": 44.684058,
+            "premiumIncl": 51.386666700000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Strategix SIT-INV112722 x82 Veeam backup",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Strategix SIT-INV112722 x82 Veeam backup",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "f3fec1fe-7793-4837-a901-6b44ae9be355",
+            "riskId": 62535,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Strategix SIT-INV112722 x18 Fileshare li",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2700.00000000,
+            "premium": 7.826087,
+            "premiumIncl": 9.000000050000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Strategix SIT-INV112722 x18 Fileshare li",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Strategix SIT-INV112722 x18 Fileshare li",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d2b1e73b-bf12-447a-a738-7437df61243e",
+            "riskId": 62536,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129646 x5 Mercer 19.5  Monito",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 5822.00000000,
+            "premium": 16.875362,
+            "premiumIncl": 19.406666300000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129646 x5 Mercer 19.5  Monito",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129646 x5 Mercer 19.5  Monito",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "fa19f574-b922-476f-a87d-c3a576698eb6",
+            "riskId": 62537,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129648 x4 Mercer 19.5' Monito",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4658.00000000,
+            "premium": 13.501449,
+            "premiumIncl": 15.526666350000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129648 x4 Mercer 19.5' Monito",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129648 x4 Mercer 19.5' Monito",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "1c5b0ac1-23d7-4b57-a5a9-fd9d7beae08b",
+            "riskId": 62538,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129794 x1 SSD Drive/Adaptor/U",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 2398.04000000,
+            "premium": 6.950841,
+            "premiumIncl": 7.993467150000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129794 x1 SSD Drive/Adaptor/U",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129794 x1 SSD Drive/Adaptor/U",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "1693dfc6-b829-4cae-a7c1-44d60a44ad25",
+            "riskId": 62539,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129693 x2 Hand scanners",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4743.32000000,
+            "premium": 13.748754,
+            "premiumIncl": 15.811067100000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129693 x2 Hand scanners",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129693 x2 Hand scanners",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "04957cc9-432a-4926-b01c-5feef9900f2d",
+            "riskId": 62540,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129694 x1 Zebra Thermal print",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6016.91000000,
+            "premium": 17.440319,
+            "premiumIncl": 20.056366850000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129694 x1 Zebra Thermal print",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129694 x1 Zebra Thermal print",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "7bf2c7ff-bca8-414c-8a75-9620746f56d3",
+            "riskId": 62541,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129695 x5 Barcode scanners",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 6041.75000000,
+            "premium": 17.512319,
+            "premiumIncl": 20.139166850000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129695 x5 Barcode scanners",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129695 x5 Barcode scanners",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "c42f6d91-7d3c-47b0-95d4-87f860569323",
+            "riskId": 62542,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129715 x10 Keyboard combo's",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 1955.30000000,
+            "premium": 5.667536,
+            "premiumIncl": 6.517666400000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129715 x10 Keyboard combo's",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129715 x10 Keyboard combo's",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "61a35109-8145-4bd3-9fcb-9e21067d864d",
+            "riskId": 62543,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129716 x5 SSD drives",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 4476.40000000,
+            "premium": 12.975072,
+            "premiumIncl": 14.921332800000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129716 x5 SSD drives",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129716 x5 SSD drives",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "d2458802-14ff-4e3b-9c49-d1157f0a0d3e",
+            "riskId": 62544,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "Netlogix IN129661 x2 HPE 600GB SAS HDD",
+            "inceptionDate": "2025-10-16T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 8525.78000000,
+            "premium": 24.712406,
+            "premiumIncl": 28.419266900000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "Netlogix IN129661 x2 HPE 600GB SAS HDD",
+                        "rate": "4.000000%",
+                        "equipment Type": "",
+                        "make and Model": "Netlogix IN129661 x2 HPE 600GB SAS HDD",
+                        "serial number": ""
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        },
+        {
+            "trackingId": "a17a41ba-e0c7-4821-bda5-a891d7f8db88",
+            "riskId": 64687,
+            "section": "Electronic Equipment",
+            "sectionId": 0,
+            "sectionType": "Generic",
+            "description": "P3155DN Printers x 32 (R19000.00 each)",
+            "inceptionDate": "2026-02-26T00:00:00",
+            "status": "Approved",
+            "insuredAmount": 608000.00000000,
+            "premium": 1531.455072,
+            "premiumIncl": 1761.173332800000,
+            "ratingFactors": [
+                {
+                    "group": "Subsection A - Material Damage",
+                    "questionAnswer": {
+                        "description": "P3155DN Printers x 32 (R19000.00 each)",
+                        "rate": "3.476000%",
+                        "equipment Type": "Printer",
+                        "make and Model": "",
+                        "serial number": "Refer to endorsement"
+                    }
+                }
+            ],
+            "quantity": 0,
+            "variationId": 0
+        }
+    ]
+}

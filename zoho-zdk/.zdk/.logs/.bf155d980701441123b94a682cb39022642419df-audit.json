@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 7
+    },
+    "auditLog": "C:\\Users\\devth\\TIH-devwork\\AssetManagement System\\zoho-zdk\\.zdk\\.logs\\.bf155d980701441123b94a682cb39022642419df-audit.json",
+    "files": [
+        {
+            "date": 1782805561441,
+            "name": "C:\\Users\\devth\\TIH-devwork\\AssetManagement System\\zoho-zdk\\.zdk\\.logs\\ZDK-CLI-2026-06-30.log",
+            "hash": "98de264102abe508fb672981e9a5b276319ba89d42d31c766abfd64dac137d1c"
+        }
+    ],
+    "hashType": "sha256"
+}

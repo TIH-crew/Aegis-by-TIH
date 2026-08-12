@@ -1,0 +1,17 @@
+import { Navigate, Outlet } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
+import type { AppCapability } from '../../lib/rbac'
+
+export function RequireCapability({ capability }: { capability: AppCapability }) {
+  const { loading, can, isAdmin } = useAuth()
+
+  if (loading) {
+    return <p className="p-6 text-sm text-muted">Loading…</p>
+  }
+
+  if (!can(capability) && !isAdmin) {
+    return <Navigate to="/me" replace />
+  }
+
+  return <Outlet />
+}

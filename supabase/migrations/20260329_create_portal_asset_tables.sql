@@ -1,0 +1,2 @@
+-- Applied to Supabase project via MCP (create_portal_asset_tables)
+-- See plan for full schema; kept in repo for reference.

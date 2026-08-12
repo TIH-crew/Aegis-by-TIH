@@ -1,0 +1,12 @@
+[
+  "00-setup.sql",
+  "01-chunk-00.sql",
+  "01-chunk-01.sql",
+  "01-chunk-02.sql",
+  "01-chunk-03.sql",
+  "01-chunk-04.sql",
+  "01-chunk-05.sql",
+  "01-chunk-06.sql",
+  "01-chunk-07.sql",
+  "02-apply.sql"
+]

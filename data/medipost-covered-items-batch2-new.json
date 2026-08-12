@@ -1,0 +1,68 @@
+[
+  {
+    "Risk_Item": {
+      "id": "7351644000001857142"
+    },
+    "Section": "Electronic Equipment",
+    "Sum_Insured": 6016.91,
+    "Premium_Excl": 17.44,
+    "Premium_Incl": 20.06,
+    "Cover_Status": "Approved",
+    "Description": "Netlogix IN129694 x1 Zebra Thermal print"
+  },
+  {
+    "Risk_Item": {
+      "id": "7351644000001857143"
+    },
+    "Section": "Electronic Equipment",
+    "Sum_Insured": 6041.75,
+    "Premium_Excl": 17.51,
+    "Premium_Incl": 20.14,
+    "Cover_Status": "Approved",
+    "Description": "Netlogix IN129695 x5 Barcode scanners"
+  },
+  {
+    "Risk_Item": {
+      "id": "7351644000001857144"
+    },
+    "Section": "Electronic Equipment",
+    "Sum_Insured": 1955.3,
+    "Premium_Excl": 5.67,
+    "Premium_Incl": 6.52,
+    "Cover_Status": "Approved",
+    "Description": "Netlogix IN129715 x10 Keyboard combo's"
+  },
+  {
+    "Risk_Item": {
+      "id": "7351644000001857145"
+    },
+    "Section": "Electronic Equipment",
+    "Sum_Insured": 4476.4,
+    "Premium_Excl": 12.98,
+    "Premium_Incl": 14.92,
+    "Cover_Status": "Approved",
+    "Description": "Netlogix IN129716 x5 SSD drives"
+  },
+  {
+    "Risk_Item": {
+      "id": "7351644000001857146"
+    },
+    "Section": "Electronic Equipment",
+    "Sum_Insured": 8525.78,
+    "Premium_Excl": 24.71,
+    "Premium_Incl": 28.42,
+    "Cover_Status": "Approved",
+    "Description": "Netlogix IN129661 x2 HPE 600GB SAS HDD"
+  },
+  {
+    "Risk_Item": {
+      "id": "7351644000001857147"
+    },
+    "Section": "Electronic Equipment",
+    "Sum_Insured": 608000,
+    "Premium_Excl": 1531.46,
+    "Premium_Incl": 1761.17,
+    "Cover_Status": "Approved",
+    "Description": "P3155DN Printers x 32 (R19000.00 each)"
+  }
+]

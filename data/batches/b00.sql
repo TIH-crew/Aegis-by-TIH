@@ -1,0 +1,1 @@
+UPDATE portal_policies SET covered_items = '[]'::jsonb WHERE id = 'b2222222-2222-4222-8222-222222222248';

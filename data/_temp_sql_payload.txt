@@ -1,0 +1,3054 @@
+﻿BEGIN;
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857044',
+  'USB Scanners',
+  'Miscellaneous',
+  'Miscellaneous',
+  384347,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'USBSCA-7044',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857044'
+);
+UPDATE public.portal_risk_items SET
+  name = 'USB Scanners',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 384347,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857044';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857045',
+  'Krokodildrift Wes, Brits, North West, 0250 Mecer stick PC met toerusting',
+  'Miscellaneous',
+  'Miscellaneous',
+  3500,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'KROKOD-7045',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857045'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Krokodildrift Wes, Brits, North West, 0250 Mecer stick PC met toerusting',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 3500,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857045';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857046',
+  'Monitor Screens',
+  'Miscellaneous',
+  'Miscellaneous',
+  9138,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'MONITO-7046',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857046'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Monitor Screens',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 9138,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857046';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857047',
+  'Desktop Computers & Accessories',
+  'Miscellaneous',
+  'Miscellaneous',
+  286457,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'DESKTO-7047',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857047'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Desktop Computers & Accessories',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 286457,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857047';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857048',
+  'Printers',
+  'Miscellaneous',
+  'Miscellaneous',
+  514944,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'PRINTE-7048',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857048'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Printers',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 514944,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857048';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857049',
+  'Harddrives',
+  'Miscellaneous',
+  'Miscellaneous',
+  10719,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HARDDR-7049',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857049'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Harddrives',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 10719,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857049';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857050',
+  'Laptops',
+  'Miscellaneous',
+  'Miscellaneous',
+  261303,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'LAPTOP-7050',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857050'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Laptops',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 261303,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857050';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857051',
+  'Tablets',
+  'Miscellaneous',
+  'Miscellaneous',
+  7812,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'TABLET-7051',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857051'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Tablets',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 7812,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857051';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857052',
+  'Celeron Laptop & Bag - N2840',
+  'Miscellaneous',
+  'Miscellaneous',
+  4218,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'CELERO-7052',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857052'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Celeron Laptop & Bag - N2840',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4218,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857052';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857053',
+  'Honeydew USB Scanners',
+  'Miscellaneous',
+  'Miscellaneous',
+  3745,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HONEYD-7053',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857053'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Honeydew USB Scanners',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 3745,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857053';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857054',
+  'Krokodildrift Wes, Brits, North West, 0250 Lenovo Server - 7Y48CTO1WW',
+  'Miscellaneous',
+  'Miscellaneous',
+  39000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'KROKOD-7054',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857054'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Krokodildrift Wes, Brits, North West, 0250 Lenovo Server - 7Y48CTO1WW',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 39000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857054';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857055',
+  'Honeywell USB Scanners',
+  'Miscellaneous',
+  'Miscellaneous',
+  41910,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HONEYW-7055',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857055'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Honeywell USB Scanners',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 41910,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857055';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857056',
+  'HP Laserjet Printer P2035',
+  'Miscellaneous',
+  'Miscellaneous',
+  3000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HPLASE-7056',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857056'
+);
+UPDATE public.portal_risk_items SET
+  name = 'HP Laserjet Printer P2035',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 3000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857056';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857057',
+  'HP Laserjet Printer',
+  'Miscellaneous',
+  'Miscellaneous',
+  4093,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HPLASE-7057',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857057'
+);
+UPDATE public.portal_risk_items SET
+  name = 'HP Laserjet Printer',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4093,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857057';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857058',
+  'Lenovo Celeron laptop - ML-PC2896',
+  'Miscellaneous',
+  'Miscellaneous',
+  4480,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'LENOVO-7058',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857058'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Lenovo Celeron laptop - ML-PC2896',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4480,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857058';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857059',
+  'Longrange CCD USB Scanners',
+  'Miscellaneous',
+  'Miscellaneous',
+  25080,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'LONGRA-7059',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857059'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Longrange CCD USB Scanners',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 25080,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857059';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857060',
+  'Mecer PC',
+  'Miscellaneous',
+  'Miscellaneous',
+  5284,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'MECERP-7060',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857060'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Mecer PC',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5284,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857060';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857061',
+  'Mecer PC With Mecer Screens',
+  'Miscellaneous',
+  'Miscellaneous',
+  36000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'MECERP-7061',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857061'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Mecer PC With Mecer Screens',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 36000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857061';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857062',
+  'Mecer PC''s With Accesories & Software',
+  'Miscellaneous',
+  'Miscellaneous',
+  15185,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'MECERP-7062',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857062'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Mecer PC''s With Accesories & Software',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 15185,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857062';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857063',
+  'Multifunction DFN Printer',
+  'Miscellaneous',
+  'Miscellaneous',
+  3187,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'MULTIF-7063',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857063'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Multifunction DFN Printer',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 3187,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857063';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857064',
+  'Samsung Galaxy Tab (Dian Bester)',
+  'Miscellaneous',
+  'Miscellaneous',
+  5000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'SAMSUN-7064',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857064'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Samsung Galaxy Tab (Dian Bester)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857064';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857065',
+  'Software Office 2016 Home and Business Microsoft',
+  'Miscellaneous',
+  'Miscellaneous',
+  3938,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'SOFTWA-7065',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857065'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Software Office 2016 Home and Business Microsoft',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 3938,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857065';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857066',
+  'Zebra Printers',
+  'Miscellaneous',
+  'Miscellaneous',
+  17323,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'ZEBRAP-7066',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857066'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Zebra Printers',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 17323,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857066';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857067',
+  '7012300 Esquire 00929260 x2 PC Boxes CCMDD',
+  'Miscellaneous',
+  'Miscellaneous',
+  15458,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701230-7067',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857067'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012300 Esquire 00929260 x2 PC Boxes CCMDD',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 15458,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857067';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857068',
+  '7012400 Esquire Tech 929262 x1 PC Box',
+  'Miscellaneous',
+  'Miscellaneous',
+  7825,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701240-7068',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857068'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012400 Esquire Tech 929262 x1 PC Box',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 7825,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857068';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857069',
+  'Krokodildrift Wes, Brits, North West, 0250 Apple MacBook Laptop',
+  'Miscellaneous',
+  'Miscellaneous',
+  19000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'KROKOD-7069',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857069'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Krokodildrift Wes, Brits, North West, 0250 Apple MacBook Laptop',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 19000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857069';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857070',
+  '1320303 Esquire 00929271 SSD Steyn',
+  'Miscellaneous',
+  'Miscellaneous',
+  607,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7070',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857070'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320303 Esquire 00929271 SSD Steyn',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 607,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857070';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857071',
+  '1320310 Esquire Tech 930055 x1 PC Box - BI',
+  'Miscellaneous',
+  'Miscellaneous',
+  6580,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7071',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857071'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320310 Esquire Tech 930055 x1 PC Box - BI',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6580,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857071';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857072',
+  '1320310 Esquire Tech 930060 x1 SSD - BI',
+  'Miscellaneous',
+  'Miscellaneous',
+  868,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7072',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857072'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320310 Esquire Tech 930060 x1 SSD - BI',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 868,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857072';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857073',
+  '1320310 First Tech 590735 x5 Wireless keyboard/m',
+  'Miscellaneous',
+  'Miscellaneous',
+  1281,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7073',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857073'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320310 First Tech 590735 x5 Wireless keyboard/m',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 1281,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857073';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857074',
+  '1320311 Strategix SIT - INV11643 x62 MSP Licences',
+  'Miscellaneous',
+  'Miscellaneous',
+  14206,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7074',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857074'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Strategix SIT - INV11643 x62 MSP Licences',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 14206,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857074';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857075',
+  '1320311 Esquire Tech 929272 x10 Screens',
+  'Miscellaneous',
+  'Miscellaneous',
+  10252,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7075',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857075'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Esquire Tech 929272 x10 Screens',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 10252,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857075';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857076',
+  '1320312 Netlogix INV126433 Asus Battery',
+  'Miscellaneous',
+  'Miscellaneous',
+  480,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7076',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857076'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320312 Netlogix INV126433 Asus Battery',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 480,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857076';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857077',
+  '7012400 Esquire Tech 925719 x1 ASUS PC Box',
+  'Miscellaneous',
+  'Miscellaneous',
+  6955,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701240-7077',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857077'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012400 Esquire Tech 925719 x1 ASUS PC Box',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6955,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857077';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857078',
+  '7012400 Esquire Tech 925721 x1 MS Office',
+  'Miscellaneous',
+  'Miscellaneous',
+  3129,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701240-7078',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857078'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012400 Esquire Tech 925721 x1 MS Office',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 3129,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857078';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857079',
+  '1320302 Esquire 00929261x6 MS Office',
+  'Miscellaneous',
+  'Miscellaneous',
+  18777,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7079',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857079'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320302 Esquire 00929261x6 MS Office',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 18777,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857079';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857080',
+  '1320303 Esquire 00929271 SSD Steyn',
+  'Miscellaneous',
+  'Miscellaneous',
+  607,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7080',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857080'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320303 Esquire 00929271 SSD Steyn',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 607,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857080';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857081',
+  'Krokodildrift Wes, Brits, North West, 0250 Lenovo Desktop met toerusting',
+  'Miscellaneous',
+  'Miscellaneous',
+  13300,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'KROKOD-7081',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857081'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Krokodildrift Wes, Brits, North West, 0250 Lenovo Desktop met toerusting',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 13300,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857081';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857082',
+  '7012300 First Tech 588805 x2 Zebra Printers',
+  'Miscellaneous',
+  'Miscellaneous',
+  30182,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701230-7082',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857082'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012300 First Tech 588805 x2 Zebra Printers',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 30182,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857082';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857083',
+  '1320302 First Tech 588804 x1 Screen',
+  'Miscellaneous',
+  'Miscellaneous',
+  2473,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7083',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857083'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320302 First Tech 588804 x1 Screen',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2473,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857083';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857084',
+  '1320303 Netlogix IN125910 x1 Laptop charger/plug',
+  'Miscellaneous',
+  'Miscellaneous',
+  400,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7084',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857084'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320303 Netlogix IN125910 x1 Laptop charger/plug',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 400,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857084';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857085',
+  '1320303 Esquire Tech 925722 x3 Mini PC''s',
+  'Miscellaneous',
+  'Miscellaneous',
+  9910,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7085',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857085'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320303 Esquire Tech 925722 x3 Mini PC''s',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 9910,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857085';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857086',
+  '1320303 Esquire Tech 923670 x1 RAM',
+  'Miscellaneous',
+  'Miscellaneous',
+  312,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7086',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857086'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320303 Esquire Tech 923670 x1 RAM',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 312,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857086';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857087',
+  '1320311 Esquire Tech 927586 x5 Screens',
+  'Miscellaneous',
+  'Miscellaneous',
+  5647,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7087',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857087'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Esquire Tech 927586 x5 Screens',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5647,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857087';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857088',
+  '1320311 Netlogix IN126155 Nakivo backup & Replic',
+  'Miscellaneous',
+  'Miscellaneous',
+  35460,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7088',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857088'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Netlogix IN126155 Nakivo backup & Replic',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 35460,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857088';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857089',
+  '1320311 Netlogix IN125620 x14 HDD HP SAS 75GB',
+  'Miscellaneous',
+  'Miscellaneous',
+  28070,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7089',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857089'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Netlogix IN125620 x14 HDD HP SAS 75GB',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 28070,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857089';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857090',
+  '1320311 Netlogix IN126128 x2 HDD HP SAS 75G',
+  'Miscellaneous',
+  'Miscellaneous',
+  4010,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7090',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857090'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Netlogix IN126128 x2 HDD HP SAS 75G',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4010,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857090';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857091',
+  '1320311 Esquite Tech 925824 x5 Screens',
+  'Miscellaneous',
+  'Miscellaneous',
+  5647,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7091',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857091'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Esquite Tech 925824 x5 Screens',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5647,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857091';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857092',
+  '1320311 Esquire Tech 923708 x10 Keyboard/Mouse',
+  'Miscellaneous',
+  'Miscellaneous',
+  1904,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7092',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857092'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Esquire Tech 923708 x10 Keyboard/Mouse',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 1904,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857092';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857093',
+  '1320434 Esquire Tech 925723 x12 USB Keyboards',
+  'Miscellaneous',
+  'Miscellaneous',
+  1241,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132043-7093',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857093'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320434 Esquire Tech 925723 x12 USB Keyboards',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 1241,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857093';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857094',
+  '4 x Nuvi 42 LM GPS',
+  'Miscellaneous',
+  'Miscellaneous',
+  5360,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '4XNUVI-7094',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857094'
+);
+UPDATE public.portal_risk_items SET
+  name = '4 x Nuvi 42 LM GPS',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5360,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857094';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857095',
+  'Huawei Mate 20 Lite (Timothy Botha)',
+  'Miscellaneous',
+  'Miscellaneous',
+  6840,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7095',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857095'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Mate 20 Lite (Timothy Botha)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6840,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857095';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857096',
+  'Huawei Mate 20 Lite (Jonathan Komape)',
+  'Miscellaneous',
+  'Miscellaneous',
+  6840,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7096',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857096'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Mate 20 Lite (Jonathan Komape)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6840,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857096';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857097',
+  'Huawei Mate 20 Lite (Aidan Muruvan)',
+  'Miscellaneous',
+  'Miscellaneous',
+  6840,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7097',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857097'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Mate 20 Lite (Aidan Muruvan)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6840,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857097';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857098',
+  'CAT S31 Smarphone (Quintin Els)',
+  'Miscellaneous',
+  'Miscellaneous',
+  5780,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'CATS31-7098',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857098'
+);
+UPDATE public.portal_risk_items SET
+  name = 'CAT S31 Smarphone (Quintin Els)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5780,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857098';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857099',
+  'Huawei Y6 2019 (Nick)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7099',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857099'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Nick)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857099';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857100',
+  'Huawei Y6 2019 (Natasha)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7100',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857100'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Natasha)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857100';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857101',
+  'Huawei Y6 2019 (Brandon)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7101',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857101'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Brandon)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857101';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857102',
+  'Huawei Y6 2019 (Nlotando)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7102',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857102'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Nlotando)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857102';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857103',
+  'Huawei Y6 2019 (Damien)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7103',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857103'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Damien)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857103';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857104',
+  'Huawei Y6 2019 (Adnew)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7104',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857104'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Adnew)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857104';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857105',
+  'Huawei Y6 2019 (MIchelle)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7105',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857105'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (MIchelle)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857105';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857106',
+  'Huawei Y6 2019 (Zama)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7106',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857106'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Zama)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857106';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857107',
+  'Huawei Y6 2019 (Tonqo)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7107',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857107'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Tonqo)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857107';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857108',
+  'Huawei Y6 2019 (Tyonn)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7108',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857108'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Tyonn)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857108';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857109',
+  'Huawei Y6 2019 (Ian)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7109',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857109'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Ian)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857109';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857110',
+  'Huawei Y6 2019 (Andile)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7110',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857110'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Andile)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857110';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857111',
+  'Huawei Y6 2019 (Savesh)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7111',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857111'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Savesh)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857111';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857112',
+  'Huawei Y6 2019 (Tshepo)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7112',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857112'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Tshepo)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857112';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857113',
+  'Huawei Y6 2019 (Bessie)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7113',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857113'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Bessie)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857113';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857114',
+  'Huawei Y6 2019 (Cedric)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2710,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HUAWEI-7114',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857114'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Huawei Y6 2019 (Cedric)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2710,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857114';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857115',
+  'LG K10 Smartphone (Munene)',
+  'Miscellaneous',
+  'Miscellaneous',
+  2000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'LGK10S-7115',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857115'
+);
+UPDATE public.portal_risk_items SET
+  name = 'LG K10 Smartphone (Munene)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857115';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857116',
+  'Laptop GM5TN0W',
+  'Miscellaneous',
+  'Miscellaneous',
+  42650,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'LAPTOP-7116',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857116'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Laptop GM5TN0W',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 42650,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857116';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857117',
+  'I Phone 13 Pro',
+  'Miscellaneous',
+  'Miscellaneous',
+  23499,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'IPHONE-7117',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857117'
+);
+UPDATE public.portal_risk_items SET
+  name = 'I Phone 13 Pro',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 23499,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857117';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857118',
+  '79x PM75 Mobile Device',
+  'Miscellaneous',
+  'Miscellaneous',
+  720717,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '79XPM7-7118',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857118'
+);
+UPDATE public.portal_risk_items SET
+  name = '79x PM75 Mobile Device',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 720717,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857118';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857119',
+  '16x Ulefone Armor X6 16GB Sim Rugged',
+  'Miscellaneous',
+  'Miscellaneous',
+  38384,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '16XULE-7119',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857119'
+);
+UPDATE public.portal_risk_items SET
+  name = '16x Ulefone Armor X6 16GB Sim Rugged',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 38384,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857119';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857120',
+  '2x CryoVacc units',
+  'Miscellaneous',
+  'Miscellaneous',
+  253000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '2XCRYO-7120',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857120'
+);
+UPDATE public.portal_risk_items SET
+  name = '2x CryoVacc units',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 253000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857120';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857121',
+  'Fridge Master',
+  'Miscellaneous',
+  'Miscellaneous',
+  8500,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'FRIDGE-7121',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857121'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Fridge Master',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 8500,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857121';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857122',
+  'Samsung Tablet',
+  'Miscellaneous',
+  'Miscellaneous',
+  5000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'SAMSUN-7122',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857122'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Samsung Tablet',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857122';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857123',
+  '7002300 Coldfront CIC-4809 DR Zulu Onco Fridge',
+  'Miscellaneous',
+  'Miscellaneous',
+  15587,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '700230-7123',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857123'
+);
+UPDATE public.portal_risk_items SET
+  name = '7002300 Coldfront CIC-4809 DR Zulu Onco Fridge',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 15587,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857123';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857124',
+  '7002400 UTrackIt SI207883 Design time R&M inst',
+  'Miscellaneous',
+  'Miscellaneous',
+  85750,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '700240-7124',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857124'
+);
+UPDATE public.portal_risk_items SET
+  name = '7002400 UTrackIt SI207883 Design time R&M inst',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 85750,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857124';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857125',
+  'Lenovo R90H7FDF Laptop',
+  'Miscellaneous',
+  'Miscellaneous',
+  14000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'LENOVO-7125',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857125'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Lenovo R90H7FDF Laptop',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 14000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857125';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857126',
+  '7002400 Pure Water Systems 116096 Ozone generato',
+  'Miscellaneous',
+  'Miscellaneous',
+  10775,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '700240-7126',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857126'
+);
+UPDATE public.portal_risk_items SET
+  name = '7002400 Pure Water Systems 116096 Ozone generato',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 10775,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857126';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857127',
+  '1320307 My Frifge Online IN123159 Wifi logger ex',
+  'Miscellaneous',
+  'Miscellaneous',
+  1400,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132030-7127',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857127'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320307 My Frifge Online IN123159 Wifi logger ex',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 1400,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857127';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857128',
+  '1320434 Pure Water Systems 116096 HC480 UV Balla',
+  'Miscellaneous',
+  'Miscellaneous',
+  4678,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132043-7128',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857128'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320434 Pure Water Systems 116096 HC480 UV Balla',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4678,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857128';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857129',
+  'Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002',
+  'Building',
+  'Building',
+  20000000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'GEZINA-7129',
+  '{"Risk_Type":"Building","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857129'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002',
+  category = 'Building',
+  insurance_section = 'Building',
+  unit_cost = 20000000,
+  zoho_fields = '{"Risk_Type":"Building","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857129';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857130',
+  'Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493',
+  'Building',
+  'Building',
+  20000000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'PAROWI-7130',
+  '{"Risk_Type":"Building","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857130'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493',
+  category = 'Building',
+  insurance_section = 'Building',
+  unit_cost = 20000000,
+  zoho_fields = '{"Risk_Type":"Building","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857130';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857131',
+  'iMat Manufacturing IN125936',
+  'Miscellaneous',
+  'Miscellaneous',
+  28680,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'IMATMA-7131',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857131'
+);
+UPDATE public.portal_risk_items SET
+  name = 'iMat Manufacturing IN125936',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 28680,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857131';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857132',
+  'Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493 Brutes Air Sol IN133118 x2 Delcos Pro',
+  'Miscellaneous',
+  'Miscellaneous',
+  102294,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'PAROWI-7132',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857132'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493 Brutes Air Sol IN133118 x2 Delcos Pro',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 102294,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857132';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857133',
+  '7012300 Netlogix IN129799 x1 Mercer desktop PC',
+  'Miscellaneous',
+  'Miscellaneous',
+  9392,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701230-7133',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857133'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012300 Netlogix IN129799 x1 Mercer desktop PC',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 9392,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857133';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857134',
+  '7012300 Netlogix IN129799 x1 Mercer desktop PC',
+  'Miscellaneous',
+  'Miscellaneous',
+  7102,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '701230-7134',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857134'
+);
+UPDATE public.portal_risk_items SET
+  name = '7012300 Netlogix IN129799 x1 Mercer desktop PC',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 7102,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857134';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857135',
+  '1320311 Netlogix IN128855 x10 Mercer Monitors',
+  'Miscellaneous',
+  'Miscellaneous',
+  11754,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '132031-7135',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857135'
+);
+UPDATE public.portal_risk_items SET
+  name = '1320311 Netlogix IN128855 x10 Mercer Monitors',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 11754,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857135';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857136',
+  'Strategix SIT-INV112722 x82 Veeam backup',
+  'Miscellaneous',
+  'Miscellaneous',
+  15416,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'STRATE-7136',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857136'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Strategix SIT-INV112722 x82 Veeam backup',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 15416,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857136';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857137',
+  'Strategix SIT-INV112722 x18 Fileshare li',
+  'Miscellaneous',
+  'Miscellaneous',
+  2700,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'STRATE-7137',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857137'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Strategix SIT-INV112722 x18 Fileshare li',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2700,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857137';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857138',
+  'Netlogix IN129646 x5 Mercer 19.5 Monito',
+  'Miscellaneous',
+  'Miscellaneous',
+  5822,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7138',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857138'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129646 x5 Mercer 19.5 Monito',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 5822,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857138';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857139',
+  'Netlogix IN129648 x4 Mercer 19.5'' Monito',
+  'Miscellaneous',
+  'Miscellaneous',
+  4658,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7139',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857139'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129648 x4 Mercer 19.5'' Monito',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4658,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857139';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857140',
+  'Netlogix IN129794 x1 SSD Drive/Adaptor/U',
+  'Miscellaneous',
+  'Miscellaneous',
+  2398.04,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7140',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857140'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129794 x1 SSD Drive/Adaptor/U',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 2398.04,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857140';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857141',
+  'Netlogix IN129693 x2 Hand scanners',
+  'Miscellaneous',
+  'Miscellaneous',
+  4743.32,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7141',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857141'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129693 x2 Hand scanners',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4743.32,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857141';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857142',
+  'Netlogix IN129694 x1 Zebra Thermal print',
+  'Miscellaneous',
+  'Miscellaneous',
+  6016.91,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7142',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857142'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129694 x1 Zebra Thermal print',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6016.91,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857142';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857143',
+  'Netlogix IN129695 x5 Barcode scanners',
+  'Miscellaneous',
+  'Miscellaneous',
+  6041.75,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7143',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857143'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129695 x5 Barcode scanners',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 6041.75,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857143';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857144',
+  'Netlogix IN129715 x10 Keyboard combo''s',
+  'Miscellaneous',
+  'Miscellaneous',
+  1955.3,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7144',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857144'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129715 x10 Keyboard combo''s',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 1955.3,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857144';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857145',
+  'Netlogix IN129716 x5 SSD drives',
+  'Miscellaneous',
+  'Miscellaneous',
+  4476.4,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7145',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857145'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129716 x5 SSD drives',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 4476.4,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857145';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857146',
+  'Netlogix IN129661 x2 HPE 600GB SAS HDD',
+  'Miscellaneous',
+  'Miscellaneous',
+  8525.78,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'NETLOG-7146',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857146'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Netlogix IN129661 x2 HPE 600GB SAS HDD',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 8525.78,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857146';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000001857147',
+  'P3155DN Printers x 32 (R19000.00 each)',
+  'Miscellaneous',
+  'Miscellaneous',
+  608000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'P3155D-7147',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857147'
+);
+UPDATE public.portal_risk_items SET
+  name = 'P3155DN Printers x 32 (R19000.00 each)',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 608000,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000001857147';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000002894001',
+  '32x G4X Printers',
+  'Miscellaneous',
+  'Miscellaneous',
+  54000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '32XG4X-4001',
+  '{"Risk_Type":"Business Vehicle","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000002894001'
+);
+UPDATE public.portal_risk_items SET
+  name = '32x G4X Printers',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 54000,
+  zoho_fields = '{"Risk_Type":"Business Vehicle","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000002894001';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000003122001',
+  'Office Contents',
+  'Contents',
+  'Contents',
+  54000,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'OFFICE-2001',
+  '{"Risk_Type":"Office Contents","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003122001'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Office Contents',
+  category = 'Contents',
+  insurance_section = 'Contents',
+  unit_cost = 54000,
+  zoho_fields = '{"Risk_Type":"Office Contents","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003122001';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000003957001',
+  'Samsung 35" LED TV',
+  'Electronic Equipment',
+  'Electronic Equipment',
+  3504,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'SAMSUN-7001',
+  '{"Risk_Type":"Electronic Equipment","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003957001'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Samsung 35" LED TV',
+  category = 'Electronic Equipment',
+  insurance_section = 'Electronic Equipment',
+  unit_cost = 3504,
+  zoho_fields = '{"Risk_Type":"Electronic Equipment","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003957001';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000003957002',
+  'Honeywell Scanners @ R1248.30 Each',
+  'Electronic Equipment',
+  'Electronic Equipment',
+  37449,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  'HONEYW-7002',
+  '{"Risk_Type":"Electronic Equipment","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003957002'
+);
+UPDATE public.portal_risk_items SET
+  name = 'Honeywell Scanners @ R1248.30 Each',
+  category = 'Electronic Equipment',
+  insurance_section = 'Electronic Equipment',
+  unit_cost = 37449,
+  zoho_fields = '{"Risk_Type":"Electronic Equipment","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003957002';
+INSERT INTO public.portal_risk_items (
+  account_id, zoho_risk_id, name, category, insurance_section, unit_cost, repair_cost,
+  record_date, insurance_status, asset_tag, zoho_fields
+)
+SELECT
+  '3a842763-e5f2-43f7-87c2-2a5429738fb3',
+  '7351644000003957003',
+  '7002400 Pure Water Systems 116096 Grundfos Scala',
+  'Miscellaneous',
+  'Miscellaneous',
+  14484,
+  0,
+  CURRENT_DATE,
+  'Insured elsewhere',
+  '700240-7003',
+  '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.portal_risk_items
+  WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003957003'
+);
+UPDATE public.portal_risk_items SET
+  name = '7002400 Pure Water Systems 116096 Grundfos Scala',
+  category = 'Miscellaneous',
+  insurance_section = 'Miscellaneous',
+  unit_cost = 14484,
+  zoho_fields = '{"Risk_Type":"All Risk / Portable Item","Risk_Category":"Commercial Lines"}'::jsonb,
+  updated_at = now()
+WHERE account_id = '3a842763-e5f2-43f7-87c2-2a5429738fb3' AND zoho_risk_id = '7351644000003957003';
+COMMIT;

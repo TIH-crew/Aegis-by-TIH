@@ -1,0 +1,1105 @@
+{
+  "id": "7351644000001876587",
+  "Covered_Items": [
+    {
+      "Risk_Item": {
+        "id": "7351644000001857129"
+      },
+      "Section": "Office Contents",
+      "Sum_Insured": 139150.29,
+      "Premium_Excl": 50.5,
+      "Premium_Incl": 58.08,
+      "Cover_Status": "Approved",
+      "Description": "Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857044"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 384347,
+      "Premium_Excl": 968.11,
+      "Premium_Incl": 1113.33,
+      "Cover_Status": "Approved",
+      "Description": "USB Scanners"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000003957001"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 3504,
+      "Premium_Excl": 42.25,
+      "Premium_Incl": 48.59,
+      "Cover_Status": "Approved",
+      "Description": "Samsung 35\" LED TV"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857046"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 9138,
+      "Premium_Excl": 53.51,
+      "Premium_Incl": 61.53,
+      "Cover_Status": "Approved",
+      "Description": "Monitor Screens"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857047"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 286457,
+      "Premium_Excl": 721.54,
+      "Premium_Incl": 829.77,
+      "Cover_Status": "Approved",
+      "Description": "Desktop Computers & Accessories"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857048"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 514944,
+      "Premium_Excl": 1297.06,
+      "Premium_Incl": 1491.62,
+      "Cover_Status": "Approved",
+      "Description": "Printers"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857049"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 10719,
+      "Premium_Excl": 35.97,
+      "Premium_Incl": 41.37,
+      "Cover_Status": "Approved",
+      "Description": "Harddrives"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857050"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 261303,
+      "Premium_Excl": 2189.08,
+      "Premium_Incl": 2517.44,
+      "Cover_Status": "Approved",
+      "Description": "Laptops"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857051"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 7812,
+      "Premium_Excl": 65.45,
+      "Premium_Incl": 75.26,
+      "Cover_Status": "Approved",
+      "Description": "Tablets"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857052"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4218,
+      "Premium_Excl": 33.76,
+      "Premium_Incl": 38.82,
+      "Cover_Status": "Approved",
+      "Description": "Celeron Laptop & Bag - N2840"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857053"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 3745,
+      "Premium_Excl": 8.98,
+      "Premium_Incl": 10.33,
+      "Cover_Status": "Approved",
+      "Description": "Honeydew USB Scanners @ R1248.30 Each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000003957002"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 37449,
+      "Premium_Excl": 89.61,
+      "Premium_Incl": 103.05,
+      "Cover_Status": "Approved",
+      "Description": "Honeywell Scanners @ R1248.30 Each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857055"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 41910,
+      "Premium_Excl": 100.29,
+      "Premium_Incl": 115.33,
+      "Cover_Status": "Approved",
+      "Description": "Honeywell USB Scanners @ R1397 Each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857056"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 3000,
+      "Premium_Excl": 6.74,
+      "Premium_Incl": 7.76,
+      "Cover_Status": "Approved",
+      "Description": "HP Laserjet Printer P2035"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857057"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4093,
+      "Premium_Excl": 9.79,
+      "Premium_Incl": 11.26,
+      "Cover_Status": "Approved",
+      "Description": "HP Laserjet Printer"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857058"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4480,
+      "Premium_Excl": 35.71,
+      "Premium_Incl": 41.06,
+      "Cover_Status": "Approved",
+      "Description": "Lenovo Celeron laptop - ML-PC2896"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857059"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 25080,
+      "Premium_Excl": 60.21,
+      "Premium_Incl": 69.25,
+      "Cover_Status": "Approved",
+      "Description": "Longrange CCD USB Scanners @ R627 Each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857060"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 5284,
+      "Premium_Excl": 12.68,
+      "Premium_Incl": 14.58,
+      "Cover_Status": "Approved",
+      "Description": "Mecer PC"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857061"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 36000,
+      "Premium_Excl": 86.43,
+      "Premium_Incl": 99.4,
+      "Cover_Status": "Approved",
+      "Description": "Mecer PC With Mecer Screens @ R12000 Rach"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857062"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 15185,
+      "Premium_Excl": 36.34,
+      "Premium_Incl": 41.79,
+      "Cover_Status": "Approved",
+      "Description": "Mecer PC's With Accesories & Software"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857063"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 3187,
+      "Premium_Excl": 7.62,
+      "Premium_Incl": 8.77,
+      "Cover_Status": "Approved",
+      "Description": "Multifunction DFN Printer"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857064"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 5000,
+      "Premium_Excl": 39.85,
+      "Premium_Incl": 45.82,
+      "Cover_Status": "Approved",
+      "Description": "Samsung Galaxy Tab (Dian Bester)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857065"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 3938,
+      "Premium_Excl": 9.46,
+      "Premium_Incl": 10.88,
+      "Cover_Status": "Approved",
+      "Description": "Software Office 2016 Home and Business Microsoft"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857066"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 17323,
+      "Premium_Excl": 41.56,
+      "Premium_Incl": 47.8,
+      "Cover_Status": "Approved",
+      "Description": "Zebra Printers @ 4330.86 Each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857067"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 15458,
+      "Premium_Excl": 98.59,
+      "Premium_Incl": 113.37,
+      "Cover_Status": "Approved",
+      "Description": "7012300 Esquire 00929260 x2 PC Boxes CCMDD"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857068"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 7825,
+      "Premium_Excl": 49.9,
+      "Premium_Incl": 57.39,
+      "Cover_Status": "Approved",
+      "Description": "7012400 Esquire Tech 929262 x1 PC Box"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857079"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 18777,
+      "Premium_Excl": 119.74,
+      "Premium_Incl": 137.7,
+      "Cover_Status": "Approved",
+      "Description": "1320302 Esquire 00929261x6 MS Office"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857080"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 607,
+      "Premium_Excl": 3.87,
+      "Premium_Incl": 4.46,
+      "Cover_Status": "Approved",
+      "Description": "1320303 Esquire 00929271 SSD Steyn"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857071"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 6580,
+      "Premium_Excl": 41.96,
+      "Premium_Incl": 48.26,
+      "Cover_Status": "Approved",
+      "Description": "1320310 Esquire Tech 930055 x1 PC Box - BI"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857072"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 868,
+      "Premium_Excl": 5.54,
+      "Premium_Incl": 6.37,
+      "Cover_Status": "Approved",
+      "Description": "1320310 Esquire Tech 930060 x1 SSD - BI"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857073"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 1281,
+      "Premium_Excl": 8.17,
+      "Premium_Incl": 9.39,
+      "Cover_Status": "Approved",
+      "Description": "1320310 First Tech 590735 x5 Wireless keyboard/m"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857074"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 14206,
+      "Premium_Excl": 90.59,
+      "Premium_Incl": 104.18,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Strategix SIT - INV11643 x62 MSP Licences"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857075"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 10252,
+      "Premium_Excl": 65.38,
+      "Premium_Incl": 75.18,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Esquire Tech 929272 x10 Screens"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857077"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 6955,
+      "Premium_Excl": 44.36,
+      "Premium_Incl": 51.01,
+      "Cover_Status": "Approved",
+      "Description": "7012400 Esquire Tech 925719 x1 ASUS PC Box"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857078"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 3129,
+      "Premium_Excl": 19.95,
+      "Premium_Incl": 22.95,
+      "Cover_Status": "Approved",
+      "Description": "7012400 Esquire Tech 925721 x1 MS Office"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857086"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 13912,
+      "Premium_Excl": 88.71,
+      "Premium_Incl": 102.02,
+      "Cover_Status": "Approved",
+      "Description": "7012300 Esquire Tech 925912 x1 ASUS Laptop"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857082"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 30182,
+      "Premium_Excl": 192.46,
+      "Premium_Incl": 221.33,
+      "Cover_Status": "Approved",
+      "Description": "7012300 First Tech 588805 x2 Zebra Printers"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857083"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 2473,
+      "Premium_Excl": 15.77,
+      "Premium_Incl": 18.14,
+      "Cover_Status": "Approved",
+      "Description": "1320302 First Tech 588804 x1 Screen"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857084"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 400,
+      "Premium_Excl": 2.55,
+      "Premium_Incl": 2.94,
+      "Cover_Status": "Approved",
+      "Description": "1320303 Netlogix IN125910 x1 Laptop charger/plug"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857085"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 9910,
+      "Premium_Excl": 63.19,
+      "Premium_Incl": 72.67,
+      "Cover_Status": "Approved",
+      "Description": "1320303 Esquire Tech 925722 x3 Mini PC's"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857086"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 312,
+      "Premium_Excl": 1.99,
+      "Premium_Incl": 2.29,
+      "Cover_Status": "Approved",
+      "Description": "1320303 Esquire Tech 923670 x1 RAM"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857087"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 5647,
+      "Premium_Excl": 36.01,
+      "Premium_Incl": 41.42,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Esquire Tech 927586 x5 Screens"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857088"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 35460,
+      "Premium_Excl": 226.12,
+      "Premium_Incl": 260.04,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Netlogix IN126155 Nakivo backup & Replic"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857089"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 28070,
+      "Premium_Excl": 179,
+      "Premium_Incl": 205.85,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Netlogix IN125620 x14 HDD HP SAS 75GB"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857090"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4010,
+      "Premium_Excl": 25.57,
+      "Premium_Incl": 29.4,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Netlogix IN126128 x2 HDD HP SAS 75G"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857091"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 5647,
+      "Premium_Excl": 36.01,
+      "Premium_Incl": 41.42,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Esquite Tech 925824 x5 Screens"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857092"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 1904,
+      "Premium_Excl": 12.15,
+      "Premium_Incl": 13.97,
+      "Cover_Status": "Approved",
+      "Description": "1320311 Esquire Tech 923708 x10 Keyboard/Mouse"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857093"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 1241,
+      "Premium_Excl": 7.92,
+      "Premium_Incl": 9.11,
+      "Cover_Status": "Approved",
+      "Description": "1320434 Esquire Tech 925723 x12 USB Keyboards"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857094"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 5360,
+      "Premium_Excl": 34.26,
+      "Premium_Incl": 39.4,
+      "Cover_Status": "Approved",
+      "Description": "4 x Nuvi 42 LM GPS"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857095"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 6840,
+      "Premium_Excl": 65.59,
+      "Premium_Incl": 75.43,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Mate 20 Lite (Timothy Botha)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857096"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 6840,
+      "Premium_Excl": 65.59,
+      "Premium_Incl": 75.43,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Mate 20 Lite (Jonathan Komape)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857097"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 6840,
+      "Premium_Excl": 65.59,
+      "Premium_Incl": 75.43,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Mate 20 Lite (Aidan Muruvan)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857098"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 5780,
+      "Premium_Excl": 58.18,
+      "Premium_Incl": 66.91,
+      "Cover_Status": "Approved",
+      "Description": "CAT S31 Smarphone (Quintin Els)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857099"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Nick)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857100"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Natasha)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857101"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Brandon)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857102"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Nlotando)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857103"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Damien)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857104"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Adnew)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857105"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (MIchelle)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857106"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Zama)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857107"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Tonqo)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857108"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Tyonn)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857109"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Ian)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857110"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Andile)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857111"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Savesh)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857113"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Bessie)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857114"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2710,
+      "Premium_Excl": 27.28,
+      "Premium_Incl": 31.37,
+      "Cover_Status": "Approved",
+      "Description": "Huawei Y6 2019 (Cedric)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857115"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 2000,
+      "Premium_Excl": 20.13,
+      "Premium_Incl": 23.16,
+      "Cover_Status": "Approved",
+      "Description": "LG K10 Smartphone (Munene)"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857117"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 23499,
+      "Premium_Excl": 236.57,
+      "Premium_Incl": 272.06,
+      "Cover_Status": "Approved",
+      "Description": "I Phone 13 Pro"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857118"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 720717,
+      "Premium_Excl": 7255.74,
+      "Premium_Incl": 8344.1,
+      "Cover_Status": "Approved",
+      "Description": "79x PM75 Mobile Device @ R9,123 each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857119"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 38384,
+      "Premium_Excl": 372.66,
+      "Premium_Incl": 428.56,
+      "Cover_Status": "Approved",
+      "Description": "16x Ulefone Armor X6 16GB Sim Rugged @ R2,399 each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857120"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 253000,
+      "Premium_Excl": 625.17,
+      "Premium_Incl": 718.94,
+      "Cover_Status": "Approved",
+      "Description": "2x CryoVacc units @ R126,500 each"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857121"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 8500,
+      "Premium_Excl": 34.56,
+      "Premium_Incl": 39.75,
+      "Cover_Status": "Approved",
+      "Description": "Fridge Master"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857122"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 5000,
+      "Premium_Excl": 40.45,
+      "Premium_Incl": 46.52,
+      "Cover_Status": "Approved",
+      "Description": "Samsung Tablet"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857123"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 15587,
+      "Premium_Excl": 99.4,
+      "Premium_Incl": 114.3,
+      "Cover_Status": "Approved",
+      "Description": "7002300 Coldfront CIC-4809 DR Zulu Onco Fridge"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857124"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 85750,
+      "Premium_Excl": 546.81,
+      "Premium_Incl": 628.83,
+      "Cover_Status": "Approved",
+      "Description": "7002400 UTrackIt SI207883 Design time R&M inst"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000003957003"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 14484,
+      "Premium_Excl": 92.36,
+      "Premium_Incl": 106.22,
+      "Cover_Status": "Approved",
+      "Description": "7002400 Pure Water Systems 116096 Grundfos Scala"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857126"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 10775,
+      "Premium_Excl": 68.71,
+      "Premium_Incl": 79.02,
+      "Cover_Status": "Approved",
+      "Description": "7002400 Pure Water Systems 116096 Ozone generato"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857127"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 1400,
+      "Premium_Excl": 8.92,
+      "Premium_Incl": 10.26,
+      "Cover_Status": "Approved",
+      "Description": "1320307 My Frifge Online IN123159 Wifi logger ex"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857128"
+      },
+      "Section": "Business All Risks",
+      "Sum_Insured": 4678,
+      "Premium_Excl": 29.83,
+      "Premium_Incl": 34.31,
+      "Cover_Status": "Approved",
+      "Description": "1320434 Pure Water Systems 116096 HC480 UV Balla"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857129"
+      },
+      "Section": "Public Liability",
+      "Sum_Insured": 20000000,
+      "Premium_Excl": 63.77,
+      "Premium_Incl": 73.33,
+      "Cover_Status": "Approved",
+      "Description": "Gezina City Centre, 593 Nico Smith Street, Gezina, Pretoria, Gauteng, 0002"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857130"
+      },
+      "Section": "Public Liability",
+      "Sum_Insured": 20000000,
+      "Premium_Excl": 63.77,
+      "Premium_Incl": 73.33,
+      "Cover_Status": "Approved",
+      "Description": "Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857131"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 28680,
+      "Premium_Excl": 83.13,
+      "Premium_Incl": 95.6,
+      "Cover_Status": "Approved",
+      "Description": "iMat Manufacturing IN125936"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857132"
+      },
+      "Section": "Fire",
+      "Sum_Insured": 102294,
+      "Premium_Excl": 15.57,
+      "Premium_Incl": 17.9,
+      "Cover_Status": "Approved",
+      "Description": "Parow Industria, 6 Koets Street, Ravensmead, Belhar, Western Cape, 7493 Brutes Air Sol IN133118 x2 Delcos Pro"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857133"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 9392,
+      "Premium_Excl": 27.22,
+      "Premium_Incl": 31.31,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129799 x1 Mercer desktop PC"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857134"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 7102,
+      "Premium_Excl": 20.59,
+      "Premium_Incl": 23.67,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129799 x1 Mercer desktop PC"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857135"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 11754,
+      "Premium_Excl": 34.07,
+      "Premium_Incl": 39.18,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN128855 x10 Mercer Monitors"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857136"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 15416,
+      "Premium_Excl": 44.68,
+      "Premium_Incl": 51.39,
+      "Cover_Status": "Approved",
+      "Description": "Strategix SIT-INV112722 x82 Veeam backup"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857137"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 2700,
+      "Premium_Excl": 7.83,
+      "Premium_Incl": 9,
+      "Cover_Status": "Approved",
+      "Description": "Strategix SIT-INV112722 x18 Fileshare li"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857138"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 5822,
+      "Premium_Excl": 16.88,
+      "Premium_Incl": 19.41,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129646 x5 Mercer 19.5  Monito"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857139"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4658,
+      "Premium_Excl": 13.5,
+      "Premium_Incl": 15.53,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129648 x4 Mercer 19.5' Monito"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857140"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 2398.04,
+      "Premium_Excl": 6.95,
+      "Premium_Incl": 7.99,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129794 x1 SSD Drive/Adaptor/U"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857141"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4743.32,
+      "Premium_Excl": 13.75,
+      "Premium_Incl": 15.81,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129693 x2 Hand scanners"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857142"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 6016.91,
+      "Premium_Excl": 17.44,
+      "Premium_Incl": 20.06,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129694 x1 Zebra Thermal print"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857143"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 6041.75,
+      "Premium_Excl": 17.51,
+      "Premium_Incl": 20.14,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129695 x5 Barcode scanners"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857144"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 1955.3,
+      "Premium_Excl": 5.67,
+      "Premium_Incl": 6.52,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129715 x10 Keyboard combo's"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857145"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 4476.4,
+      "Premium_Excl": 12.98,
+      "Premium_Incl": 14.92,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129716 x5 SSD drives"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857146"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 8525.78,
+      "Premium_Excl": 24.71,
+      "Premium_Incl": 28.42,
+      "Cover_Status": "Approved",
+      "Description": "Netlogix IN129661 x2 HPE 600GB SAS HDD"
+    },
+    {
+      "Risk_Item": {
+        "id": "7351644000001857147"
+      },
+      "Section": "Electronic Equipment",
+      "Sum_Insured": 608000,
+      "Premium_Excl": 1531.46,
+      "Premium_Incl": 1761.17,
+      "Cover_Status": "Approved",
+      "Description": "P3155DN Printers x 32 (R19000.00 each)"
+    }
+  ]
+}
