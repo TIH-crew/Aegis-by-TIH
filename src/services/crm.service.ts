@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase'
 import { getStoredActiveAccountId } from '../lib/active-account'
 import { parsePolicySectionExtensions, defaultPolicyExtensionsForSections } from '../lib/extensions'
+import { defaultInsuranceSection } from '../config/cover-extras'
 import { getOrganization, updateOrganization } from './organization.service'
 import type {
   BrokerRequestInput,
@@ -743,7 +744,7 @@ export async function attachRiskItemToPolicy(opts: {
   const nextItem: CoveredItem = {
     risk_item_id: opts.riskItem.id,
     risk_item_name: opts.riskItem.name,
-    section: opts.riskItem.category || 'Motor',
+    section: defaultInsuranceSection(opts.riskItem.category || 'Motor'),
     sum_insured: opts.riskItem.unit_cost,
     premium_excl: null,
     premium_incl: null,
@@ -764,6 +765,16 @@ export async function attachRiskItemToPolicy(opts: {
     .eq('account_id', accountId)
 
   if (updateError) throw updateError
+
+  await supabase
+    .from('portal_risk_items')
+    .update({
+      insurance_status: 'Insured with us',
+      insurance_section: defaultInsuranceSection(opts.riskItem.category || 'Motor'),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', opts.riskItem.id)
+    .eq('account_id', accountId)
 }
 
 export async function createClaim(input: CreateClaimInput) {

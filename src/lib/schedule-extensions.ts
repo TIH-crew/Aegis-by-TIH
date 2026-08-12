@@ -15,6 +15,14 @@ const RATING_FACTOR_NAMES = new Set([
   'risk address',
   'occupancy',
   'construction',
+  'drivers',
+  'overnight parking',
+  'daytime parking',
+  'registered owner',
+  'claims',
+  'basis of settlement',
+  'additional details',
+  'additionaldetails',
 ])
 
 function catalogAddonNames(section: string | null | undefined): Set<string> {
@@ -39,20 +47,20 @@ export function isRatingFactorExtension(ext: CoveredItemExtension): boolean {
   const name = ext.name.trim().toLowerCase()
   if (!name) return true
   if (RATING_FACTOR_NAMES.has(name)) return true
-  const catalog = catalogAddonNames(null)
-  if (catalog.has(name)) return false
+  if (catalogAddonNames(null).has(name)) return false
   // Rows that are mostly detail bags without matching an addon name
   return Object.keys(ext.details ?? {}).length > 0
 }
 
-/** True product extensions / add-ons (windscreen, car hire, credit shortfall, …). */
+/**
+ * True product extensions / add-ons (Bryte motor list: car hire, TyreSure, Excess Sure, …).
+ * Used for policy cover detail — underwriting dumps are excluded.
+ */
 export function isAddonExtension(ext: CoveredItemExtension): boolean {
   const name = ext.name.trim().toLowerCase()
   if (!name || RATING_FACTOR_NAMES.has(name)) return false
-  const catalog = catalogAddonNames(null)
-  if (catalog.has(name)) return true
-  // Explicit addon-like names from schedules
-  return /hire|shortfall|windscreen|roadside|sasria|tyre|hail|excess|tracker|keys|locks|geyser|subsidence/i.test(
+  if (catalogAddonNames(null).has(name)) return true
+  return /hire|shortfall|windscreen|roadside|sasria|tyre|rim|hail|excess|tracker|keys|locks|geyser|subsidence|assist|scratch|spare\s*wheel|loss of use|passenger|peril|riot|3\s*in\s*1|insured value|hcv/i.test(
     name,
   )
 }

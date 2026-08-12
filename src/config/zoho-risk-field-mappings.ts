@@ -71,10 +71,23 @@ export const INSURANCE_STATUS_TO_ZOHO: Record<
   { riskStatus: string; currentlyInsured: string }
 > = {
   'Insured with us': { riskStatus: 'Covered With Us', currentlyInsured: 'Yes - With Us' },
-  'Insured elsewhere': { riskStatus: 'Covered Elsewhere', currentlyInsured: 'Yes - Elsewhere' },
   Uninsured: { riskStatus: 'Uncovered Gap', currentlyInsured: 'No' },
   'Brand new': { riskStatus: 'Identified', currentlyInsured: 'No' },
   'In acquisition': { riskStatus: 'Quote Required', currentlyInsured: 'Unknown' },
+}
+
+/**
+ * Zoho Risk_Status → portal insurance_status.
+ * "Covered Elsewhere" maps to Uninsured (portal no longer uses "Insured elsewhere").
+ */
+export const ZOHO_RISK_STATUS_TO_INSURANCE: Record<string, (typeof INSURANCE_STATUSES)[number]> = {
+  'Covered With Us': 'Insured with us',
+  'Policy Activated': 'Insured with us',
+  'Covered Elsewhere': 'Uninsured',
+  'Uncovered Gap': 'Uninsured',
+  Identified: 'Brand new',
+  'Quote Required': 'In acquisition',
+  'Quote Sent': 'In acquisition',
 }
 
 const COMMON_FIELDS: ZohoFieldMapping[] = [
@@ -150,6 +163,8 @@ const COMMON_FIELDS: ZohoFieldMapping[] = [
       'Not Interested',
       'Needs Review',
     ],
+    helpText:
+      'Portal maps Covered Elsewhere → Uninsured (removed-from-policy / not covered with us).',
   },
   {
     apiName: 'Currently_Insured',

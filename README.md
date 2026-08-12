@@ -29,11 +29,14 @@ Copy `.env.example` to `.env` and set:
 ## Supabase Auth setup
 
 1. In **Supabase Dashboard → Authentication → URL Configuration**, add:
-   - Site URL: `http://localhost:1420`
-   - Redirect URLs: `http://localhost:1420/auth/callback`
+   - Site URL (local): `http://localhost:1420`
+   - Site URL (production): `https://aegis-by-tih.vercel.app`
+   - Redirect URLs:
+     - `http://localhost:1420/auth/callback`
+     - `https://aegis-by-tih.vercel.app/auth/callback`
 2. Enable **Email** provider (magic link / OTP).
 3. Enable **Google** provider (see below).
-4. For production, add your deployed domain to redirect URLs.
+4. Keep both localhost and the Vercel domain in redirect URLs for local + production.
 
 ## Google sign-in setup
 

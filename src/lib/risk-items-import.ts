@@ -226,10 +226,15 @@ export function parseRiskItemsCsv(
     if (repairCost.error) errors.push(repairCost.error)
 
     const statusRaw = (fields.insurance_status ?? '').trim()
-    const insuranceStatus = statusRaw
-      ? matchEnum(statusRaw, INSURANCE_STATUSES)
-      : ('Uninsured' as (typeof INSURANCE_STATUSES)[number])
-    if (statusRaw && !insuranceStatus) {
+    // Legacy CSV values "Insured elsewhere" / "Covered Elsewhere" → Uninsured
+    const legacyUninsured =
+      /^insured\s+elsewhere$/i.test(statusRaw) || /^covered\s+elsewhere$/i.test(statusRaw)
+    const insuranceStatus = legacyUninsured
+      ? ('Uninsured' as (typeof INSURANCE_STATUSES)[number])
+      : statusRaw
+        ? matchEnum(statusRaw, INSURANCE_STATUSES)
+        : ('Uninsured' as (typeof INSURANCE_STATUSES)[number])
+    if (statusRaw && !insuranceStatus && !legacyUninsured) {
       errors.push(`Unknown insurance status "${statusRaw}"`)
     }
 

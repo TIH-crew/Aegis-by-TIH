@@ -8,6 +8,7 @@ const RISK_TYPE_TO_CATEGORY: Record<string, string> = {
   Building: 'Building',
   Buildings: 'Building',
   'Motor Vehicle': 'Motor',
+  'Business Vehicle': 'Motor',
   'Household Contents': 'Contents',
   'Office Contents': 'Contents',
   'Electronic Equipment': 'Electronic Equipment',
@@ -16,10 +17,23 @@ const RISK_TYPE_TO_CATEGORY: Record<string, string> = {
   Other: 'Miscellaneous',
 }
 
+const CATEGORY_TO_SECTION: Record<string, string> = {
+  Building: 'Fire',
+  Motor: 'Motor Specified',
+  Contents: 'Office Contents',
+  'Electronic Equipment': 'Electronic Equipment',
+  'Plant & Machinery': 'Plant & Machinery',
+  Glass: 'Glass',
+  Money: 'Money',
+  'Business Interruption': 'Business Interruption',
+  Liability: 'Public Liability',
+  Miscellaneous: 'Business All Risks',
+}
+
 const RISK_STATUS_TO_INSURANCE: Record<string, string> = {
   'Covered With Us': 'Insured with us',
   'Policy Activated': 'Insured with us',
-  'Covered Elsewhere': 'Insured elsewhere',
+  'Covered Elsewhere': 'Uninsured',
   Identified: 'Brand new',
   'Quote Required': 'In acquisition',
   'Quote Sent': 'In acquisition',
@@ -30,6 +44,10 @@ function mapCategory(riskType: unknown, itemType: unknown): string {
   const risk = riskType ? String(riskType) : ''
   const item = itemType ? String(itemType) : ''
   return RISK_TYPE_TO_CATEGORY[risk] ?? RISK_TYPE_TO_CATEGORY[item] ?? 'Miscellaneous'
+}
+
+function mapInsuranceSection(category: string): string {
+  return CATEGORY_TO_SECTION[category] ?? category
 }
 
 function mapInsuranceStatus(status: unknown): string {
@@ -111,12 +129,13 @@ export async function syncPortalFromZoho(
       .eq('zoho_risk_id', zohoRiskId)
       .maybeSingle()
 
+    const category = mapCategory(record.Risk_Type, record.Item_Type)
     const payload = {
       account_id: accountId,
       zoho_risk_id: zohoRiskId,
       name,
-      category: mapCategory(record.Risk_Type, record.Item_Type),
-      insurance_section: mapCategory(record.Risk_Type, record.Item_Type),
+      category,
+      insurance_section: mapInsuranceSection(category),
       unit_cost: unitCostFromRecord(record),
       repair_cost: 0,
       record_date: today,

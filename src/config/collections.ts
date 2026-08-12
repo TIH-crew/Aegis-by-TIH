@@ -26,7 +26,6 @@ export type RiskCategory = (typeof RISK_CATEGORIES)[number]
 
 export const INSURANCE_STATUSES = [
   'Insured with us',
-  'Insured elsewhere',
   'Uninsured',
   'Brand new',
   'In acquisition',

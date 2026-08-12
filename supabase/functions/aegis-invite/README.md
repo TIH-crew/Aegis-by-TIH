@@ -26,7 +26,7 @@ For the portal, optionally set `VITE_SUPABASE_FUNCTIONS_URL=http://127.0.0.1:543
 | Secret | Description |
 |--------|-------------|
 | `AEGIS_REQUEST_SECRET` | Optional for dev. Shared with Zoho widget (`AEGIS_REQUEST_SECRET` in config.js). Set before production. |
-| `AEGIS_APP_URL` | Aegis app URL for magic link redirect (e.g. `http://localhost:1420`) |
+| `AEGIS_APP_URL` | Aegis app URL for magic link redirect (`http://localhost:1420` locally; production `https://aegis-by-tih.vercel.app`) |
 | `ZOHO_CLIENT_ID` | Zoho OAuth client ID |
 | `ZOHO_CLIENT_SECRET` | Zoho OAuth client secret |
 | `ZOHO_REFRESH_TOKEN` | Zoho refresh token with `ZohoCRM.modules.ALL` scope |

@@ -4,6 +4,7 @@ import { ArrowLeft, Check } from 'lucide-react'
 import { CategoryTotalsTable } from '../components/crm/CategoryTotalsTable'
 import { StageBadge } from '../components/crm/StageBadge'
 import { useAuth } from '../context/AuthContext'
+import { categoryForSection, sectionNoteForCategory } from '../config/cover-extras'
 import { computeCategoryTotals } from '../lib/category-totals'
 import { quoteIsAcceptable } from '../lib/rbac'
 import { formatCurrency, formatDate } from '../lib/utils'
@@ -33,10 +34,12 @@ export function QuotationDetailPage() {
 
   const categoryTotals = useMemo(() => {
     if (!quotation || !showMoney) return []
+    // Accumulate ALL sections; map Fire → Building (portal category), not a raw "Fire" bucket.
     return computeCategoryTotals(
       quotation.risk_items.map((item) => ({
-        category: item.risk_category ?? item.risk_type ?? 'Uncategorised',
+        category: categoryForSection(item.risk_category ?? item.risk_type ?? 'Uncategorised'),
         value: item.unit_cost ?? 0,
+        premium: 0,
       })),
     )
   }, [quotation, showMoney])
@@ -131,7 +134,11 @@ export function QuotationDetailPage() {
       )}
 
       {showMoney && categoryTotals.length > 0 && (
-        <CategoryTotalsTable totals={categoryTotals} valueLabel="Quoted value" />
+        <CategoryTotalsTable
+          totals={categoryTotals}
+          valueLabel="Sum insured"
+          showPremium={categoryTotals.some((row) => row.totalPremium > 0)}
+        />
       )}
 
       {showMoney && quotation.amount != null && (
@@ -162,11 +169,17 @@ export function QuotationDetailPage() {
               </tr>
             </thead>
             <tbody>
-              {quotation.risk_items.map((item) => (
+              {quotation.risk_items.map((item) => {
+                const portalCategory = categoryForSection(
+                  item.risk_type ?? item.risk_category ?? '',
+                )
+                const fireNote = sectionNoteForCategory(portalCategory)
+                return (
                 <tr key={item.id} className="border-b border-border last:border-0 hover:bg-page/40">
                   <td className="px-4 py-3 font-medium">{item.name}</td>
                   <td className="px-4 py-3 text-muted">
-                    {item.risk_category ?? item.risk_type ?? '—'}
+                    {portalCategory || '—'}
+                    {fireNote ? ` · ${fireNote}` : ''}
                   </td>
                   {showMoney && (
                     <td className="px-4 py-3 text-right">
@@ -175,7 +188,7 @@ export function QuotationDetailPage() {
                   )}
                   <td className="px-4 py-3">{item.risk_status ?? '—'}</td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         )}

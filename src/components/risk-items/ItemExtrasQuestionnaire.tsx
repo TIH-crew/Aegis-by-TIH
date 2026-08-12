@@ -1,6 +1,8 @@
-import { useMemo, type ReactNode } from 'react'
+﻿import { useMemo, type ReactNode } from 'react'
 import {
   coverTypesForCategory,
+  groupExtrasByBryteGroup,
+  sectionNoteForCategory,
   type CoverTypeKey,
   type ExtraDefinition,
 } from '../../config/cover-extras'
@@ -84,6 +86,7 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
   const effectiveCoverKey =
     value.cover_type_key ||
     (!needsCoverPick && coverTypes[0] ? coverTypes[0].key : '')
+  const fireNote = sectionNoteForCategory(category)
 
   const eligible: ExtraDefinition[] = useMemo(
     () =>
@@ -94,13 +97,14 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
     [category, effectiveCoverKey, value.is_financed, value.has_tracker],
   )
 
+  const grouped = useMemo(() => groupExtrasByBryteGroup(eligible), [eligible])
+
   const selectedCover = coverTypes.find((c) => c.key === effectiveCoverKey)
 
   function setCover(key: CoverTypeKey) {
     onChange({
       ...value,
       cover_type_key: key,
-      // Drop extras that are no longer eligible under the new cover
       selected_codes: value.selected_codes.filter((code) =>
         questionnaireExtras(category, key, {
           is_financed: value.is_financed,
@@ -130,8 +134,10 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
       <div>
         <h3 className="text-sm font-semibold text-gray-900">Cover &amp; extras questionnaire</h3>
         <p className="text-xs text-muted">
-          Only extras this {category.toLowerCase()} item is eligible for are shown — aligned to the
-          quote workspace cover library.
+          {isMotor
+            ? 'Bryte motor extensions and add-ons eligible for this cover type.'
+            : `Only extras this ${category.toLowerCase()} item is eligible for are shown.`}
+          {fireNote ? ` ${fireNote}.` : ''}
         </p>
       </div>
 
@@ -224,10 +230,7 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
             </Question>
           )}
 
-          <Question
-            label="Tracking device fitted?"
-            hint="Unlocks tracking recovery support where the cover type allows it."
-          >
+          <Question label="Tracking device fitted?">
             <Chip
               selected={value.has_tracker === true}
               onClick={() => onChange({ ...value, has_tracker: true })}
@@ -236,13 +239,7 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
             </Chip>
             <Chip
               selected={value.has_tracker === false}
-              onClick={() =>
-                onChange({
-                  ...value,
-                  has_tracker: false,
-                  selected_codes: value.selected_codes.filter((c) => c !== 'tracking_recovery'),
-                })
-              }
+              onClick={() => onChange({ ...value, has_tracker: false })}
             >
               No
             </Chip>
@@ -277,7 +274,7 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
       )}
 
       {effectiveCoverKey ? (
-        <div className="space-y-2">
+        <div className="space-y-4">
           <div>
             <p className="text-sm font-medium text-gray-900">Optional extras</p>
             <p className="text-xs text-muted">
@@ -285,27 +282,32 @@ export function ItemExtrasQuestionnaire({ category, value, onChange }: Props) {
               {eligible.length === 0 ? ' — none eligible with the current answers.' : '.'}
             </p>
           </div>
-          {eligible.length > 0 && (
-            <ul className="divide-y divide-border rounded-lg border border-border">
-              {eligible.map((extra) => {
-                const on = value.selected_codes.includes(extra.code)
-                return (
-                  <li key={extra.code} className="flex items-start gap-3 px-3 py-3">
-                    <input
-                      type="checkbox"
-                      className="mt-1"
-                      checked={on}
-                      onChange={() => toggleExtra(extra.code)}
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{extra.name}</p>
-                      <p className="text-xs text-muted">{extra.description}</p>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
+          {grouped.map((group) => (
+            <div key={group.key} className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                {group.label}
+              </p>
+              <ul className="divide-y divide-border rounded-lg border border-border">
+                {group.extras.map((extra) => {
+                  const on = value.selected_codes.includes(extra.code)
+                  return (
+                    <li key={extra.code} className="flex items-start gap-3 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        className="mt-1"
+                        checked={on}
+                        onChange={() => toggleExtra(extra.code)}
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{extra.name}</p>
+                        <p className="text-xs text-muted">{extra.description}</p>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ))}
         </div>
       ) : (
         <p className="text-sm text-muted">Choose a cover type to see eligible extras.</p>

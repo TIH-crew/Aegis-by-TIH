@@ -1,3 +1,4 @@
+import { defaultInsuranceSection } from '../config/cover-extras'
 import { supabase } from '../lib/supabase'
 import { generateAssetTag } from '../lib/utils'
 import type { DashboardStats, RiskItem } from '../types'
@@ -68,7 +69,7 @@ export function createSupabaseDataService(accountId: string): DataService {
         asset_tag: generateAssetTag(input.name),
         name: input.name,
         category: input.category,
-        insurance_section: input.category,
+        insurance_section: defaultInsuranceSection(input.category),
         unit_cost: input.unit_cost,
         repair_cost: input.repair_cost ?? 0,
         record_date: input.record_date ?? new Date().toISOString().slice(0, 10),
@@ -118,7 +119,7 @@ export function createSupabaseDataService(accountId: string): DataService {
           asset_tag: generateAssetTag(input.name),
           name: input.name,
           category: input.category,
-          insurance_section: input.category,
+          insurance_section: defaultInsuranceSection(input.category),
           unit_cost: input.unit_cost,
           repair_cost: input.repair_cost ?? 0,
           record_date: input.record_date ?? today,
@@ -159,7 +160,7 @@ export function createSupabaseDataService(accountId: string): DataService {
       if (input.name !== undefined) patch.name = input.name
       if (input.category !== undefined) {
         patch.category = input.category
-        patch.insurance_section = input.category
+        patch.insurance_section = defaultInsuranceSection(input.category)
       }
       if (input.unit_cost !== undefined) patch.unit_cost = input.unit_cost
       if (input.repair_cost !== undefined) patch.repair_cost = input.repair_cost
@@ -230,14 +231,20 @@ export function createSupabaseDataService(accountId: string): DataService {
       if (error) throw error
 
       const rows = data ?? []
+      const isUninsured = (status: string | null) =>
+        status === 'Uninsured' ||
+        status === 'Insured elsewhere' ||
+        status === 'Covered Elsewhere'
+
       return {
         totalRecords: rows.length,
         insuredWithUsCount: rows.filter((r) => r.insurance_status === 'Insured with us').length,
-        insuredElsewhereCount: rows.filter((r) => r.insurance_status === 'Insured elsewhere').length,
-        pipelineCount: rows.filter((r) =>
-          r.insurance_status === 'Brand new' || r.insurance_status === 'In acquisition',
+        pipelineCount: rows.filter(
+          (r) =>
+            r.insurance_status === 'Brand new' || r.insurance_status === 'In acquisition',
         ).length,
-        uninsuredCount: rows.filter((r) => r.insurance_status === 'Uninsured').length,
+        // Legacy "Insured elsewhere" rows count as Uninsured until migration runs.
+        uninsuredCount: rows.filter((r) => isUninsured(r.insurance_status)).length,
         totalValue: rows.reduce((sum, r) => sum + Number(r.unit_cost), 0),
       } satisfies DashboardStats
     },

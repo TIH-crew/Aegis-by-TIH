@@ -37,7 +37,8 @@ export function ItemExtensionsPanel({
       <div className="border-b border-border bg-page px-4 py-3">
         <h3 className="font-semibold text-gray-900">Item extensions</h3>
         <p className="text-xs text-muted">
-          Tick covers that apply to this item. Motor examples: credit shortfall, windscreen, hail.
+          Tick covers that apply to this item. Motor examples: Excess Sure, TyreSure, car hire,
+          credit shortfall.
         </p>
       </div>
       {extensions.length === 0 ? (

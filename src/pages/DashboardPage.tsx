@@ -58,17 +58,12 @@ export function DashboardPage() {
       )}
 
       {stats && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <StatCard icon={Shield} label="Total Risk Items" value={String(stats.totalRecords)} />
           <StatCard
             icon={FileText}
             label="Insured with us"
             value={String(stats.insuredWithUsCount)}
-          />
-          <StatCard
-            icon={FileText}
-            label="Insured Elsewhere"
-            value={String(stats.insuredElsewhereCount)}
           />
           <StatCard icon={AlertTriangle} label="In Pipeline" value={String(stats.pipelineCount)} />
           <StatCard icon={AlertTriangle} label="Uninsured" value={String(stats.uninsuredCount)} />

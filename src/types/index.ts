@@ -57,7 +57,6 @@ export interface RiskItemInput {
 export interface DashboardStats {
   totalRecords: number
   insuredWithUsCount: number
-  insuredElsewhereCount: number
   pipelineCount: number
   uninsuredCount: number
   totalValue: number

@@ -2,7 +2,8 @@ import { useMemo, useState, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, ChevronRight, Eye, FileWarning } from 'lucide-react'
 import { formatCurrency, formatDate } from '../../lib/utils'
-import { flattenUnderwritingDetails, splitScheduleExtensions } from '../../lib/schedule-extensions'
+import { splitScheduleExtensions } from '../../lib/schedule-extensions'
+import { categoryForSection, sectionNoteForCategory } from '../../config/cover-extras'
 import { useAuth } from '../../context/AuthContext'
 import type { CoveredItem, PolicyDetail } from '../../types/crm'
 import { ItemAttachmentsModal } from './ItemAttachmentsModal'
@@ -76,6 +77,7 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
             <p className="mt-1 text-xl font-semibold tabular-nums text-gray-900">
               {formatCurrency(totals.sum)}
             </p>
+            <p className="mt-1 text-xs text-muted">All sections combined</p>
           </div>
           <div className="rounded-lg border border-border bg-surface px-4 py-3 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -84,6 +86,7 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
             <p className="mt-1 text-xl font-semibold tabular-nums text-gray-900">
               {formatCurrency(totalPolicyCost)}
             </p>
+            <p className="mt-1 text-xs text-muted">All sections combined</p>
           </div>
         </div>
       )}
@@ -91,10 +94,10 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
       <div className="rounded-lg border border-border bg-surface shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-page px-4 py-3">
           <div>
-            <h2 className="font-semibold text-gray-900">Covered items</h2>
+            <h2 className="font-semibold">Covered items</h2>
             <p className="text-xs text-muted">
-              {items.length} item{items.length === 1 ? '' : 's'} · click a row for extensions &amp;
-              details
+              {items.length} item{items.length === 1 ? '' : 's'} · expand a row for extensions &amp;
+              add-ons only
             </p>
           </div>
         </div>
@@ -119,18 +122,20 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
               {items.map((item, index) => {
                 const key = itemKey(item, index)
                 const isOpen = expanded === key
-                const { addons: scheduleAddons, underwriting } = splitScheduleExtensions(
-                  item.extensions,
-                )
+                const { addons: scheduleAddons } = splitScheduleExtensions(item.extensions)
                 const selectedAddons = (item.selected_extensions ?? []).filter((e) => e.included)
                 const addonChips = [
                   ...selectedAddons.map((e) => e.name),
                   ...scheduleAddons.map((e) => e.name),
-                ].filter((name, i, arr) => arr.findIndex((n) => n.toLowerCase() === name.toLowerCase()) === i)
-                const underwritingRows = flattenUnderwritingDetails(underwriting)
+                ].filter(
+                  (name, i, arr) =>
+                    arr.findIndex((n) => n.toLowerCase() === name.toLowerCase()) === i,
+                )
                 const attachments = item.attachments ?? []
                 const premium = item.premium_excl ?? item.premium_incl
                 const name = item.risk_item_name ?? item.description ?? 'Item'
+                const portalCategory = categoryForSection(item.section)
+                const sectionNote = sectionNoteForCategory(portalCategory)
                 const colSpan = canSeeFinancials ? 6 : 4
 
                 return (
@@ -144,7 +149,10 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
                         {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                       </td>
                       <td className="px-3 py-3 font-medium text-gray-900">{name}</td>
-                      <td className="px-3 py-3 text-muted">{item.section ?? '—'}</td>
+                      <td className="px-3 py-3 text-muted">
+                        <div>{item.section ?? '—'}</div>
+                        {sectionNote && <div className="text-xs text-muted">{sectionNote}</div>}
+                      </td>
                       {canSeeFinancials && (
                         <>
                           <td className="px-3 py-3 text-right tabular-nums">
@@ -191,12 +199,12 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
                             Extensions / add-ons
                           </h3>
                           {addonChips.length === 0 ? (
-                            <p className="mb-4 text-sm text-muted">
-                              No optional extensions selected for this item (e.g. car hire, windscreen,
-                              credit shortfall).
+                            <p className="text-sm text-muted">
+                              No optional extensions selected for this item (e.g. car hire, TyreSure,
+                              Excess Sure, credit shortfall).
                             </p>
                           ) : (
-                            <ul className="mb-4 flex flex-wrap gap-2">
+                            <ul className="flex flex-wrap gap-2">
                               {addonChips.map((label) => (
                                 <li
                                   key={label}
@@ -206,37 +214,6 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
                                 </li>
                               ))}
                             </ul>
-                          )}
-
-                          {underwritingRows.length > 0 && (
-                            <>
-                              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                                Vehicle &amp; underwriting
-                              </h3>
-                              <div className="overflow-x-auto rounded-lg border border-border bg-surface">
-                                <table className="min-w-full text-sm">
-                                  <thead className="border-b border-border bg-page text-left text-xs uppercase text-muted">
-                                    <tr>
-                                      <th className="px-3 py-2">Group</th>
-                                      <th className="px-3 py-2">Field</th>
-                                      <th className="px-3 py-2">Value</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {underwritingRows.map((row, i) => (
-                                      <tr
-                                        key={`${row.group}-${row.label}-${i}`}
-                                        className="border-b border-border last:border-0"
-                                      >
-                                        <td className="px-3 py-2 text-muted">{row.group}</td>
-                                        <td className="px-3 py-2 font-medium">{row.label}</td>
-                                        <td className="px-3 py-2">{row.value}</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </>
                           )}
                         </td>
                       </tr>
