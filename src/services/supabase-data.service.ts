@@ -25,11 +25,14 @@ function mapRow(row: RiskItem): RiskItem {
   }
 }
 
-export function createSupabaseDataService(accountId: string): DataService {
-  async function resolveBranchMeta(branchId: string | null | undefined) {
-    if (!branchId) return { branch: null, latitude: null, longitude: null }
+export function createSupabaseDataService(
+  accountId: string,
+  branchId?: string | null,
+): DataService {
+  async function resolveBranchMeta(targetBranchId: string | null | undefined) {
+    if (!targetBranchId) return { branch: null, latitude: null, longitude: null }
     const branches = await getBranches(accountId)
-    const branch = branches.find((b) => b.id === branchId)
+    const branch = branches.find((b) => b.id === targetBranchId)
     if (!branch) return { branch: null, latitude: null, longitude: null }
     return {
       branch: branch.name,
@@ -40,11 +43,14 @@ export function createSupabaseDataService(accountId: string): DataService {
 
   return {
     async getRiskItems() {
-      const { data, error } = await supabase
+      let q = supabase
         .from('portal_risk_items')
         .select('*')
         .eq('account_id', accountId)
         .order('record_date', { ascending: false })
+      if (branchId) q = q.eq('branch_id', branchId)
+
+      const { data, error } = await q
 
       if (error) throw error
       return (data ?? []).map(mapRow)
@@ -223,10 +229,13 @@ export function createSupabaseDataService(accountId: string): DataService {
     },
 
     async getDashboardStats() {
-      const { data, error } = await supabase
+      let q = supabase
         .from('portal_risk_items')
         .select('unit_cost, insurance_status')
         .eq('account_id', accountId)
+      if (branchId) q = q.eq('branch_id', branchId)
+
+      const { data, error } = await q
 
       if (error) throw error
 

@@ -18,7 +18,7 @@ import { formatCurrency } from '../lib/utils'
 
 export function DashboardPage() {
   const dataService = useDataService()
-  const { accountId, homeAccountId, homeAccountName, subsidiaries, setActiveAccountId } =
+  const { accountId, homeAccountId, homeAccountName, subsidiaries, setActiveAccountId, branchId, isBranchScoped } =
     useAuth()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
@@ -57,10 +57,11 @@ export function DashboardPage() {
       .then((data) => {
         setOrgMap(data)
         setMapCompanyId((prev) => prev ?? accountId ?? data.home.id)
+        if (branchId) setSelectedBranchId(branchId)
       })
       .catch(() => setOrgMap(null))
       .finally(() => setOrgMapLoading(false))
-  }, [homeAccountId, homeAccountName, accountId])
+  }, [homeAccountId, homeAccountName, accountId, branchId])
 
   useEffect(() => {
     if (!mapCompanyId) return
@@ -77,7 +78,7 @@ export function DashboardPage() {
 
   const mapBranches = useMemo(() => {
     if (!mapCompany) return []
-    return mapCompany.branches
+    const list = mapCompany.branches
       .filter((b) => b.latitude || b.longitude)
       .map((b) => ({
         id: b.id,
@@ -89,7 +90,9 @@ export function DashboardPage() {
         itemCount: b.itemCount,
         totalValue: b.totalValue,
       }))
-  }, [mapCompany])
+    if (isBranchScoped && branchId) return list.filter((b) => b.id === branchId)
+    return list
+  }, [mapCompany, isBranchScoped, branchId])
 
   const visibleMapItems = useMemo(() => {
     if (!selectedBranchId) return mapItems
@@ -133,38 +136,54 @@ export function DashboardPage() {
         </div>
       )}
 
-      <div className="rounded-lg border border-border bg-surface shadow-sm">
+      <div className="rounded-xl border border-border bg-surface shadow-sm">
         <div className="border-b border-border px-4 py-3">
           <h2 className="flex items-center gap-2 font-semibold">
             <Network size={16} className="text-primary" />
             Organization map
           </h2>
           <p className="text-xs text-muted">
-            Parent and child companies, staff and insured items by location — click a company or
-            branch to focus the map.
+            {isBranchScoped
+              ? 'Your access is limited to your company branch — parent group companies are hidden.'
+              : 'South Africa locations — select a company, then a branch, to focus staff and assets.'}
           </p>
         </div>
-        <div className="space-y-4 p-4">
-          {orgMapLoading && <p className="text-sm text-muted">Loading organization…</p>}
-          {orgMap && mapCompanyId && (
-            <OrganizationOrganogram
-              data={orgMap}
-              activeAccountId={mapCompanyId}
-              onSelectCompany={(id) => {
-                setMapCompanyId(id)
-                setSelectedBranchId(null)
-                setActiveAccountId(id)
-              }}
-              selectedBranchId={selectedBranchId}
-              onSelectBranch={setSelectedBranchId}
-            />
-          )}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold text-gray-900">Locations & asset values</h3>
+        <div className="grid gap-0 lg:grid-cols-[minmax(280px,380px)_1fr]">
+          <div className="border-b border-border p-4 lg:border-b-0 lg:border-r">
+            {orgMapLoading && <p className="text-sm text-muted">Loading organization…</p>}
+            {orgMap && mapCompanyId && (
+              <OrganizationOrganogram
+                data={orgMap}
+                activeAccountId={mapCompanyId}
+                onSelectCompany={(id) => {
+                  if (isBranchScoped) return
+                  setMapCompanyId(id)
+                  setSelectedBranchId(null)
+                  setActiveAccountId(id)
+                }}
+                selectedBranchId={selectedBranchId}
+                onSelectBranch={setSelectedBranchId}
+              />
+            )}
+          </div>
+          <div className="p-4">
+            <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900">Locations & asset values</h3>
+                <p className="text-xs text-muted">
+                  {mapCompany?.name ?? 'Company'}
+                  {selectedBranchId
+                    ? ` · ${mapBranches.find((b) => b.id === selectedBranchId)?.name ?? 'Branch'}`
+                    : ' · all branches'}
+                </p>
+              </div>
+            </div>
             <LocationsMap
+              className="h-[min(560px,70vh)] w-full rounded-xl border border-border"
               branches={mapBranches}
               items={visibleMapItems}
               highlightBranchId={selectedBranchId}
+              lockToSouthAfrica
               resolveItemPosition={(item) => {
                 if (item.latitude != null && item.longitude != null) {
                   return { lat: item.latitude, lng: item.longitude }
@@ -238,6 +257,12 @@ export function DashboardPage() {
             className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-page"
           >
             Policies & renewals
+          </Link>
+          <Link
+            to="/collections/pi-members"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-page"
+          >
+            PI members
           </Link>
           <Link
             to="/reports"

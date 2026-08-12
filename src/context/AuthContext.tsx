@@ -42,6 +42,10 @@ interface AuthContextValue {
   homeAccountName: string | null
   /** Active company context (home or a subsidiary) */
   accountId: string | null
+  /** When set, user is limited to this branch (director / branch login) */
+  branchId: string | null
+  /** Branch-scoped users cannot open the parent group */
+  isBranchScoped: boolean
   subsidiaries: SubsidiarySummary[]
   setActiveAccountId: (accountId: string) => void
   /** admin = full portal; employee = self-service only */
@@ -84,17 +88,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPortalUser(profile)
 
     if (profile?.account_id) {
-      const [children, homeOrg] = await Promise.all([
-        listSubsidiaryAccounts(profile.account_id).catch(() => [] as SubsidiarySummary[]),
-        getOrganization(profile.account_id).catch(() => null),
-      ])
+      // Branch-scoped directors stay on their company only — no parent/group switcher
+      const children = profile.branch_id
+        ? ([] as SubsidiarySummary[])
+        : await listSubsidiaryAccounts(profile.account_id).catch(() => [] as SubsidiarySummary[])
+      const homeOrg = await getOrganization(profile.account_id).catch(() => null)
       setSubsidiaries(children)
       setHomeAccountName(homeOrg?.name ?? null)
-      const next = resolveActiveAccountId(
-        profile.account_id,
-        children,
-        getStoredActiveAccountId(),
-      )
+      const next = profile.branch_id
+        ? profile.account_id
+        : resolveActiveAccountId(profile.account_id, children, getStoredActiveAccountId())
       setActiveAccountIdState(next)
       setStoredActiveAccountId(next)
     } else {
@@ -155,12 +158,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (accountId: string) => {
       const homeId = portalUser?.account_id
       if (!homeId) return
+      // Branch-scoped users cannot navigate to other companies
+      if (portalUser?.branch_id) {
+        setActiveAccountIdState(homeId)
+        setStoredActiveAccountId(homeId)
+        return
+      }
       const allowed = new Set([homeId, ...subsidiaries.map((s) => s.id)])
       if (!allowed.has(accountId)) return
       setActiveAccountIdState(accountId)
       setStoredActiveAccountId(accountId)
     },
-    [portalUser?.account_id, subsidiaries],
+    [portalUser?.account_id, portalUser?.branch_id, subsidiaries],
   )
 
   const sendMagicLink = useCallback(async (email: string) => {
@@ -200,6 +209,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       homeAccountId: portalUser?.account_id ?? null,
       homeAccountName,
       accountId: activeAccountId,
+      branchId: portalUser?.branch_id ?? null,
+      isBranchScoped: Boolean(portalUser?.branch_id),
       subsidiaries,
       setActiveAccountId,
       appRole,

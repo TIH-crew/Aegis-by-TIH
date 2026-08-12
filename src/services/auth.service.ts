@@ -42,7 +42,7 @@ export async function getPortalUser(): Promise<PortalUser | null> {
 
   const { data, error } = await supabase
     .from('portal_users')
-    .select('id, user_id, account_id, role, email, full_name, created_at')
+    .select('id, user_id, account_id, role, email, full_name, branch_id, director_id, created_at')
     .eq('user_id', user.id)
     .maybeSingle()
 

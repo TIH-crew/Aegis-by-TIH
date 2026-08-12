@@ -1,0 +1,450 @@
+[
+  {
+    "Name": "Crescent Corporate Park, Unit A1, Block A, Technohub 59 Roan, Midrand, Gauteng, 1682",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Building",
+    "Total_Sum_Insured": 4133365.5,
+    "Current_Premium": 742.208609,
+    "Nimbis_Risk_ID": "59137",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Crescent Corporate Park, Unit A1, Block A, Technohub 59 Roan, Midrand, Gauteng, 1682",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Office Contents",
+    "Total_Sum_Insured": 1306028.9,
+    "Current_Premium": 317.989645,
+    "Nimbis_Risk_ID": "59138",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Crescent Corporate Park, Unit A1, Block A, Technohub 59 Roan, Midrand, Gauteng, 1682",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Accidental Damage",
+    "Total_Sum_Insured": 2185932.0,
+    "Current_Premium": 282.936609,
+    "Nimbis_Risk_ID": "59139",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Crescent Corporate Park, Unit A1, Block A, Technohub 59 Roan, Midrand, Gauteng, 1682",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 100000.0,
+    "Current_Premium": 376.231884,
+    "Nimbis_Risk_ID": "59140",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "16x PC's or electronic equipment in administration offices @ R8,000 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 128000.0,
+    "Current_Premium": 327.513043,
+    "Nimbis_Risk_ID": "59141",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Complete server room with accessories",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 200000.0,
+    "Current_Premium": 511.73913,
+    "Nimbis_Risk_ID": "59142",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "16x Telephone Handsets @ R2,000 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 32000.0,
+    "Current_Premium": 81.878261,
+    "Nimbis_Risk_ID": "59143",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "11 x Printers @ R3000 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 33000.0,
+    "Current_Premium": 84.436957,
+    "Nimbis_Risk_ID": "59144",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Laptop with accessories and software",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 10550.0,
+    "Current_Premium": 134.971196,
+    "Nimbis_Risk_ID": "59145",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "LXATROX17183604E9E200"
+  },
+  {
+    "Name": "15\" Retina 2.6Ghz QC 17 laptop with accessories ans software",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 31000.0,
+    "Current_Premium": 396.597826,
+    "Nimbis_Risk_ID": "59146",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "SC02J63HWDKQ2"
+  },
+  {
+    "Name": "TM5760-2416G64MNBK / 15.6\"/15-2410/6GB/640GB Acer laptop with accessories and software",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 7560.0,
+    "Current_Premium": 96.724722,
+    "Nimbis_Risk_ID": "59147",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "LXVZW030461121E9672500"
+  },
+  {
+    "Name": "Travelmate TN653 15.6\" i7-3520M 2laptop with accessories and software",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 15000.0,
+    "Current_Premium": 191.902174,
+    "Nimbis_Risk_ID": "59148",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "NXV83EA002307005F92000"
+  },
+  {
+    "Name": "Galaxy Tab4, 16GB, 255.8mm(10.1\") WXGALCD",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 4600.0,
+    "Current_Premium": 58.853667,
+    "Nimbis_Risk_ID": "59149",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "RF2FC005PPL"
+  },
+  {
+    "Name": "Galaxy Tab4, 16GB, 255.8mm(10.1\") WXGALCD",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 4600.0,
+    "Current_Premium": 58.853667,
+    "Nimbis_Risk_ID": "59150",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "R52G11DMWWD"
+  },
+  {
+    "Name": "40A4K Hisense 40'' FHD Smart TV",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 3477.0,
+    "Current_Premium": 22.172174,
+    "Nimbis_Risk_ID": "59151",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "40A4K Hisense 40'' FHD Smart TV",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 3477.0,
+    "Current_Premium": 22.172174,
+    "Nimbis_Risk_ID": "59152",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "1320995 First Technology INV564094 Scanner-Canon",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 13524.0,
+    "Current_Premium": 86.24,
+    "Nimbis_Risk_ID": "59153",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "PNA44286"
+  },
+  {
+    "Name": "1320995 Esquire Tech 922911 x1 Laptop SSD",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 8893.0,
+    "Current_Premium": 56.708986,
+    "Nimbis_Risk_ID": "59154",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "PNA45226"
+  },
+  {
+    "Name": "1320995 First Tech 587959 x3 Batteries 4x Charg",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Electronic Equipment",
+    "Total_Sum_Insured": 9385.0,
+    "Current_Premium": 59.846377,
+    "Nimbis_Risk_ID": "59155",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": "PNA45397"
+  },
+  {
+    "Name": "15x 2D Mobile scanners @ R12027 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 180405.0,
+    "Current_Premium": 1230.937304,
+    "Nimbis_Risk_ID": "59156",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "30x 2D Mobile scanners with docking stations @ R10260 each (Cape Town)",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 307800.0,
+    "Current_Premium": 2085.456522,
+    "Nimbis_Risk_ID": "59157",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "3x Samsung Galaxy Tab S6 Lite @ R9078 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 27234.0,
+    "Current_Premium": 232.278391,
+    "Nimbis_Risk_ID": "59158",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "4x Television sets",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 36500.0,
+    "Current_Premium": 248.697246,
+    "Nimbis_Risk_ID": "59159",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "5x 2D Mobile scanners with docking stations @ R10260 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 51300.0,
+    "Current_Premium": 291.146087,
+    "Nimbis_Risk_ID": "59160",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "5x IP65 Mobile rugged device 2d scanners @ R12027 each (Cape Town)",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 60135.0,
+    "Current_Premium": 410.312435,
+    "Nimbis_Risk_ID": "59161",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "6x Pallet jacks @ R3000 each",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 18000.0,
+    "Current_Premium": 103.447826,
+    "Nimbis_Risk_ID": "59162",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Acer PJ P1385 WB projector",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 8500.0,
+    "Current_Premium": 68.024638,
+    "Nimbis_Risk_ID": "59163",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Alarm System",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 50000.0,
+    "Current_Premium": 170.181159,
+    "Nimbis_Risk_ID": "59164",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Security camera system",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 200000.0,
+    "Current_Premium": 1149.42029,
+    "Nimbis_Risk_ID": "59165",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Router KDC",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 13500.0,
+    "Current_Premium": 86.086957,
+    "Nimbis_Risk_ID": "59166",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Router CT",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "All Risk / Portable Item",
+    "Total_Sum_Insured": 13500.0,
+    "Current_Premium": 86.086957,
+    "Nimbis_Risk_ID": "59167",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  },
+  {
+    "Name": "Crescent Corporate Park, Unit A1, Block A, Technohub 59 Roan, Midrand, Gauteng, 1682",
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Status": "Covered With Us",
+    "Risk_Type": "Accidental Damage",
+    "Total_Sum_Insured": 20000000.0,
+    "Current_Premium": 386.017392,
+    "Nimbis_Risk_ID": "59168",
+    "Cover_Start_Date": "2025-07-01",
+    "Serial_Number": null
+  }
+]

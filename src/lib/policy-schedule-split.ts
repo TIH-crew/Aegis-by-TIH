@@ -8,6 +8,7 @@ const NON_ASSET_PATTERNS = [
   /fidelity/i,
   /goods\s*in\s*transit/i,
   /accidental\s*damage/i,
+  /\btheft\b/i,
   /public\s*liability/i,
   /employers?\s*liability/i,
   /personal\s*accident/i,

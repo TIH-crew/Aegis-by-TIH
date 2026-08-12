@@ -24,6 +24,7 @@ import { RiskItemDetailPage } from './pages/RiskItemDetailPage'
 import { RiskItemsPage } from './pages/RiskItemsPage'
 import { EmployeesPage } from './pages/EmployeesPage'
 import { EmployeeDetailPage } from './pages/EmployeeDetailPage'
+import { PiMembersPage } from './pages/PiMembersPage'
 import { AssignToPage, CheckInPage, CheckOutPage } from './pages/CustodyPages'
 import { MyProfilePage } from './pages/MyProfilePage'
 import { MyAssetsPage } from './pages/MyAssetsPage'
@@ -98,6 +99,7 @@ export default function App() {
                 <Route element={<RequireCapability capability="policies" />}>
                   <Route path="/collections/policies" element={<PoliciesPage />} />
                   <Route path="/collections/policies/:id" element={<PolicyDetailPage />} />
+                  <Route path="/collections/pi-members" element={<PiMembersPage />} />
                 </Route>
 
                 <Route element={<RequireCapability capability="claims" />}>

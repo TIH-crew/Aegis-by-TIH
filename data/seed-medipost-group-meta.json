@@ -1,0 +1,23 @@
+{
+  "directors": [
+    "Bulelwa Promise Mamabolo",
+    "Emmerentia Frederika Myburgh",
+    "Khulekani Mcwallace Dlamini",
+    "Louis Scheepers",
+    "Mamedupi Matsipa",
+    "Martha Sophia Joubert",
+    "Mziwandile Noel Guliwe",
+    "Ramoroesi Victor Jonas Ramathesele",
+    "Selapeng Chriscentia Maledimo",
+    "Urvashi Maganlal",
+    "Willem Adolph Joubert"
+  ],
+  "pi_count": 125,
+  "asset_count": 1976,
+  "accounts": {
+    "medipost": "3a842763-e5f2-43f7-87c2-2a5429738fb3",
+    "kawari": "b1111111-1111-4111-8111-111111111147",
+    "medilogistics": "b1111111-1111-4111-8111-111111111151",
+    "pharmacy": "b1111111-1111-4111-8111-111111111152"
+  }
+}
