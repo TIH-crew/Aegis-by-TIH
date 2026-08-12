@@ -109,7 +109,7 @@ export function LocationsMap({
             position: pos,
             title: `${branch.name} (branch)`,
             label: {
-              text: branch.name.slice(0, 1).toUpperCase(),
+              text: 'B',
               color: '#ffffff',
               fontWeight: '700',
               fontSize: '11px',

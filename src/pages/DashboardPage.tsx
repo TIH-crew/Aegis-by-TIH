@@ -124,7 +124,7 @@ export function DashboardPage() {
 
       {stats && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          <StatCard icon={Shield} label="Total Risk Items" value={String(stats.totalRecords)} />
+          <StatCard icon={Shield} label="Total Assets" value={String(stats.totalRecords)} />
           <StatCard
             icon={FileText}
             label="Insured with us"
@@ -148,8 +148,8 @@ export function DashboardPage() {
               : 'South Africa locations — select a company, then a branch, to focus staff and assets.'}
           </p>
         </div>
-        <div className="grid gap-0 lg:grid-cols-[minmax(280px,380px)_1fr]">
-          <div className="border-b border-border p-4 lg:border-b-0 lg:border-r">
+        <div className="grid min-h-[560px] gap-0 lg:grid-cols-[minmax(300px,360px)_minmax(0,1fr)]">
+          <div className="flex min-h-0 flex-col overflow-hidden border-b border-border p-4 lg:border-b-0 lg:border-r">
             {orgMapLoading && <p className="text-sm text-muted">Loading organization…</p>}
             {orgMap && mapCompanyId && (
               <OrganizationOrganogram
@@ -166,7 +166,7 @@ export function DashboardPage() {
               />
             )}
           </div>
-          <div className="p-4">
+          <div className="min-w-0 p-4">
             <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
               <div>
                 <h3 className="text-sm font-semibold text-gray-900">Locations & asset values</h3>
@@ -179,7 +179,7 @@ export function DashboardPage() {
               </div>
             </div>
             <LocationsMap
-              className="h-[min(560px,70vh)] w-full rounded-xl border border-border"
+              className="h-[min(520px,65vh)] w-full rounded-xl border border-border"
               branches={mapBranches}
               items={visibleMapItems}
               highlightBranchId={selectedBranchId}
