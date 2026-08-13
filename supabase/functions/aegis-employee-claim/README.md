@@ -24,7 +24,9 @@ Base: `https://<project>.supabase.co/functions/v1/aegis-employee-claim`
 | `TWILIO_AUTH_TOKEN` | Twilio auth |
 | `TWILIO_VERIFY_SERVICE_SID` | Prefer Verify WhatsApp channel for OTP |
 | `TWILIO_WHATSAPP_FROM` | Messaging API sender (`whatsapp:+…` / sandbox) for OTP fallback + broker notify |
-| `BROKER_WHATSAPP_TO` | Broker WhatsApp destination (default `+27824567868`) |
+| `BROKER_WHATSAPP_TO` | Claim handler WhatsApp (default `+27825487070` — Jan van den Berg) |
+| `BROKER_HANDLER_NAME` | Handler name in claim doc + notifications (default `Jan van den Berg`) |
+| `BROKER_HANDLER_EMAIL` | Optional Zoho CRM user email to assign as claim Owner |
 | `VERIFYNOW_API_KEY` | Licence disc OCR for vehicle match |
 | `ZOHO_*` | Optional Zoho Claims insert on submit |
 | `VAPI_PRIVATE_KEY` | Server-only Vapi key to fetch call artifact + mono recording |

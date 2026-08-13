@@ -133,14 +133,18 @@ export function ClaimDetailPage() {
             {claim.vapi_recording_url ? (
               <audio controls src={claim.vapi_recording_url} className="w-full" />
             ) : claim.voice_note_url ? (
-              <a
-                href={claim.voice_note_url}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                <Mic size={14} /> Open voice file
-              </a>
+              claim.voice_note_url.match(/\.(wav|mp3|webm|ogg|m4a)(\?|$)/i) ? (
+                <audio controls src={claim.voice_note_url} className="w-full" />
+              ) : (
+                <a
+                  href={claim.voice_note_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                >
+                  <Mic size={14} /> Open voice file
+                </a>
+              )
             ) : null}
             {claim.vapi_call_id && (
               <p className="mt-2 text-xs text-muted">Call id: {claim.vapi_call_id}</p>
@@ -233,21 +237,44 @@ export function ClaimDetailPage() {
       {claim.attachments.length > 0 && (
         <section className="rounded-lg border border-border bg-surface p-5 shadow-sm">
           <h2 className="mb-3 font-semibold">Submitted media</h2>
-          <ul className="space-y-2">
-            {claim.attachments.map((file, idx) => (
-              <li key={`${file.url}-${idx}`}>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {claim.attachments.map((file, idx) => {
+              const isImage =
+                file.type?.startsWith('image/') ||
+                /\.(jpe?g|png|gif|webp)(\?|$)/i.test(file.name) ||
+                /\.(jpe?g|png|gif|webp)(\?|$)/i.test(file.url)
+              if (isImage) {
+                return (
+                  <a
+                    key={`${file.url}-${idx}`}
+                    href={file.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group overflow-hidden rounded-lg border border-border bg-page"
+                  >
+                    <img
+                      src={file.url}
+                      alt={file.name}
+                      className="aspect-[4/3] w-full object-cover transition group-hover:opacity-90"
+                    />
+                    <p className="truncate px-2 py-1.5 text-xs text-muted">{file.name}</p>
+                  </a>
+                )
+              }
+              return (
                 <a
+                  key={`${file.url}-${idx}`}
                   href={file.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                  className="flex items-center gap-2 rounded-lg border border-border bg-page px-3 py-3 text-sm text-primary hover:underline"
                 >
                   <ExternalLink size={14} />
                   {file.name}
                 </a>
-              </li>
-            ))}
-          </ul>
+              )
+            })}
+          </div>
         </section>
       )}
     </div>
@@ -302,14 +329,27 @@ function DocPanel({
               </p>
               {doc.notes && <p className="mt-1 text-xs text-muted">{doc.notes}</p>}
               {doc.file_url && (
-                <a
-                  href={doc.file_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                >
-                  <ExternalLink size={12} /> Open
-                </a>
+                <>
+                  {/\.(jpe?g|png|gif|webp)(\?|$)/i.test(doc.file_url) ||
+                  doc.file_name?.match(/\.(jpe?g|png|gif|webp)$/i) ? (
+                    <a href={doc.file_url} target="_blank" rel="noreferrer" className="mt-2 block">
+                      <img
+                        src={doc.file_url}
+                        alt={doc.title}
+                        className="max-h-48 rounded-lg border border-border object-cover"
+                      />
+                    </a>
+                  ) : (
+                    <a
+                      href={doc.file_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                    >
+                      <ExternalLink size={12} /> Open
+                    </a>
+                  )}
+                </>
               )}
             </li>
           ))}

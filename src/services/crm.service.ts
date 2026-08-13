@@ -20,6 +20,36 @@ import type {
 } from '../types/crm'
 import type { Organization } from '../types/organization'
 import { suggestedClaimActions } from '../lib/claim-next-actions'
+import { DEFAULT_CLAIM_HANDLER_NAME } from '../config/claim-handler'
+
+const CLAIM_ATTACHMENT_BUCKET = 'claim-attachments'
+const CLAIM_URL_TTL_SEC = 60 * 60 * 24
+
+function claimStoragePathFromUrl(value: string): string | null {
+  const match = value.match(
+    /\/storage\/v1\/object\/(?:public|sign)\/claim-attachments\/(.+?)(?:\?|$)/,
+  )
+  return match?.[1] ? decodeURIComponent(match[1]) : null
+}
+
+async function signClaimStorageUrl(pathOrUrl: string | null | undefined): Promise<string | null> {
+  if (!pathOrUrl) return null
+  const trimmed = String(pathOrUrl).trim()
+  if (!trimmed) return null
+
+  let path = trimmed
+  if (/^https?:\/\//i.test(trimmed)) {
+    const extracted = claimStoragePathFromUrl(trimmed)
+    if (!extracted) return trimmed
+    path = extracted
+  }
+
+  const { data, error } = await supabase.storage
+    .from(CLAIM_ATTACHMENT_BUCKET)
+    .createSignedUrl(path, CLAIM_URL_TTL_SEC)
+  if (error || !data?.signedUrl) return /^https?:\/\//i.test(trimmed) ? trimmed : null
+  return data.signedUrl
+}
 
 function crmBaseUrl() {
   const functionsBase = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL
@@ -876,7 +906,7 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
     }))
   }
 
-  const portalAttachments = Array.isArray(portalRow?.attachments)
+  const rawPortalAttachments = Array.isArray(portalRow?.attachments)
     ? (portalRow!.attachments as unknown[]).map((att, index) => {
         if (typeof att === 'string') {
           return { name: att.split('/').pop() || `attachment-${index + 1}`, url: att }
@@ -889,20 +919,23 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
       })
     : []
 
+  const portalAttachments = await Promise.all(
+    rawPortalAttachments.map(async (att) => {
+      const signedUrl = (await signClaimStorageUrl(att.url)) ?? att.url
+      const type =
+        att.type ??
+        (/\.(jpe?g|png|gif|webp)(\?|$)/i.test(att.name) ? 'image/jpeg' : undefined)
+      return { ...att, url: signedUrl, type }
+    }),
+  )
+
   const recordingPath =
     (portalRow?.vapi_recording_path ? String(portalRow.vapi_recording_path) : null) ||
     (portalRow?.voice_note_url ? String(portalRow.voice_note_url) : null)
-  let vapiRecordingUrl: string | null = null
-  if (recordingPath) {
-    if (/^https?:\/\//i.test(recordingPath)) {
-      vapiRecordingUrl = recordingPath
-    } else {
-      const { data: signed } = await supabase.storage
-        .from('claim-attachments')
-        .createSignedUrl(recordingPath, 60 * 60 * 24)
-      vapiRecordingUrl = signed?.signedUrl ?? null
-    }
-  }
+  const vapiRecordingUrl = await signClaimStorageUrl(recordingPath)
+  const voiceNoteUrl = portalRow?.voice_note_url
+    ? (await signClaimStorageUrl(String(portalRow.voice_note_url))) ?? String(portalRow.voice_note_url)
+    : null
 
   const zohoClaimId =
     (portalRow?.zoho_claim_id ? String(portalRow.zoho_claim_id) : null) ||
@@ -980,7 +1013,7 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
         : 'other'
     if (documents.some((d) => d.file_url === att.url && d.title === att.name)) continue
     documents.push({
-      id: `att-${att.url}`,
+      id: `att-${att.name}-${att.url.slice(-24)}`,
       kind,
       title: att.name,
       status: null,
@@ -991,6 +1024,13 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
       created_at: null,
     })
   }
+
+  documents = await Promise.all(
+    documents.map(async (doc) => ({
+      ...doc,
+      file_url: doc.file_url ? (await signClaimStorageUrl(doc.file_url)) ?? doc.file_url : null,
+    })),
+  )
 
   // CRM file attachments without URLs still listed as confirmation/other placeholders
   for (const att of crm?.attachments ?? []) {
@@ -1023,11 +1063,15 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
       : null,
     description: portalRow?.description ? String(portalRow.description) : null,
     broker_message: portalRow?.broker_message ? String(portalRow.broker_message) : null,
-    voice_note_url: portalRow?.voice_note_url ? String(portalRow.voice_note_url) : null,
+    voice_note_url: voiceNoteUrl,
     risk_item_id: portalRow?.risk_item_id ? String(portalRow.risk_item_id) : null,
     risk_item_name: riskItemName,
     zoho_claim_id: zohoClaimId,
-    owner_name: crm?.owner_name ?? null,
+    owner_name:
+      crm?.owner_name ??
+      (portalRow?.submitted_via && String(portalRow.submitted_via).startsWith('employee')
+        ? DEFAULT_CLAIM_HANDLER_NAME
+        : null),
     claim_address: crm?.claim_address ?? null,
     company_name: crm?.company_name ?? null,
     modified_time: crm?.modified_time ?? (portalRow?.updated_at ? String(portalRow.updated_at) : null),
