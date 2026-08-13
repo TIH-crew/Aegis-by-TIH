@@ -359,7 +359,7 @@ export function EmployeeClaimPortalPage() {
       if (result.status === 'submitted') {
         clearClaimSession()
         setShownProviders([])
-        setVoiceNotice('Voice claim submitted. Recording and transcript were saved.')
+        setVoiceNotice('Voice claim submitted. The claim form was sent to the handler as a PDF.')
         setStep('done')
         return
       }
@@ -377,7 +377,7 @@ export function EmployeeClaimPortalPage() {
         transcript: result.vapi_transcript ?? null,
       })
       setVoiceNotice(
-        'We saved the call recording and transcript. Please confirm the claim details below and submit.',
+        'Call saved. Please confirm the claim form below — the handler receives this form as a PDF, not the call transcript.',
       )
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to complete voice claim')
@@ -419,7 +419,6 @@ export function EmployeeClaimPortalPage() {
         photo_meta: photos,
         attachments: [
           ...photos.map((p) => p.url),
-          ...(stagedVapi?.transcriptPath ? [stagedVapi.transcriptPath] : []),
           ...(stagedVapi?.recordingPath ? [stagedVapi.recordingPath] : []),
         ],
         voice_note_url: stagedVapi?.recordingPath ?? voice_note_url,

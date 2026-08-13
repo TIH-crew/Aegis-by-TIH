@@ -14,7 +14,7 @@ Base: `https://<project>.supabase.co/functions/v1/aegis-employee-claim`
 | GET/POST | `/items` | `x-aegis-claim-session` | List risk items assigned to the employee |
 | POST | `/match-vehicle` | `x-aegis-claim-session` | Match plate text and/or licence disc image to schedule + policy |
 | POST | `/upload-url` | `x-aegis-claim-session` | Signed upload for photos / voice |
-| POST | `/submit` | `x-aegis-claim-session` | Create `portal_claims` (+ Zoho Claims best-effort) and WhatsApp broker |
+| POST | `/submit` | `x-aegis-claim-session` | Create `portal_claims` (+ Zoho Claims best-effort) and WhatsApp the claim **form PDF** to `+27678316868` (not a call transcript) |
 
 ## Secrets
 
@@ -24,7 +24,7 @@ Base: `https://<project>.supabase.co/functions/v1/aegis-employee-claim`
 | `TWILIO_AUTH_TOKEN` | Twilio auth |
 | `TWILIO_VERIFY_SERVICE_SID` | Prefer Verify WhatsApp channel for OTP |
 | `TWILIO_WHATSAPP_FROM` | Messaging API sender (`whatsapp:+…` / sandbox) for OTP fallback + broker notify |
-| `BROKER_WHATSAPP_TO` | Claim handler WhatsApp (default `+27825487070` — Jan van den Berg) |
+| `BROKER_WHATSAPP_TO` | Unused for new-claim notify — documents always go to `+27678316868` |
 | `BROKER_HANDLER_NAME` | Handler name in claim doc + notifications (default `Jan van den Berg`) |
 | `BROKER_HANDLER_EMAIL` | Optional Zoho CRM user email to assign as claim Owner |
 | `VERIFYNOW_API_KEY` | Licence disc OCR for vehicle match |

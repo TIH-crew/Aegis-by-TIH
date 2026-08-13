@@ -1,4 +1,11 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import {
+  buildClaimSummaryHtml,
+  buildClaimSummaryPdf,
+  publicClaimDescription,
+  voiceClaimFormDescription,
+  type ClaimFormDocInput,
+} from './claim-document.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,7 +16,7 @@ const corsHeaders = {
 
 const VERIFYNOW_BASE = 'https://www.verifynow.co.za/api/external'
 const DEFAULT_CLAIM_HANDLER_NAME = 'Jan van den Berg'
-const DEFAULT_BROKER_WHATSAPP = '+27825487070'
+const DEFAULT_BROKER_WHATSAPP = '+27678316868'
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -163,7 +170,7 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
 async function sendBrokerWhatsApp(bodyText: string, mediaUrls: string[] = []): Promise<{ ok: boolean; sid?: string; error?: string }> {
   const accountSid = Deno.env.get('TWILIO_ACCOUNT_SID')
   const authToken = Deno.env.get('TWILIO_AUTH_TOKEN')
-  const toRaw = (Deno.env.get('BROKER_WHATSAPP_TO') ?? DEFAULT_BROKER_WHATSAPP).trim()
+  const toRaw = DEFAULT_BROKER_WHATSAPP
   const fromRaw = (Deno.env.get('TWILIO_WHATSAPP_FROM') ?? Deno.env.get('TWILIO_SMS_FROM') ?? '').trim()
 
   if (!accountSid || !authToken || !fromRaw) {
@@ -172,6 +179,7 @@ async function sendBrokerWhatsApp(bodyText: string, mediaUrls: string[] = []): P
   }
 
   const toE164 = normalizeWa(toRaw)
+  console.log('Claim WhatsApp document →', toE164)
   const fromE164 = fromRaw.replace(/^whatsapp:/i, '')
   const fromWa = `whatsapp:${fromE164.startsWith('+') ? fromE164 : `+${fromE164}`}`
   const auth = btoa(`${accountSid}:${authToken}`)
@@ -179,11 +187,10 @@ async function sendBrokerWhatsApp(bodyText: string, mediaUrls: string[] = []): P
   const params = new URLSearchParams({
     To: `whatsapp:${toE164}`,
     From: fromWa,
-    Body: bodyText.slice(0, 1500),
+    Body: bodyText.slice(0, 1024),
   })
-  for (const url of mediaUrls.slice(0, 5)) {
-    params.append('MediaUrl', url)
-  }
+  // WhatsApp delivers one attachment per message — send the claim PDF document only.
+  if (mediaUrls[0]) params.append('MediaUrl', mediaUrls[0])
 
   const res = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
@@ -698,7 +705,7 @@ async function matchEmployeeRiskItem(
   if (preferredId) {
     const { data } = await admin
       .from('portal_risk_items')
-      .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id')
+      .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id, unit_cost')
       .eq('id', preferredId)
       .eq('account_id', accountId)
       .maybeSingle()
@@ -707,7 +714,7 @@ async function matchEmployeeRiskItem(
 
   const { data: items } = await admin
     .from('portal_risk_items')
-    .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id, asset_tag')
+    .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id, asset_tag, unit_cost')
     .eq('account_id', accountId)
     .eq('employee_id', employeeId)
 
@@ -806,16 +813,17 @@ async function signAttachmentUrls(
   return urls
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
 function getClaimHandlerName(): string {
   return Deno.env.get('BROKER_HANDLER_NAME')?.trim() || DEFAULT_CLAIM_HANDLER_NAME
+}
+
+function formatRand(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(Number(value))) return '—'
+  return `R ${Number(value).toLocaleString('en-ZA')}`
+}
+
+function isClaimPhotoPath(path: string): boolean {
+  return /\.(jpe?g|png|gif|webp)(\?|$)/i.test(path)
 }
 
 type ClaimNotifyInput = {
@@ -834,7 +842,7 @@ type ClaimNotifyInput = {
     image_url?: string | null
   } | null
   companyName: string | null
-  risk: { name: string; category: string; branch?: string | null }
+  risk: { name: string; category: string; branch?: string | null; unit_cost?: number | null }
   policy: {
     policy_number?: string | null
     insurer?: string | null
@@ -847,127 +855,34 @@ type ClaimNotifyInput = {
   roadsideNeeded: boolean
   roadsidePreference: string | null
   roadsideProvider: unknown
-  vapiCallId: string | null
   vapiTranscript: string | null
+  claimAmount: number | null
   attachmentPaths: string[]
-  vapiRecordingPath: string | null
   zohoClaimId: string | null
 }
 
-function buildClaimSummaryHtml(opts: {
-  handlerName: string
-  claimId: string
-  title: string
-  description: string
-  submittedVia: string
-  employee: ClaimNotifyInput['employee']
-  companyName: string | null
-  risk: ClaimNotifyInput['risk']
-  policy: ClaimNotifyInput['policy']
-  brokerMessage: string | null
-  locationLine: string
-  roadsideLine: string
-  vapiCallId: string | null
-  vapiTranscript: string | null
-  employeePhotoUrl: string | null
-  recordingUrl: string | null
-  imageUrls: string[]
-  docGeneratedAt: string
-}): string {
-  const rows = [
-    ['Handler', opts.handlerName],
-    ['Claim ID', opts.claimId],
-    ['Title', opts.title],
-    ['Submitted via', opts.submittedVia],
-    ['Employee', opts.employee?.full_name ?? '—'],
-    ['Employee WhatsApp', opts.employee?.whatsapp_number ?? '—'],
-    ['Job title', opts.employee?.job_title ?? '—'],
-    ['Company', opts.companyName ?? '—'],
-    ['Risk item', `${opts.risk.name} (${opts.risk.category})`],
-    ['Branch', opts.risk.branch ?? '—'],
-    [
-      'Policy',
-      opts.policy?.policy_number
-        ? `${opts.policy.policy_number}${opts.policy.insurer ? ` · ${opts.policy.insurer}` : ''}`
-        : 'Not linked',
-    ],
-    ['Location', opts.locationLine],
-    ['Roadside assistance', opts.roadsideLine],
-    ['Vapi call ID', opts.vapiCallId ?? '—'],
-    ['Recording', opts.recordingUrl ?? '—'],
-  ]
-
-  const tableRows = rows
-    .map(
-      ([label, value]) =>
-        `<tr><th style="text-align:left;padding:8px;border-bottom:1px solid #e5e7eb;width:180px">${escapeHtml(label)}</th><td style="padding:8px;border-bottom:1px solid #e5e7eb">${escapeHtml(value)}</td></tr>`,
-    )
-    .join('')
-
-  const photoBlock = opts.employeePhotoUrl
-    ? `<div style="margin:16px 0"><p style="font-weight:600;margin:0 0 8px">Staff member</p><img src="${escapeHtml(opts.employeePhotoUrl)}" alt="Staff photo" style="max-width:220px;border-radius:8px;border:1px solid #e5e7eb"/></div>`
-    : ''
-
-  const imagesBlock =
-    opts.imageUrls.length > 0
-      ? `<div style="margin:16px 0"><p style="font-weight:600;margin:0 0 8px">Claim photos</p><div style="display:flex;flex-wrap:wrap;gap:12px">${opts.imageUrls
-          .map(
-            (url, i) =>
-              `<figure style="margin:0"><img src="${escapeHtml(url)}" alt="Claim photo ${i + 1}" style="max-width:280px;border-radius:8px;border:1px solid #e5e7eb"/><figcaption style="font-size:12px;color:#6b7280;margin-top:4px">Photo ${i + 1}</figcaption></figure>`,
-          )
-          .join('')}</div></div>`
-      : ''
-
-  const descriptionBlock = opts.description
-    ? `<div style="margin:16px 0"><p style="font-weight:600;margin:0 0 8px">Description</p><p style="white-space:pre-wrap;margin:0">${escapeHtml(opts.description)}</p></div>`
-    : ''
-
-  const brokerBlock = opts.brokerMessage
-    ? `<div style="margin:16px 0"><p style="font-weight:600;margin:0 0 8px">Broker / extension notes</p><p style="white-space:pre-wrap;margin:0">${escapeHtml(opts.brokerMessage)}</p></div>`
-    : ''
-
-  const transcriptBlock = opts.vapiTranscript
-    ? `<div style="margin:16px 0"><p style="font-weight:600;margin:0 0 8px">Call transcript</p><pre style="white-space:pre-wrap;background:#f9fafb;padding:12px;border-radius:8px;font-size:13px">${escapeHtml(opts.vapiTranscript.slice(0, 8000))}</pre></div>`
-    : ''
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <title>Aegis Claim — ${escapeHtml(opts.title)}</title>
-</head>
-<body style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#111827;max-width:900px;margin:24px auto;padding:0 16px">
-  <h1 style="font-size:22px;margin:0 0 4px">Aegis employee claim</h1>
-  <p style="color:#6b7280;margin:0 0 20px">Generated ${escapeHtml(opts.docGeneratedAt)}</p>
-  ${photoBlock}
-  <table style="width:100%;border-collapse:collapse;margin:16px 0">${tableRows}</table>
-  ${descriptionBlock}
-  ${brokerBlock}
-  ${imagesBlock}
-  ${transcriptBlock}
-</body>
-</html>`
+async function loadClaimPhotoBytes(
+  admin: ReturnType<typeof getServiceClient>,
+  paths: string[],
+): Promise<{ bytes: Uint8Array; caption: string }[]> {
+  const photos: { bytes: Uint8Array; caption: string }[] = []
+  for (const path of paths) {
+    if (!path || !isClaimPhotoPath(path)) continue
+    const { data: file } = await admin.storage.from('claim-attachments').download(path)
+    if (!file) continue
+    photos.push({
+      bytes: new Uint8Array(await file.arrayBuffer()),
+      caption: path.split('/').pop() || 'Claim photo',
+    })
+  }
+  return photos
 }
 
 async function notifyClaimHandler(input: ClaimNotifyInput): Promise<{ ok: boolean; sid?: string; error?: string; docPath?: string; docUrl?: string }> {
   const handlerName = getClaimHandlerName()
-  const signedAttachmentUrls = await signAttachmentUrls(input.admin, input.attachmentPaths)
-
-  let employeePhotoUrl: string | null = null
-  if (input.employee?.image_url) {
-    const [signed] = await signAttachmentUrls(input.admin, [input.employee.image_url])
-    employeePhotoUrl = signed ?? null
-  }
-
-  let recordingUrl: string | null = null
-  if (input.vapiRecordingPath) {
-    const [signed] = await signAttachmentUrls(input.admin, [input.vapiRecordingPath])
-    recordingUrl = signed ?? null
-  }
-
-  const imageUrls = signedAttachmentUrls.filter((u) =>
-    /\.(jpe?g|png|gif|webp)(\?|$)/i.test(u),
-  )
+  const formDescription = publicClaimDescription(input.description, input.vapiTranscript)
+  const photoPaths = input.attachmentPaths.filter(isClaimPhotoPath)
+  const photos = await loadClaimPhotoBytes(input.admin, photoPaths)
 
   const locationLine =
     input.latitude != null && input.longitude != null
@@ -986,51 +901,68 @@ async function notifyClaimHandler(input: ClaimNotifyInput): Promise<{ ok: boolea
       }`
     : 'No'
 
+  const policyLine = input.policy?.policy_number
+    ? `${input.policy.policy_number}${input.policy.insurer ? ` · ${input.policy.insurer}` : ''}`
+    : 'Not linked'
+
   const docGeneratedAt = new Date().toISOString()
-  const html = buildClaimSummaryHtml({
+  const docInput: ClaimFormDocInput = {
     handlerName,
     claimId: input.claimId,
     title: input.title,
-    description: input.description,
+    description: formDescription,
     submittedVia: input.submittedVia,
-    employee: input.employee,
-    companyName: input.companyName,
-    risk: input.risk,
-    policy: input.policy,
-    brokerMessage: input.brokerMessage,
+    employeeName: input.employee?.full_name ?? '—',
+    employeeWhatsapp: input.employee?.whatsapp_number ?? '—',
+    jobTitle: input.employee?.job_title ?? '—',
+    companyName: input.companyName ?? '—',
+    riskName: input.risk.name,
+    riskCategory: input.risk.category,
+    branch: input.risk.branch ?? '—',
+    policyLine,
+    sumInsuredLine: formatRand(input.risk.unit_cost),
+    claimAmountLine: formatRand(input.claimAmount),
     locationLine,
     roadsideLine,
-    vapiCallId: input.vapiCallId,
-    vapiTranscript: input.vapiTranscript,
-    employeePhotoUrl,
-    recordingUrl,
-    imageUrls,
+    brokerMessage: input.brokerMessage ?? '',
     docGeneratedAt,
-  })
+    photos,
+  }
 
-  const htmlBytes = new TextEncoder().encode(html)
-  const docPath = `${input.accountId}/employee-claims/${input.employeeId}/claim-${input.claimId}-summary.html`
-  const { error: docUploadError } = await input.admin.storage
+  const htmlBytes = new TextEncoder().encode(buildClaimSummaryHtml(docInput))
+  const pdfBytes = buildClaimSummaryPdf(docInput)
+  const basePath = `${input.accountId}/employee-claims/${input.employeeId}/claim-${input.claimId}`
+  const htmlPath = `${basePath}-summary.html`
+  const pdfPath = `${basePath}-summary.pdf`
+
+  const { error: htmlUploadError } = await input.admin.storage
     .from('claim-attachments')
-    .upload(docPath, htmlBytes, {
+    .upload(htmlPath, htmlBytes, {
       contentType: 'text/html; charset=utf-8',
       upsert: true,
     })
-  if (docUploadError) console.warn('Claim summary doc upload failed:', docUploadError)
+  if (htmlUploadError) console.warn('Claim summary HTML upload failed:', htmlUploadError)
 
-  const [docSignedUrl] = docUploadError ? [] : await signAttachmentUrls(input.admin, [docPath])
+  const { error: pdfUploadError } = await input.admin.storage
+    .from('claim-attachments')
+    .upload(pdfPath, pdfBytes, {
+      contentType: 'application/pdf',
+      upsert: true,
+    })
+  if (pdfUploadError) console.warn('Claim summary PDF upload failed:', pdfUploadError)
+
+  const [pdfSignedUrl] = pdfUploadError ? [] : await signAttachmentUrls(input.admin, [pdfPath])
 
   if (input.zohoClaimId) {
-    if (!docUploadError) {
+    if (!pdfUploadError) {
       await uploadZohoClaimAttachment(
         input.zohoClaimId,
-        'claim-summary.html',
-        htmlBytes,
-        'text/html; charset=utf-8',
+        'claim-form.pdf',
+        pdfBytes,
+        'application/pdf',
       )
     }
-    for (const path of input.attachmentPaths) {
-      if (!/\.(jpe?g|png|gif|webp)$/i.test(path)) continue
+    for (const path of photoPaths) {
       const { data: file } = await input.admin.storage.from('claim-attachments').download(path)
       if (!file) continue
       const bytes = new Uint8Array(await file.arrayBuffer())
@@ -1044,45 +976,30 @@ async function notifyClaimHandler(input: ClaimNotifyInput): Promise<{ ok: boolea
     }
   }
 
-  const mediaUrls: string[] = []
-  if (employeePhotoUrl && /\.(jpe?g|png|gif|webp)(\?|$)/i.test(employeePhotoUrl)) {
-    mediaUrls.push(employeePhotoUrl)
+  const waBody = pdfSignedUrl
+    ? [
+        `New Aegis claim for ${handlerName}`,
+        `${input.employee?.full_name ?? 'Employee'} · ${input.companyName ?? 'Company'}`,
+        `${input.risk.name} · ${policyLine}`,
+      ].join('\n')
+    : [
+        `New Aegis claim for ${handlerName}`,
+        `Employee: ${input.employee?.full_name ?? 'Employee'}`,
+        input.companyName ? `Company: ${input.companyName}` : null,
+        `Item: ${input.risk.name}`,
+        `Policy: ${policyLine}`,
+        `What happened: ${input.title}`,
+        formDescription ? `Details: ${formDescription.slice(0, 400)}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+  const waResult = await sendBrokerWhatsApp(waBody, pdfSignedUrl ? [pdfSignedUrl] : [])
+  return {
+    ...waResult,
+    docPath: pdfUploadError ? undefined : pdfPath,
+    docUrl: pdfSignedUrl,
   }
-  for (const url of imageUrls) {
-    if (mediaUrls.length >= 5) break
-    if (!mediaUrls.includes(url)) mediaUrls.push(url)
-  }
-
-  const viaLabel =
-    input.submittedVia === 'employee_vapi' ? 'voice call' : 'employee claim portal'
-
-  const waBody = [
-    `New Aegis claim for ${handlerName}`,
-    `Employee: ${input.employee?.full_name ?? input.employeeId}`,
-    input.employee?.whatsapp_number ? `Employee WA: ${input.employee.whatsapp_number}` : null,
-    input.companyName ? `Company: ${input.companyName}` : null,
-    `Item: ${input.risk.name} (${input.risk.category})`,
-    input.risk.branch ? `Branch: ${input.risk.branch}` : null,
-    input.policy?.policy_number
-      ? `Policy: ${input.policy.policy_number}${input.policy.insurer ? ` · ${input.policy.insurer}` : ''}`
-      : 'Policy: (not linked)',
-    `Title: ${input.title}`,
-    input.description ? `Details: ${input.description.slice(0, 400)}` : null,
-    `Location: ${locationLine}`,
-    `Roadside: ${roadsideLine}`,
-    input.vapiCallId ? `Vapi call: ${input.vapiCallId}` : null,
-    recordingUrl ? `Recording: ${recordingUrl}` : null,
-    docSignedUrl ? `Claim document: ${docSignedUrl}` : null,
-    input.brokerMessage ? `Notes:\n${input.brokerMessage.slice(0, 500)}` : null,
-    `Submitted via: ${viaLabel}`,
-    `Claim id: ${input.claimId}`,
-    input.zohoClaimId ? `Zoho claim: ${input.zohoClaimId}` : null,
-  ]
-    .filter(Boolean)
-    .join('\n')
-
-  const waResult = await sendBrokerWhatsApp(waBody, mediaUrls)
-  return { ...waResult, docPath: docUploadError ? undefined : docPath, docUrl: docSignedUrl }
 }
 
 function serializeItem(row: Record<string, unknown>) {
@@ -1379,7 +1296,7 @@ Deno.serve(async (req) => {
 
       const { data: risk, error: riskErr } = await admin
         .from('portal_risk_items')
-        .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id')
+        .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id, unit_cost')
         .eq('id', riskItemId)
         .eq('account_id', session.account_id)
         .maybeSingle()
@@ -1426,7 +1343,7 @@ Deno.serve(async (req) => {
           Claim_Status: 'Submitted',
           Client_Name: zohoPolicyId,
           Claim_Address: [
-            description,
+            publicClaimDescription(description, vapiTranscript),
             `Handler: ${handlerName}`,
             `Risk item: ${risk.name} (${risk.category})`,
             risk.zoho_risk_id ? `Zoho risk: ${risk.zoho_risk_id}` : '',
@@ -1521,7 +1438,12 @@ Deno.serve(async (req) => {
         submittedVia,
         employee,
         companyName: accountRow?.name ?? null,
-        risk: { name: risk.name, category: risk.category, branch: risk.branch },
+        risk: {
+          name: risk.name,
+          category: risk.category,
+          branch: risk.branch,
+          unit_cost: risk.unit_cost != null ? Number(risk.unit_cost) : null,
+        },
         policy: policy
           ? {
               policy_number: policy.policy_number,
@@ -1536,10 +1458,9 @@ Deno.serve(async (req) => {
         roadsideNeeded: roadside_needed,
         roadsidePreference: roadside_needed ? roadside_call_preference : null,
         roadsideProvider: roadside_needed && roadside_call_preference === 'broker' ? roadside_provider : null,
-        vapiCallId,
         vapiTranscript,
+        claimAmount: Number.isFinite(claim_amount as number) ? claim_amount : null,
         attachmentPaths: mergedAttachments,
-        vapiRecordingPath: vapiRecordingPath ?? voice_note_url,
         zohoClaimId,
       })
 
@@ -1607,13 +1528,20 @@ Deno.serve(async (req) => {
         assetHint,
       )
 
+      const formDescription =
+        publicClaimDescription(description, transcript) ||
+        (risk
+          ? voiceClaimFormDescription({
+              companyName: null,
+              policyNumber: null,
+              itemName: String(risk.name),
+              sumInsured: risk.unit_cost != null ? Number(risk.unit_cost) : null,
+            })
+          : '')
+
       const draft = {
         title: title || (assetHint ? `Claim — ${assetHint}` : ''),
-        description:
-          description ||
-          (transcript
-            ? `Voice claim transcript summary:\n${transcript.slice(0, 1500)}`
-            : ''),
+        description: formDescription,
         broker_message: brokerMessage || null,
         claim_amount: claimAmount,
         roadside_needed: roadsideNeeded,
@@ -1667,6 +1595,15 @@ Deno.serve(async (req) => {
         .select('name')
         .eq('id', session.account_id)
         .maybeSingle()
+
+      draft.description =
+        publicClaimDescription(description, transcript) ||
+        voiceClaimFormDescription({
+          companyName: accountRow?.name ?? null,
+          policyNumber: policy?.policy_number ?? null,
+          itemName: String(risk!.name),
+          sumInsured: risk!.unit_cost != null ? Number(risk!.unit_cost) : null,
+        })
 
       const handlerName = getClaimHandlerName()
       let zohoClaimId: string | null = null
@@ -1754,7 +1691,12 @@ Deno.serve(async (req) => {
         submittedVia: 'employee_vapi',
         employee,
         companyName: accountRow?.name ?? null,
-        risk: { name: risk!.name, category: risk!.category, branch: risk!.branch },
+        risk: {
+          name: risk!.name,
+          category: risk!.category,
+          branch: risk!.branch,
+          unit_cost: risk!.unit_cost != null ? Number(risk!.unit_cost) : null,
+        },
         policy: policy
           ? {
               policy_number: policy.policy_number,
@@ -1769,10 +1711,9 @@ Deno.serve(async (req) => {
         roadsideNeeded,
         roadsidePreference: null,
         roadsideProvider: null,
-        vapiCallId: callId,
         vapiTranscript: transcript || null,
+        claimAmount,
         attachmentPaths: attachments,
-        vapiRecordingPath: stored.recordingPath,
         zohoClaimId,
       })
 
