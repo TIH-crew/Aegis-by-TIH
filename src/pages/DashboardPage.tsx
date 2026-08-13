@@ -64,11 +64,15 @@ export function DashboardPage() {
   }, [homeAccountId, homeAccountName, accountId, branchId])
 
   useEffect(() => {
-    if (!mapCompanyId) return
+    // Defer loading asset coordinates until a branch is focused — company fleets are large.
+    if (!mapCompanyId || !selectedBranchId) {
+      setMapItems([])
+      return
+    }
     void fetchOrgMapItems(mapCompanyId)
       .then(setMapItems)
       .catch(() => setMapItems([]))
-  }, [mapCompanyId])
+  }, [mapCompanyId, selectedBranchId])
 
   const mapCompany = useMemo(() => {
     if (!orgMap || !mapCompanyId) return null
@@ -94,8 +98,9 @@ export function DashboardPage() {
     return list
   }, [mapCompany, isBranchScoped, branchId])
 
+  // Only plot assets once a branch is selected — company-wide fleets (1k+) freeze the map.
   const visibleMapItems = useMemo(() => {
-    if (!selectedBranchId) return mapItems
+    if (!selectedBranchId) return []
     return mapItems.filter((i) => i.branch_id === selectedBranchId)
   }, [mapItems, selectedBranchId])
 
@@ -183,14 +188,23 @@ export function DashboardPage() {
               branches={mapBranches}
               items={visibleMapItems}
               highlightBranchId={selectedBranchId}
+              showAssetMarkers={Boolean(selectedBranchId)}
+              maxAssetMarkers={40}
               lockToSouthAfrica
               resolveItemPosition={(item) => {
+                // Prefer own coords; otherwise jitter around branch so markers are not stacked.
+                const branch = mapBranches.find((b) => b.id === item.branch_id)
                 if (item.latitude != null && item.longitude != null) {
                   return { lat: item.latitude, lng: item.longitude }
                 }
-                const branch = mapBranches.find((b) => b.id === item.branch_id)
-                if (!branch) return null
-                return { lat: branch.latitude, lng: branch.longitude }
+                if (!branch?.latitude || !branch?.longitude) return null
+                const hash = Array.from(item.id).reduce((n, ch) => n + ch.charCodeAt(0), 0)
+                const angle = (hash % 360) * (Math.PI / 180)
+                const radius = 0.0008 + ((hash % 7) * 0.00015)
+                return {
+                  lat: branch.latitude + Math.sin(angle) * radius,
+                  lng: branch.longitude + Math.cos(angle) * radius,
+                }
               }}
             />
           </div>

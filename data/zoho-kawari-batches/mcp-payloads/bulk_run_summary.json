@@ -1,0 +1,332 @@
+{
+  "created": 463,
+  "remapped": 463,
+  "failures": [
+    {
+      "file": "batch_03_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_04_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_04_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_04_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c00.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c00.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c00.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    }
+  ],
+  "results": [
+    {
+      "file": "batch_01_c02.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_01_c03.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_02_c00.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_02_c01.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_02_c02.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_02_c03.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_03_c00.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_03_c01.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_03_c02.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_03_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_04_c00.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_04_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_04_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_04_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c00.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_05_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c00.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_06_c03.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c00.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c01.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c02.json",
+      "error": {
+        "error": "Error: Access Denied"
+      },
+      "status": 500
+    },
+    {
+      "file": "batch_07_c03.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_08_c00.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_08_c01.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_08_c02.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_08_c03.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_09_c00.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_09_c01.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_09_c02.json",
+      "created": 25,
+      "remapped": 25,
+      "fails": []
+    },
+    {
+      "file": "batch_09_c03.json",
+      "created": 13,
+      "remapped": 13,
+      "fails": []
+    }
+  ]
+}

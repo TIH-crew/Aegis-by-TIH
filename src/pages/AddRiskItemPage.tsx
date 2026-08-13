@@ -9,6 +9,12 @@ import {
   validateMotorRental,
   type MotorRentalValue,
 } from '../components/risk-items/MotorRentalPanel'
+import { MotorVerifyPanel } from '../components/risk-items/MotorVerifyPanel'
+import {
+  PurchaseProofPanel,
+  emptyPurchaseProof,
+  type PurchaseProofValue,
+} from '../components/risk-items/PurchaseProofPanel'
 import {
   ItemExtrasQuestionnaire,
   answersToSelectedExtensions,
@@ -25,6 +31,7 @@ import {
   fetchPolicies,
   sendBrokerRequest,
 } from '../services/crm.service'
+import { validateAssignmentPurchase } from '../services/purchase-proof.service'
 import { listEmployees } from '../services/employee.service'
 import type { PolicySummary } from '../types/crm'
 import type { Employee } from '../types/employee'
@@ -50,6 +57,8 @@ export function AddRiskItemPage() {
   const [policyId, setPolicyId] = useState('')
   const [rental, setRental] = useState<MotorRentalValue>(emptyRental)
   const [extras, setExtras] = useState<ExtrasQuestionnaireAnswers>(emptyExtrasAnswers())
+  const [purchase, setPurchase] = useState<PurchaseProofValue>(emptyPurchaseProof())
+  const [motorVerified, setMotorVerified] = useState(false)
   const [form, setForm] = useState({
     name: '',
     category: RISK_CATEGORIES[0] as string,
@@ -67,6 +76,7 @@ export function AddRiskItemPage() {
   })
 
   const isMotor = form.category === 'Motor'
+  const isAssigning = Boolean(form.employee_id)
 
   useEffect(() => {
     if (branches.length && !form.branch_id) {
@@ -115,6 +125,26 @@ export function AddRiskItemPage() {
         setError('Select a policy to add this motor item to.')
         return
       }
+      const plate = String(form.zoho_fields?.Registration_Number ?? '').trim()
+      if (!motorVerified && !plate) {
+        setError('Scan the licence disc or look up the number plate before saving a vehicle.')
+        return
+      }
+    }
+
+    if (isAssigning) {
+      const purchaseError = validateAssignmentPurchase({
+        purchase_value: purchase.purchase_value || form.unit_cost,
+        purchase_invoice_url: purchase.purchase_invoice_url,
+        is_financed: purchase.is_financed,
+        finance_house: purchase.finance_house,
+        finance_account_number: purchase.finance_account_number,
+        finance_amount: purchase.finance_amount,
+      })
+      if (purchaseError) {
+        setError(purchaseError)
+        return
+      }
     }
 
     const extrasError = validateExtrasQuestionnaire(form.category, extras)
@@ -133,15 +163,30 @@ export function AddRiskItemPage() {
         (form.category !== 'Motor' ? 'standard' : extras.cover_type_key)
       const created = await dataService.createRiskItem({
         ...form,
+        unit_cost: form.unit_cost || purchase.purchase_value || 0,
         employee_id: form.employee_id || null,
         branch_id: form.branch_id,
         item_extensions: selectedExtras,
+        purchase_value: purchase.purchase_value || form.unit_cost || null,
+        purchase_invoice_url: purchase.purchase_invoice_url || null,
+        purchase_invoice_name: purchase.purchase_invoice_name || null,
+        purchase_date: purchase.purchase_date || null,
+        is_financed: purchase.is_financed,
+        finance_house: purchase.is_financed ? purchase.finance_house : null,
+        finance_account_number: purchase.is_financed ? purchase.finance_account_number : null,
+        finance_amount: purchase.is_financed ? purchase.finance_amount : null,
         zoho_fields: {
           ...form.zoho_fields,
           ...(coverKey ? { Cover_Type: coverKey } : {}),
           ...(extras.vehicle_use ? { Vehicle_Use: extras.vehicle_use } : {}),
-          ...(extras.is_financed != null ? { Is_Financed: extras.is_financed } : {}),
-          ...(extras.finance_house ? { Finance_House: extras.finance_house } : {}),
+          ...(extras.is_financed != null || purchase.is_financed
+            ? { Is_Financed: purchase.is_financed || extras.is_financed }
+            : {}),
+          ...(purchase.is_financed && purchase.finance_house
+            ? { Finance_House: purchase.finance_house }
+            : extras.finance_house
+              ? { Finance_House: extras.finance_house }
+              : {}),
           ...(extras.has_tracker != null
             ? { Tracking_Device: extras.has_tracker ? 'Yes' : 'No' }
             : {}),
@@ -350,6 +395,22 @@ export function AddRiskItemPage() {
 
         {isMotor && (
           <>
+            <MotorVerifyPanel
+              registrationNumber={String(form.zoho_fields?.Registration_Number ?? '')}
+              onApply={(payload) => {
+                setMotorVerified(true)
+                setForm((prev) => ({
+                  ...prev,
+                  name: payload.name || prev.name,
+                  serial_number: payload.serial_number ?? prev.serial_number,
+                  zoho_fields: { ...prev.zoho_fields, ...payload.zoho_fields },
+                  vehicle_verification: {
+                    ...prev.vehicle_verification,
+                    ...payload.vehicle_verification,
+                  },
+                }))
+              }}
+            />
             <MotorRentalPanel value={rental} onChange={setRental} />
 
             <label className="block text-sm">
@@ -373,6 +434,20 @@ export function AddRiskItemPage() {
               </span>
             </label>
           </>
+        )}
+
+        {(isAssigning || isMotor) && accountId && (
+          <PurchaseProofPanel
+            accountId={accountId}
+            value={purchase}
+            required={isAssigning}
+            onChange={(next) => {
+              setPurchase(next)
+              if (next.purchase_value > 0 && !form.unit_cost) {
+                setForm((prev) => ({ ...prev, unit_cost: next.purchase_value }))
+              }
+            }}
+          />
         )}
 
         <ItemExtrasQuestionnaire

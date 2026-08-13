@@ -1,0 +1,31 @@
+{
+  "status": "in_progress",
+  "account_id": "b1111111-1111-4111-8111-111111111147",
+  "zoho_account": "7351644000003979001",
+  "policy": "B00000047",
+  "total_asset_batches": 988,
+  "completed": {
+    "batch_00": { "created": 100, "remapped": 100 },
+    "batch_01_c00": { "created": "pending", "note": "create in flight" }
+  },
+  "checkpoint_sql": {
+    "real_zoho": 100,
+    "still_asset": 888,
+    "total": 1020
+  },
+  "resume": {
+    "next_chunk": "batch_01_c00",
+    "chunks_dir": "data/zoho-kawari-batches/mcp-payloads/chunks",
+    "helpers": {
+      "process_response": "data/zoho-kawari-batches/mcp-payloads/process_response.cjs",
+      "push_helper": "data/zoho-kawari-batches/mcp-payloads/push_helper.cjs"
+    },
+    "workflow": [
+      "1. ZohoCRM_createRecords with chunk.data (25 records), trigger:[]",
+      "2. Save response JSON; run process_response.cjs <chunk> <resp.json>",
+      "3. execute_sql with generated .sql",
+      "4. Advance to next chunk file alphabetically batch_01_c01 ... batch_09_c03"
+    ]
+  },
+  "failures": []
+}

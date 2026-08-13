@@ -1,0 +1,195 @@
+{
+  "mapping": [
+    {
+      "portal_id": "a5b6734d-e75b-5578-baf3-f2ef31e33ac9",
+      "zoho_risk_id": "7351644000004002001",
+      "item_value": 263200,
+      "name": "100 KVA Generator",
+      "tag": "KW-M-WH-311"
+    },
+    {
+      "portal_id": "6d03cbb1-dbca-5234-9de0-e5ed827ea238",
+      "zoho_risk_id": "7351644000004002002",
+      "item_value": 94950,
+      "name": "15 x Dovetail Handheld Device CT",
+      "tag": "KW-CT-CE-984"
+    },
+    {
+      "portal_id": "c620e5a4-8c1e-5abd-ab6f-c0aeb5d7ef76",
+      "zoho_risk_id": "7351644000004002003",
+      "item_value": 118262,
+      "name": "2039 Bin 7 Clear",
+      "tag": "KW-M-WH-298"
+    },
+    {
+      "portal_id": "ca766f82-775f-5e99-8222-34f8efa9c928",
+      "zoho_risk_id": "7351644000004002004",
+      "item_value": 144768,
+      "name": "2495 Bin 7 Clear",
+      "tag": "KW-M-WH-297"
+    },
+    {
+      "portal_id": "f30ebcac-8f77-5fc2-a434-ae6161bc7909",
+      "zoho_risk_id": "7351644000004002005",
+      "item_value": 2900,
+      "name": "2X2D Scanners CPT Warehouse",
+      "tag": "KW-CT-CE-952"
+    },
+    {
+      "portal_id": "ae67d68c-49eb-5f4e-b64c-8631702d8aca",
+      "zoho_risk_id": "7351644000004002006",
+      "item_value": 11270,
+      "name": "3 TIER PICKING TROLLEY",
+      "tag": "KW-M-WH-355"
+    },
+    {
+      "portal_id": "c9110bbe-8458-5141-b506-735657d51c6d",
+      "zoho_risk_id": "7351644000004002007",
+      "item_value": 601721.7,
+      "name": "30 x RT40C-B307 636 Handheld device",
+      "tag": "KW-M-WH-983"
+    },
+    {
+      "portal_id": "47573183-44c0-5c0d-91f0-652a62b7274b",
+      "zoho_risk_id": "7351644000004002008",
+      "item_value": 8999,
+      "name": "32 ch 5 mph 4xHDD DVR for security recor",
+      "tag": "KW-M-S-410"
+    },
+    {
+      "portal_id": "0154302d-5499-5575-ae11-a180b2815475",
+      "zoho_risk_id": "7351644000004002009",
+      "item_value": 3477.39,
+      "name": "40A4K Hisense 40'' FHD Smart TV",
+      "tag": "KW-M-WH-988"
+    },
+    {
+      "portal_id": "12230ed0-2e1f-59a2-9bc9-4cf45662dac8",
+      "zoho_risk_id": "7351644000004002010",
+      "item_value": 3477.39,
+      "name": "40A4K Hisense 40'' FHD Smart TV",
+      "tag": "KW-M-WH-989"
+    },
+    {
+      "portal_id": "4edd483b-7372-5b5c-97c8-7e41800b6898",
+      "zoho_risk_id": "7351644000004002011",
+      "item_value": 18000,
+      "name": "5 piece Lounge Suite/Couch",
+      "tag": "KW-M-G-004"
+    },
+    {
+      "portal_id": "e2801a9a-4165-527a-9de2-64f09a643f37",
+      "zoho_risk_id": "7351644000004002012",
+      "item_value": 42200,
+      "name": "5 x Dovetail Handheld Device CT",
+      "tag": "KW-CT-CE-985"
+    },
+    {
+      "portal_id": "b08789ed-9df6-5447-acdd-c7f23dc411e1",
+      "zoho_risk_id": "7351644000004002013",
+      "item_value": 20858,
+      "name": "50m Pipe cold room & freezer",
+      "tag": "KW-M-WH-316"
+    },
+    {
+      "portal_id": "3b7ee33c-7362-5198-a990-d373a33c7205",
+      "zoho_risk_id": "7351644000004002014",
+      "item_value": 962847.37,
+      "name": "630KVA VOLVO GENERATOR",
+      "tag": "KW-M-WH-351"
+    },
+    {
+      "portal_id": "d816b88c-3e32-5247-a1bd-c64e1f930670",
+      "zoho_risk_id": "7351644000004002015",
+      "item_value": 61300,
+      "name": "750 Bin 7 clear bins",
+      "tag": "KW-M-WH-300"
+    },
+    {
+      "portal_id": "891cf9cc-e024-521c-9ad5-78b52df24e41",
+      "zoho_risk_id": "7351644000004002016",
+      "item_value": 81900,
+      "name": "910 Bin 8 Clear",
+      "tag": "KW-M-WH-296"
+    },
+    {
+      "portal_id": "bce7c9cd-eb00-5de6-9d9a-e1e899b06661",
+      "zoho_risk_id": "7351644000004002017",
+      "item_value": 137269.86,
+      "name": "ABW FENCING",
+      "tag": "KW-M-WH-323"
+    },
+    {
+      "portal_id": "1197d425-7d96-52e8-b8e3-08e341e4fe25",
+      "zoho_risk_id": "7351644000004002018",
+      "item_value": 11207.71,
+      "name": "ACER Laptop",
+      "tag": "KW-M-WH-201",
+      "needs_fix": true
+    },
+    {
+      "portal_id": "18150288-f45c-5a4e-9950-d781f678e65d",
+      "zoho_risk_id": "7351644000004002019",
+      "item_value": 6999,
+      "name": "ACER Laptop",
+      "tag": "KW-M-RP-625"
+    },
+    {
+      "portal_id": "2a148391-81dd-53d3-a4e5-b25b6ff8d8fd",
+      "zoho_risk_id": "7351644000004002020",
+      "item_value": 11144.98,
+      "name": "ACER Laptop",
+      "tag": "KW-M-MR-696"
+    },
+    {
+      "portal_id": "2a264569-f69f-5285-96af-be3e0be67586",
+      "zoho_risk_id": "7351644000004002021",
+      "item_value": 16887,
+      "name": "ACER Laptop",
+      "tag": "KW-M-WH-109"
+    },
+    {
+      "portal_id": "2c1fb0b3-3a0f-5956-9e80-c45990409eb7",
+      "zoho_risk_id": "7351644000004002022",
+      "item_value": 16887,
+      "name": "ACER Laptop",
+      "tag": "KW-M-WH-121"
+    },
+    {
+      "portal_id": "2c3677ce-2b8a-5f22-bc25-33f9423280aa",
+      "zoho_risk_id": "7351644000004002023",
+      "item_value": 13996,
+      "name": "ACER Laptop",
+      "tag": "KW-M-WH-102"
+    },
+    {
+      "portal_id": "2dee6eb1-07ad-5f7a-a301-982fe9bba18d",
+      "zoho_risk_id": "7351644000004002024",
+      "item_value": 12327.32,
+      "name": "ACER Laptop",
+      "tag": "KW-M-F-533"
+    }
+  ],
+  "missing_create": {
+    "Name": "ACER Laptop",
+    "Layout": {
+      "id": "7351644000002766026"
+    },
+    "Item_Owned_By": {
+      "id": "7351644000003979001"
+    },
+    "Risk_Category": "Commercial Lines",
+    "Risk_Type": "Electronic Equipment",
+    "Risk_Status": "Covered With Us",
+    "Currently_Insured": "Yes - With Us",
+    "Item_Value": 11355,
+    "Policy_Number": "B00000047",
+    "Existing_Policy": {
+      "id": "7351644000003980001"
+    },
+    "Tag": "KW-M-RP-619",
+    "Description": "ACER Laptop",
+    "Total_Sum_Insured": 11355
+  },
+  "missing_portal": "09cc71dc-34d4-591e-935c-455bf3a22ae5"
+}

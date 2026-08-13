@@ -1,0 +1,11 @@
+{
+  "created": 70,
+  "remapped": 70,
+  "failures": 5,
+  "status": {
+    "real_zoho": 938,
+    "still_asset": 30,
+    "nimbis": 32,
+    "total": 1000
+  }
+}

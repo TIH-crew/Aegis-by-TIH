@@ -27,6 +27,14 @@ export interface RiskItem {
   longitude: number | null
   zoho_fields: Record<string, unknown>
   zoho_risk_id: string | null
+  purchase_value: number | null
+  purchase_invoice_url: string | null
+  purchase_invoice_name: string | null
+  purchase_date: string | null
+  is_financed: boolean
+  finance_house: string | null
+  finance_account_number: string | null
+  finance_amount: number | null
   created_at: string
   updated_at: string
 }
@@ -52,6 +60,14 @@ export interface RiskItemInput {
   serial_number?: string | null
   branch_id?: string | null
   zoho_fields?: Record<string, unknown>
+  purchase_value?: number | null
+  purchase_invoice_url?: string | null
+  purchase_invoice_name?: string | null
+  purchase_date?: string | null
+  is_financed?: boolean
+  finance_house?: string | null
+  finance_account_number?: string | null
+  finance_amount?: number | null
 }
 
 export interface DashboardStats {

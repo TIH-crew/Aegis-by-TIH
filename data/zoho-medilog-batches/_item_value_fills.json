@@ -1,0 +1,9 @@
+{
+  "medipost_updated": 0,
+  "kawari_updated": 32,
+  "failures": [],
+  "notes": {
+    "medipost": "COQL found 0 Client_Risks with Item_Owned_By.id=7351644000001876029 and Item_Value is null (109 total risks already had Item_Value).",
+    "kawari": "Updated 32 Client_Risks using Total_Sum_Insured; all updates returned SUCCESS."
+  }
+}

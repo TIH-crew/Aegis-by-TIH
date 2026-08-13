@@ -1329,8 +1329,20 @@ export async function fetchZohoAccountSnapshot(): Promise<ZohoAccountSnapshot | 
 export async function refreshOrganizationProfileFromZoho(
   accountId: string,
 ): Promise<Organization | null> {
+  const { zohoAccountId } = await getCrmContext()
   const snapshot = await fetchZohoAccountSnapshot()
   if (!snapshot) return getOrganization(accountId)
+
+  // Never overwrite portal company names from a mismatched Zoho account
+  // (common when the active CRM context is the parent while viewing a subsidiary).
+  if (zohoAccountId && snapshot.id && snapshot.id !== zohoAccountId) {
+    return getOrganization(accountId)
+  }
+
+  const org = await getOrganization(accountId)
+  if (org?.zoho_account_id && snapshot.id && org.zoho_account_id !== snapshot.id) {
+    return org
+  }
 
   await updateOrganization(accountId, {
     name: snapshot.name,
@@ -1355,14 +1367,21 @@ export async function refreshOrganizationFromZoho(accountId: string): Promise<Or
 
   const account = data.account
   if (account) {
-    await updateOrganization(accountId, {
-      name: account.name,
-      phone: account.phone,
-      website: account.website,
-      registration_number: account.registration_number,
-      vat_number: account.vat_number,
-      industry: account.industry,
-    })
+    const org = await getOrganization(accountId)
+    const zohoMatches =
+      (!account.id || account.id === zohoAccountId) &&
+      (!org?.zoho_account_id || !account.id || org.zoho_account_id === account.id)
+
+    if (zohoMatches) {
+      await updateOrganization(accountId, {
+        name: account.name,
+        phone: account.phone,
+        website: account.website,
+        registration_number: account.registration_number,
+        vat_number: account.vat_number,
+        industry: account.industry,
+      })
+    }
   }
 
   return getOrganization(accountId)

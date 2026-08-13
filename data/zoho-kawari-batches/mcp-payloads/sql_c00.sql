@@ -1,0 +1,33 @@
+UPDATE portal_risk_items pri
+SET zoho_risk_id = v.zoho_risk_id,
+    zoho_fields = coalesce(pri.zoho_fields,'{}'::jsonb) || jsonb_build_object('Item_Value', v.item_value, 'Policy_Number', 'B00000047'),
+    updated_at = now()
+FROM (VALUES
+('a5b6734d-e75b-5578-baf3-f2ef31e33ac9'::uuid,'7351644000004002001'::text,263200::numeric),
+('6d03cbb1-dbca-5234-9de0-e5ed827ea238'::uuid,'7351644000004002002'::text,94950::numeric),
+('c620e5a4-8c1e-5abd-ab6f-c0aeb5d7ef76'::uuid,'7351644000004002003'::text,118262::numeric),
+('ca766f82-775f-5e99-8222-34f8efa9c928'::uuid,'7351644000004002004'::text,144768::numeric),
+('f30ebcac-8f77-5fc2-a434-ae6161bc7909'::uuid,'7351644000004002005'::text,2900::numeric),
+('ae67d68c-49eb-5f4e-b64c-8631702d8aca'::uuid,'7351644000004002006'::text,11270::numeric),
+('c9110bbe-8458-5141-b506-735657d51c6d'::uuid,'7351644000004002007'::text,601721.7::numeric),
+('47573183-44c0-5c0d-91f0-652a62b7274b'::uuid,'7351644000004002008'::text,8999::numeric),
+('0154302d-5499-5575-ae11-a180b2815475'::uuid,'7351644000004002009'::text,3477.39::numeric),
+('12230ed0-2e1f-59a2-9bc9-4cf45662dac8'::uuid,'7351644000004002010'::text,3477.39::numeric),
+('4edd483b-7372-5b5c-97c8-7e41800b6898'::uuid,'7351644000004002011'::text,18000::numeric),
+('e2801a9a-4165-527a-9de2-64f09a643f37'::uuid,'7351644000004002012'::text,42200::numeric),
+('b08789ed-9df6-5447-acdd-c7f23dc411e1'::uuid,'7351644000004002013'::text,20858::numeric),
+('3b7ee33c-7362-5198-a990-d373a33c7205'::uuid,'7351644000004002014'::text,962847.37::numeric),
+('d816b88c-3e32-5247-a1bd-c64e1f930670'::uuid,'7351644000004002015'::text,61300::numeric),
+('891cf9cc-e024-521c-9ad5-78b52df24e41'::uuid,'7351644000004002016'::text,81900::numeric),
+('bce7c9cd-eb00-5de6-9d9a-e1e899b06661'::uuid,'7351644000004002017'::text,137269.86::numeric),
+('09cc71dc-34d4-591e-935c-455bf3a22ae5'::uuid,'7351644000003989002'::text,11355::numeric),
+('1197d425-7d96-52e8-b8e3-08e341e4fe25'::uuid,'7351644000004002018'::text,11207.71::numeric),
+('18150288-f45c-5a4e-9950-d781f678e65d'::uuid,'7351644000004002019'::text,6999::numeric),
+('2a148391-81dd-53d3-a4e5-b25b6ff8d8fd'::uuid,'7351644000004002020'::text,11144.98::numeric),
+('2a264569-f69f-5285-96af-be3e0be67586'::uuid,'7351644000004002021'::text,16887::numeric),
+('2c1fb0b3-3a0f-5956-9e80-c45990409eb7'::uuid,'7351644000004002022'::text,16887::numeric),
+('2c3677ce-2b8a-5f22-bc25-33f9423280aa'::uuid,'7351644000004002023'::text,13996::numeric),
+('2dee6eb1-07ad-5f7a-a301-982fe9bba18d'::uuid,'7351644000004002024'::text,12327.32::numeric)
+) AS v(portal_id, zoho_risk_id, item_value)
+WHERE pri.id = v.portal_id;
+SELECT count(*)::int AS updated FROM portal_risk_items WHERE id IN ('a5b6734d-e75b-5578-baf3-f2ef31e33ac9','6d03cbb1-dbca-5234-9de0-e5ed827ea238','c620e5a4-8c1e-5abd-ab6f-c0aeb5d7ef76','ca766f82-775f-5e99-8222-34f8efa9c928','f30ebcac-8f77-5fc2-a434-ae6161bc7909','ae67d68c-49eb-5f4e-b64c-8631702d8aca','c9110bbe-8458-5141-b506-735657d51c6d','47573183-44c0-5c0d-91f0-652a62b7274b','0154302d-5499-5575-ae11-a180b2815475','12230ed0-2e1f-59a2-9bc9-4cf45662dac8','4edd483b-7372-5b5c-97c8-7e41800b6898','e2801a9a-4165-527a-9de2-64f09a643f37','b08789ed-9df6-5447-acdd-c7f23dc411e1','3b7ee33c-7362-5198-a990-d373a33c7205','d816b88c-3e32-5247-a1bd-c64e1f930670','891cf9cc-e024-521c-9ad5-78b52df24e41','bce7c9cd-eb00-5de6-9d9a-e1e899b06661','09cc71dc-34d4-591e-935c-455bf3a22ae5','1197d425-7d96-52e8-b8e3-08e341e4fe25','18150288-f45c-5a4e-9950-d781f678e65d','2a148391-81dd-53d3-a4e5-b25b6ff8d8fd','2a264569-f69f-5285-96af-be3e0be67586','2c1fb0b3-3a0f-5956-9e80-c45990409eb7','2c3677ce-2b8a-5f22-bc25-33f9423280aa','2dee6eb1-07ad-5f7a-a301-982fe9bba18d') AND zoho_risk_id ~ '^[0-9]+$';

@@ -61,7 +61,10 @@ export function RiskItemDetailPage() {
     employees.find((e) => e.id === item.employee_id)?.full_name ?? item.employee_name
 
   const extraFields = Object.entries(item.zoho_fields ?? {}).filter(
-    ([, value]) => value != null && String(value).trim() !== '',
+    ([key, value]) =>
+      value != null &&
+      String(value).trim() !== '' &&
+      !(item.category === 'Motor' && key === 'Registration_Number'),
   )
 
   return (
@@ -146,6 +149,10 @@ export function RiskItemDetailPage() {
             {item.category === 'Motor' && (
               <>
                 <ReadonlyField
+                  label="Number plate"
+                  value={String(item.zoho_fields?.Registration_Number ?? '—')}
+                />
+                <ReadonlyField
                   label="Rental vehicle"
                   value={item.is_rental ? 'Yes' : 'No'}
                 />
@@ -164,10 +171,78 @@ export function RiskItemDetailPage() {
                 )}
               </>
             )}
+            <ReadonlyField
+              label="Purchase value"
+              value={
+                item.purchase_value != null ? formatCurrency(item.purchase_value) : '—'
+              }
+            />
+            <ReadonlyField
+              label="Purchase date"
+              value={item.purchase_date ? formatDate(item.purchase_date) : '—'}
+            />
+            <ReadonlyField
+              label="Proof of purchase"
+              value={
+                item.purchase_invoice_url
+                  ? item.purchase_invoice_name || 'View document'
+                  : '—'
+              }
+            />
+            {item.purchase_invoice_url && (
+              <div className="md:col-span-2 text-sm">
+                <a
+                  href={item.purchase_invoice_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary underline"
+                >
+                  Open invoice / proof of purchase
+                </a>
+              </div>
+            )}
+            <ReadonlyField label="Financed" value={item.is_financed ? 'Yes' : 'No'} />
+            {item.is_financed && (
+              <>
+                <ReadonlyField label="Finance house" value={item.finance_house || '—'} />
+                <ReadonlyField
+                  label="Finance account"
+                  value={item.finance_account_number || '—'}
+                />
+                <ReadonlyField
+                  label="Finance amount"
+                  value={
+                    item.finance_amount != null ? formatCurrency(item.finance_amount) : '—'
+                  }
+                />
+              </>
+            )}
             <div className="md:col-span-2">
               <ReadonlyField label="Description" value={item.description || '—'} />
             </div>
           </div>
+
+          {Array.isArray(item.item_extensions) && item.item_extensions.length > 0 && (
+            <div className="mt-6 border-t border-border pt-6">
+              <h3 className="mb-3 text-sm font-semibold text-gray-900">Extensions & add-ons</h3>
+              <ul className="space-y-1 text-sm text-gray-800">
+                {(item.item_extensions as Array<Record<string, unknown>>).map((ext, idx) => {
+                  const label =
+                    String(ext.label ?? ext.name ?? ext.code ?? `Extension ${idx + 1}`)
+                  const sumInsured =
+                    ext.sum_insured != null
+                      ? ` · ${formatCurrency(Number(ext.sum_insured))}`
+                      : ''
+                  return (
+                    <li key={`${label}-${idx}`} className="rounded-md border border-border bg-page px-3 py-2">
+                      {label}
+                      {sumInsured}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
 
           {extraFields.length > 0 && (
             <div className="mt-6 border-t border-border pt-6">

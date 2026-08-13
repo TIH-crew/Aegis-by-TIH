@@ -22,6 +22,14 @@ function mapRow(row: RiskItem): RiskItem {
     rental_company: row.rental_company ?? null,
     rental_start_date: row.rental_start_date ?? null,
     rental_end_date: row.rental_end_date ?? null,
+    purchase_value: row.purchase_value != null ? Number(row.purchase_value) : null,
+    purchase_invoice_url: row.purchase_invoice_url ?? null,
+    purchase_invoice_name: row.purchase_invoice_name ?? null,
+    purchase_date: row.purchase_date ?? null,
+    is_financed: Boolean(row.is_financed),
+    finance_house: row.finance_house ?? null,
+    finance_account_number: row.finance_account_number ?? null,
+    finance_amount: row.finance_amount != null ? Number(row.finance_amount) : null,
   }
 }
 
@@ -97,6 +105,14 @@ export function createSupabaseDataService(
         latitude: branchMeta.latitude,
         longitude: branchMeta.longitude,
         zoho_fields: input.zoho_fields ?? {},
+        purchase_value: input.purchase_value ?? null,
+        purchase_invoice_url: input.purchase_invoice_url ?? null,
+        purchase_invoice_name: input.purchase_invoice_name ?? null,
+        purchase_date: input.purchase_date ?? null,
+        is_financed: input.is_financed ?? false,
+        finance_house: input.is_financed ? (input.finance_house ?? null) : null,
+        finance_account_number: input.is_financed ? (input.finance_account_number ?? null) : null,
+        finance_amount: input.is_financed ? (input.finance_amount ?? null) : null,
         updated_at: new Date().toISOString(),
       }
 
@@ -197,6 +213,23 @@ export function createSupabaseDataService(
       if (input.description !== undefined) patch.description = input.description
       if (input.serial_number !== undefined) patch.serial_number = input.serial_number
       if (input.zoho_fields !== undefined) patch.zoho_fields = input.zoho_fields
+      if (input.purchase_value !== undefined) patch.purchase_value = input.purchase_value
+      if (input.purchase_invoice_url !== undefined) patch.purchase_invoice_url = input.purchase_invoice_url
+      if (input.purchase_invoice_name !== undefined) patch.purchase_invoice_name = input.purchase_invoice_name
+      if (input.purchase_date !== undefined) patch.purchase_date = input.purchase_date
+      if (input.is_financed !== undefined) {
+        patch.is_financed = input.is_financed
+        if (!input.is_financed) {
+          patch.finance_house = null
+          patch.finance_account_number = null
+          patch.finance_amount = null
+        }
+      }
+      if (input.finance_house !== undefined) patch.finance_house = input.finance_house
+      if (input.finance_account_number !== undefined) {
+        patch.finance_account_number = input.finance_account_number
+      }
+      if (input.finance_amount !== undefined) patch.finance_amount = input.finance_amount
 
       if (input.branch_id !== undefined) {
         patch.branch_id = input.branch_id

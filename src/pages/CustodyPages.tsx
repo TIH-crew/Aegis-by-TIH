@@ -1,9 +1,18 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import {
+  PurchaseProofPanel,
+  emptyPurchaseProof,
+  type PurchaseProofValue,
+} from '../components/risk-items/PurchaseProofPanel'
 import { useAuth } from '../context/AuthContext'
 import { useSearch } from '../context/SearchContext'
 import { listEmployees } from '../services/employee.service'
 import { recordCustody } from '../services/assignment.service'
+import {
+  patchRiskPurchaseFields,
+  validateAssignmentPurchase,
+} from '../services/purchase-proof.service'
 import type { CustodyAction, Employee } from '../types/employee'
 import type { RiskItem } from '../types'
 
@@ -16,6 +25,7 @@ interface CustodyFormPageProps {
   requireEmployee?: boolean
   showDueDate?: boolean
   showKeepAssignment?: boolean
+  requirePurchaseProof?: boolean
 }
 
 export function CustodyFormPage({
@@ -27,6 +37,7 @@ export function CustodyFormPage({
   requireEmployee = true,
   showDueDate = false,
   showKeepAssignment = false,
+  requirePurchaseProof = false,
 }: CustodyFormPageProps) {
   const { accountId } = useAuth()
   const { riskItems, refreshRiskItems } = useSearch()
@@ -41,6 +52,7 @@ export function CustodyFormPage({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState<string | null>(null)
+  const [purchase, setPurchase] = useState<PurchaseProofValue>(emptyPurchaseProof())
 
   useEffect(() => {
     if (!accountId) return
@@ -75,10 +87,68 @@ export function CustodyFormPage({
       setError('Select at least one item.')
       return
     }
+    if (requirePurchaseProof) {
+      const missingProof = selected.filter((id) => {
+        const item = riskItems.find((row) => row.id === id)
+        if (!item) return true
+        const hasInvoice = Boolean(item.purchase_invoice_url || purchase.purchase_invoice_url)
+        const value = item.purchase_value ?? purchase.purchase_value
+        return !hasInvoice || value == null || Number(value) <= 0
+      })
+      if (missingProof.length > 0) {
+        const purchaseError = validateAssignmentPurchase({
+          purchase_value: purchase.purchase_value,
+          purchase_invoice_url: purchase.purchase_invoice_url,
+          is_financed: purchase.is_financed,
+          finance_house: purchase.finance_house,
+          finance_account_number: purchase.finance_account_number,
+          finance_amount: purchase.finance_amount,
+        })
+        if (purchaseError) {
+          setError(
+            `${purchaseError} Apply purchase proof below for items that do not already have it on file.`,
+          )
+          return
+        }
+      } else if (purchase.is_financed) {
+        const financeError = validateAssignmentPurchase({
+          purchase_value: purchase.purchase_value || 1,
+          purchase_invoice_url: purchase.purchase_invoice_url || 'existing',
+          is_financed: true,
+          finance_house: purchase.finance_house,
+          finance_account_number: purchase.finance_account_number,
+          finance_amount: purchase.finance_amount,
+        })
+        if (financeError) {
+          setError(financeError)
+          return
+        }
+      }
+    }
     setSaving(true)
     setError(null)
     setDone(null)
     try {
+      if (requirePurchaseProof && purchase.purchase_invoice_url) {
+        await Promise.all(
+          selected.map((id) => {
+            const item = riskItems.find((row) => row.id === id)
+            if (item?.purchase_invoice_url && item.purchase_value) return Promise.resolve()
+            return patchRiskPurchaseFields(accountId, id, {
+              purchase_value: purchase.purchase_value || item?.purchase_value || null,
+              purchase_invoice_url: purchase.purchase_invoice_url || item?.purchase_invoice_url,
+              purchase_invoice_name: purchase.purchase_invoice_name || item?.purchase_invoice_name,
+              purchase_date: purchase.purchase_date || item?.purchase_date,
+              is_financed: purchase.is_financed,
+              finance_house: purchase.is_financed ? purchase.finance_house : null,
+              finance_account_number: purchase.is_financed
+                ? purchase.finance_account_number
+                : null,
+              finance_amount: purchase.is_financed ? purchase.finance_amount : null,
+            })
+          }),
+        )
+      }
       await recordCustody({
         accountId,
         riskItemIds: selected,
@@ -90,6 +160,7 @@ export function CustodyFormPage({
       })
       await refreshRiskItems()
       setSelected([])
+      setPurchase(emptyPurchaseProof())
       setDone(`${submitLabel} completed for ${selected.length} item${selected.length === 1 ? '' : 's'}.`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save')
@@ -171,6 +242,16 @@ export function CustodyFormPage({
         )}
       </div>
 
+      {requirePurchaseProof && accountId && (
+        <PurchaseProofPanel
+          accountId={accountId}
+          value={purchase}
+          required
+          title="Purchase proof for assignment"
+          onChange={setPurchase}
+        />
+      )}
+
       <input
         className="field-input"
         placeholder="Filter items…"
@@ -233,6 +314,7 @@ export function AssignToPage() {
       title="Assign to"
       submitLabel="Assign items"
       itemFilter={() => true}
+      requirePurchaseProof
       intro={
         <>
           <p>
@@ -240,8 +322,8 @@ export function AssignToPage() {
             phone, or vehicle that lives with that person.
           </p>
           <p className="mt-2">
-            This is the standing custodian. Check-out is for a temporary loan on top of, or instead
-            of, that assignment.
+            Proof of purchase / invoice and purchase value are required before assignment. Financed
+            items also need finance house, agreement number, and outstanding amount.
           </p>
         </>
       }

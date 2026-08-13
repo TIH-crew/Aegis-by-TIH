@@ -1,0 +1,30 @@
+{
+  "created": 225,
+  "remapped": 225,
+  "failures": [
+    {
+      "file": "batch_04_c01.json",
+      "error": true
+    },
+    {
+      "file": "batch_04_c02.json",
+      "error": true
+    },
+    {
+      "file": "batch_04_c03.json",
+      "error": true
+    },
+    {
+      "file": "batch_05_c00.json",
+      "error": true
+    },
+    {
+      "file": "batch_05_c01.json",
+      "error": true
+    },
+    {
+      "file": "batch_05_c02.json",
+      "error": true
+    }
+  ]
+}

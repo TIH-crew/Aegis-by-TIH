@@ -26,6 +26,10 @@ interface LocationsMapProps {
   highlightBranchId?: string | null
   /** Lock viewport to South Africa (default true for this product) */
   lockToSouthAfrica?: boolean
+  /** When false, only branch markers are drawn (much faster for large fleets). */
+  showAssetMarkers?: boolean
+  /** Hard cap on individual asset markers to keep the map responsive. */
+  maxAssetMarkers?: number
 }
 
 /** Approximate South Africa mainland bounds */
@@ -36,6 +40,7 @@ const SA_BOUNDS = {
   east: 33.0,
 }
 const SA_CENTER = { lat: -28.5, lng: 24.7 }
+const DEFAULT_MAX_ASSET_MARKERS = 40
 
 export function LocationsMap({
   branches,
@@ -44,12 +49,15 @@ export function LocationsMap({
   resolveItemPosition,
   highlightBranchId,
   lockToSouthAfrica = true,
+  showAssetMarkers = false,
+  maxAssetMarkers = DEFAULT_MAX_ASSET_MARKERS,
 }: LocationsMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<google.maps.Map | null>(null)
   const markersRef = useRef<google.maps.Marker[]>([])
   const infoRef = useRef<google.maps.InfoWindow | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [hiddenAssetCount, setHiddenAssetCount] = useState(0)
 
   useEffect(() => {
     if (!hasGoogleMapsKey() || !containerRef.current) return
@@ -79,7 +87,7 @@ export function LocationsMap({
                   strictBounds: false,
                 }
               : undefined,
-            gestureHandling: 'greedy',
+            gestureHandling: 'cooperative',
             styles: [
               {
                 featureType: 'poi',
@@ -150,49 +158,59 @@ export function LocationsMap({
           hasMarkers = true
         }
 
-        for (const item of items) {
-          const pos =
-            resolveItemPosition?.(item) ??
-            (item.latitude != null && item.longitude != null
-              ? { lat: item.latitude, lng: item.longitude }
-              : null)
-          if (!pos) continue
-
-          const dimmed =
-            highlightBranchId != null &&
-            item.branch_id != null &&
-            item.branch_id !== highlightBranchId
-
-          const marker = new google.maps.Marker({
-            map: mapRef.current,
-            position: pos,
-            title: item.name,
-            opacity: dimmed ? 0.3 : 0.9,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 6,
-              fillColor: '#d31124',
-              fillOpacity: 0.95,
-              strokeColor: '#630d16',
-              strokeWeight: 1,
-            },
-            zIndex: 50,
+        let skipped = 0
+        if (showAssetMarkers) {
+          const plottable = items.filter((item) => {
+            const pos =
+              resolveItemPosition?.(item) ??
+              (item.latitude != null && item.longitude != null
+                ? { lat: item.latitude, lng: item.longitude }
+                : null)
+            return Boolean(pos)
           })
-          const cost =
-            item.unit_cost != null ? formatCurrency(Number(item.unit_cost)) : '—'
-          marker.addListener('click', () => {
-            infoRef.current?.setContent(
-              `<div style="max-width:220px;font-size:13px;line-height:1.4">
-                <strong>${escapeHtml(item.name)}</strong>
-                <div style="margin-top:6px"><strong>Value:</strong> ${cost}</div>
-              </div>`,
-            )
-            infoRef.current?.open({ map: mapRef.current!, anchor: marker })
-          })
-          markersRef.current.push(marker)
-          bounds.extend(pos)
-          hasMarkers = true
+          const limited = plottable.slice(0, maxAssetMarkers)
+          skipped = Math.max(0, plottable.length - limited.length)
+
+          for (const item of limited) {
+            const pos =
+              resolveItemPosition?.(item) ??
+              (item.latitude != null && item.longitude != null
+                ? { lat: item.latitude, lng: item.longitude }
+                : null)
+            if (!pos) continue
+
+            const marker = new google.maps.Marker({
+              map: mapRef.current,
+              position: pos,
+              title: item.name,
+              opacity: 0.9,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 6,
+                fillColor: '#d31124',
+                fillOpacity: 0.95,
+                strokeColor: '#630d16',
+                strokeWeight: 1,
+              },
+              zIndex: 50,
+            })
+            const cost =
+              item.unit_cost != null ? formatCurrency(Number(item.unit_cost)) : '—'
+            marker.addListener('click', () => {
+              infoRef.current?.setContent(
+                `<div style="max-width:220px;font-size:13px;line-height:1.4">
+                  <strong>${escapeHtml(item.name)}</strong>
+                  <div style="margin-top:6px"><strong>Value:</strong> ${cost}</div>
+                </div>`,
+              )
+              infoRef.current?.open({ map: mapRef.current!, anchor: marker })
+            })
+            markersRef.current.push(marker)
+            bounds.extend(pos)
+            hasMarkers = true
+          }
         }
+        if (!cancelled) setHiddenAssetCount(skipped)
 
         if (hasMarkers) {
           mapRef.current.fitBounds(bounds, { top: 48, right: 48, bottom: 48, left: 48 })
@@ -211,7 +229,15 @@ export function LocationsMap({
     return () => {
       cancelled = true
     }
-  }, [branches, items, resolveItemPosition, highlightBranchId, lockToSouthAfrica])
+  }, [
+    branches,
+    items,
+    resolveItemPosition,
+    highlightBranchId,
+    lockToSouthAfrica,
+    showAssetMarkers,
+    maxAssetMarkers,
+  ])
 
   if (!hasGoogleMapsKey()) {
     return (
@@ -245,10 +271,15 @@ export function LocationsMap({
             </span>
             Branch location
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-accent" />
-            Scheduled assets
-          </span>
+          {showAssetMarkers ? (
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-accent" />
+              Assets at selected branch
+              {hiddenAssetCount > 0 ? ` (showing first ${maxAssetMarkers})` : ''}
+            </span>
+          ) : (
+            <span>Select a branch to plot individual assets</span>
+          )}
         </div>
         {lockToSouthAfrica && <span>Map locked to South Africa</span>}
       </div>
