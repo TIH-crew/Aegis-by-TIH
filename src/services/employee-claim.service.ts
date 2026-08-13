@@ -46,10 +46,27 @@ export interface ClaimOtpSendResult {
   dev_code?: string
 }
 
+export interface ClaimVerifiedEmployee {
+  id: string
+  account_id: string
+  full_name: string
+  first_name: string
+  email: string | null
+  phone: string | null
+  whatsapp_number: string
+  job_title: string | null
+  employee_number: string | null
+  branch_id: string | null
+  branch_name: string | null
+  company_name: string | null
+  id_number: string | null
+  verified: true
+}
+
 export interface ClaimOtpVerifyResult {
   session_token: string
   expires_at: string
-  employee: { id: string; full_name: string }
+  employee: ClaimVerifiedEmployee
 }
 
 export interface ClaimPhotoMeta {
@@ -123,6 +140,13 @@ export function verifyClaimOtp(token: string, code: string) {
   return claimFetch<ClaimOtpVerifyResult & { ok: true }>('otp/verify', {
     method: 'POST',
     body: JSON.stringify({ token, code }),
+  })
+}
+
+export function fetchClaimProfile(sessionToken: string) {
+  return claimFetch<{ ok: true; employee: ClaimVerifiedEmployee }>('profile', {
+    method: 'GET',
+    sessionToken,
   })
 }
 
@@ -203,6 +227,11 @@ export function submitEmployeeClaim(
     roadside_needed?: boolean
     roadside_call_preference?: 'self' | 'broker' | null
     roadside_provider?: Record<string, unknown> | null
+    vapi_call_id?: string | null
+    vapi_transcript?: string | null
+    vapi_recording_path?: string | null
+    vapi_transcript_path?: string | null
+    submitted_via?: 'employee_qr' | 'employee_vapi'
   },
 ) {
   return claimFetch<{ ok: true; claim: { id: string; title: string; status: string } }>(
@@ -213,6 +242,48 @@ export function submitEmployeeClaim(
       body: JSON.stringify(payload),
     },
   )
+}
+
+export interface VapiCompleteDraft {
+  title: string
+  description: string
+  broker_message: string | null
+  claim_amount: number | null
+  roadside_needed: boolean
+  risk_item_id: string | null
+  asset_name_or_plate: string | null
+  ready_to_submit: boolean
+}
+
+export interface VapiCompleteResult {
+  ok: true
+  status: 'submitted' | 'needs_review'
+  claim?: { id: string; title: string; status: string; zoho_claim_id?: string | null }
+  draft?: VapiCompleteDraft
+  vapi_call_id?: string
+  vapi_recording_path?: string | null
+  vapi_transcript_path?: string | null
+  vapi_transcript?: string | null
+  recording_ready?: boolean
+  duplicate?: boolean
+}
+
+export function completeVapiClaim(
+  sessionToken: string,
+  payload: {
+    vapi_call_id: string
+    risk_item_id?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    location_accuracy?: number | null
+    transcript_fallback?: Array<{ role: string; text: string }>
+  },
+) {
+  return claimFetch<VapiCompleteResult>('vapi/complete', {
+    method: 'POST',
+    sessionToken,
+    body: JSON.stringify(payload),
+  })
 }
 
 export function employeeClaimUrl(token: string): string {

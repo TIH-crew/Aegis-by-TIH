@@ -146,6 +146,11 @@ export interface ClaimDetail extends ClaimSummary {
   documents: ClaimDocument[]
   next_actions: ClaimActionItem[]
   crm_notes: { id: string; title: string | null; content: string | null; created_time: string | null }[]
+  vapi_call_id?: string | null
+  vapi_transcript?: string | null
+  vapi_recording_path?: string | null
+  vapi_recording_url?: string | null
+  submitted_via?: string | null
 }
 
 export interface BrokerRequestInput {

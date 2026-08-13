@@ -877,8 +877,32 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
   }
 
   const portalAttachments = Array.isArray(portalRow?.attachments)
-    ? (portalRow!.attachments as { name: string; url: string; type?: string }[])
+    ? (portalRow!.attachments as unknown[]).map((att, index) => {
+        if (typeof att === 'string') {
+          return { name: att.split('/').pop() || `attachment-${index + 1}`, url: att }
+        }
+        if (att && typeof att === 'object' && 'url' in att) {
+          const row = att as { name?: string; url: string; type?: string }
+          return { name: row.name || `attachment-${index + 1}`, url: row.url, type: row.type }
+        }
+        return { name: `attachment-${index + 1}`, url: String(att) }
+      })
     : []
+
+  const recordingPath =
+    (portalRow?.vapi_recording_path ? String(portalRow.vapi_recording_path) : null) ||
+    (portalRow?.voice_note_url ? String(portalRow.voice_note_url) : null)
+  let vapiRecordingUrl: string | null = null
+  if (recordingPath) {
+    if (/^https?:\/\//i.test(recordingPath)) {
+      vapiRecordingUrl = recordingPath
+    } else {
+      const { data: signed } = await supabase.storage
+        .from('claim-attachments')
+        .createSignedUrl(recordingPath, 60 * 60 * 24)
+      vapiRecordingUrl = signed?.signedUrl ?? null
+    }
+  }
 
   const zohoClaimId =
     (portalRow?.zoho_claim_id ? String(portalRow.zoho_claim_id) : null) ||
@@ -1011,6 +1035,13 @@ export async function fetchClaim(id: string): Promise<ClaimDetail> {
     documents,
     next_actions,
     crm_notes: crm?.notes ?? [],
+    vapi_call_id: portalRow?.vapi_call_id ? String(portalRow.vapi_call_id) : null,
+    vapi_transcript: portalRow?.vapi_transcript ? String(portalRow.vapi_transcript) : null,
+    vapi_recording_path: portalRow?.vapi_recording_path
+      ? String(portalRow.vapi_recording_path)
+      : null,
+    vapi_recording_url: vapiRecordingUrl,
+    submitted_via: portalRow?.submitted_via ? String(portalRow.submitted_via) : null,
   }
 }
 

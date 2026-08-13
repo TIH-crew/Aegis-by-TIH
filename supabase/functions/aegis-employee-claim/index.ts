@@ -239,13 +239,59 @@ async function resolveEmployee(token: string) {
   const admin = getServiceClient()
   const { data, error } = await admin
     .from('portal_employees')
-    .select('id, account_id, full_name, whatsapp_number, status, claim_access_token')
+    .select(
+      'id, account_id, full_name, whatsapp_number, status, claim_access_token, email, phone, job_title, employee_number, branch_id, id_number',
+    )
     .eq('claim_access_token', token)
     .maybeSingle()
   if (error) throw error
   if (!data) throw new Error('Invalid claim QR code')
   if (data.status !== 'active') throw new Error('Employee is inactive')
   return data
+}
+
+async function loadVerifiedCallerProfile(employeeId: string, accountId: string) {
+  const admin = getServiceClient()
+  const [{ data: employee, error: empError }, { data: account }] = await Promise.all([
+    admin
+      .from('portal_employees')
+      .select(
+        'id, account_id, full_name, email, phone, whatsapp_number, job_title, employee_number, branch_id, id_number, status',
+      )
+      .eq('id', employeeId)
+      .maybeSingle(),
+    admin.from('portal_accounts').select('id, name').eq('id', accountId).maybeSingle(),
+  ])
+  if (empError) throw empError
+  if (!employee) throw new Error('Employee not found')
+
+  let branchName: string | null = null
+  if (employee.branch_id) {
+    const { data: branchRow } = await admin
+      .from('portal_branches')
+      .select('id, name')
+      .eq('id', employee.branch_id)
+      .maybeSingle()
+    branchName = branchRow?.name ?? null
+  }
+
+  const firstName = String(employee.full_name ?? '').split(/\s+/)[0] || 'there'
+  return {
+    id: employee.id,
+    account_id: employee.account_id,
+    full_name: employee.full_name,
+    first_name: firstName,
+    email: employee.email ?? null,
+    phone: employee.phone ?? null,
+    whatsapp_number: employee.whatsapp_number,
+    job_title: employee.job_title ?? null,
+    employee_number: employee.employee_number ?? null,
+    branch_id: employee.branch_id ?? null,
+    branch_name: branchName,
+    company_name: account?.name ?? null,
+    id_number: employee.id_number ?? null,
+    verified: true as const,
+  }
 }
 
 async function requireClaimSession(req: Request) {
@@ -402,32 +448,13 @@ async function callVerifyNowDisc(imageBase64: string): Promise<{ registrationNum
 
 async function createZohoClaimBestEffort(payload: Record<string, unknown>): Promise<string | null> {
   try {
-    const clientId = Deno.env.get('ZOHO_CLIENT_ID')
-    const clientSecret = Deno.env.get('ZOHO_CLIENT_SECRET')
-    const refreshToken = Deno.env.get('ZOHO_REFRESH_TOKEN')
-    const accountsUrl = Deno.env.get('ZOHO_ACCOUNTS_URL') ?? 'https://accounts.zoho.com'
-    const apiDomain = Deno.env.get('ZOHO_API_DOMAIN') ?? 'www.zohoapis.com'
-    if (!clientId || !clientSecret || !refreshToken) return null
+    const auth = await getZohoAccessToken()
+    if (!auth) return null
 
-    const tokenRes = await fetch(
-      `${accountsUrl}/oauth/v2/token?${new URLSearchParams({
-        refresh_token: refreshToken,
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: 'refresh_token',
-      })}`,
-      { method: 'POST' },
-    )
-    const tokenData = await tokenRes.json()
-    if (!tokenRes.ok || !tokenData.access_token) {
-      console.warn('Zoho token refresh failed for employee claim')
-      return null
-    }
-
-    const insertRes = await fetch(`https://${apiDomain}/crm/v2/Claims`, {
+    const insertRes = await fetch(`https://${auth.apiDomain}/crm/v2/Claims`, {
       method: 'POST',
       headers: {
-        Authorization: `Zoho-oauthtoken ${tokenData.access_token}`,
+        Authorization: `Zoho-oauthtoken ${auth.accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ data: [payload] }),
@@ -444,6 +471,279 @@ async function createZohoClaimBestEffort(payload: Record<string, unknown>): Prom
     console.warn('Zoho Claims best-effort failed:', err)
     return null
   }
+}
+
+async function getZohoAccessToken(): Promise<{ accessToken: string; apiDomain: string } | null> {
+  const clientId = Deno.env.get('ZOHO_CLIENT_ID')
+  const clientSecret = Deno.env.get('ZOHO_CLIENT_SECRET')
+  const refreshToken = Deno.env.get('ZOHO_REFRESH_TOKEN')
+  const accountsUrl = Deno.env.get('ZOHO_ACCOUNTS_URL') ?? 'https://accounts.zoho.com'
+  const apiDomain = Deno.env.get('ZOHO_API_DOMAIN') ?? 'www.zohoapis.com'
+  if (!clientId || !clientSecret || !refreshToken) return null
+
+  const tokenRes = await fetch(
+    `${accountsUrl}/oauth/v2/token?${new URLSearchParams({
+      refresh_token: refreshToken,
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: 'refresh_token',
+    })}`,
+    { method: 'POST' },
+  )
+  const tokenData = await tokenRes.json()
+  if (!tokenRes.ok || !tokenData.access_token) {
+    console.warn('Zoho token refresh failed for employee claim')
+    return null
+  }
+  return { accessToken: String(tokenData.access_token), apiDomain }
+}
+
+async function uploadZohoClaimAttachment(
+  recordId: string,
+  filename: string,
+  bytes: Uint8Array,
+  contentType: string,
+): Promise<boolean> {
+  try {
+    const auth = await getZohoAccessToken()
+    if (!auth) return false
+    const form = new FormData()
+    form.append(
+      'file',
+      new Blob([bytes], { type: contentType }),
+      filename,
+    )
+    const res = await fetch(
+      `https://${auth.apiDomain}/crm/v2/Claims/${recordId}/Attachments`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Zoho-oauthtoken ${auth.accessToken}` },
+        body: form,
+      },
+    )
+    if (!res.ok) {
+      const errBody = await res.text()
+      console.warn('Zoho Claims attachment upload failed:', errBody)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.warn('Zoho Claims attachment upload error:', err)
+    return false
+  }
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+async function fetchVapiCall(callId: string): Promise<Record<string, unknown> | null> {
+  const key = Deno.env.get('VAPI_PRIVATE_KEY')?.trim()
+  if (!key) throw new Error('VAPI_PRIVATE_KEY is not configured on the edge function')
+
+  let lastError: unknown = null
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    if (attempt > 0) await sleep(1500 * attempt)
+    try {
+      const res = await fetch(`https://api.vapi.ai/call/${encodeURIComponent(callId)}`, {
+        headers: { Authorization: `Bearer ${key}` },
+      })
+      if (!res.ok) {
+        lastError = await res.text()
+        continue
+      }
+      const data = (await res.json()) as Record<string, unknown>
+      return data
+    } catch (err) {
+      lastError = err
+    }
+  }
+  console.warn('Vapi call fetch failed:', lastError)
+  return null
+}
+
+async function downloadVapiMonoRecording(
+  callId: string,
+): Promise<{ bytes: Uint8Array; contentType: string; extension: string } | null> {
+  const key = Deno.env.get('VAPI_PRIVATE_KEY')?.trim()
+  if (!key) return null
+
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    if (attempt > 0) await sleep(1500 * attempt)
+    try {
+      const res = await fetch(
+        `https://api.vapi.ai/call/${encodeURIComponent(callId)}/mono-recording`,
+        {
+          headers: { Authorization: `Bearer ${key}` },
+          redirect: 'follow',
+        },
+      )
+      if (!res.ok) continue
+      const contentType = res.headers.get('content-type') || 'audio/wav'
+      const buffer = new Uint8Array(await res.arrayBuffer())
+      if (buffer.byteLength < 64) continue
+      const extension = contentType.includes('mpeg') || contentType.includes('mp3')
+        ? 'mp3'
+        : contentType.includes('webm')
+          ? 'webm'
+          : 'wav'
+      return { bytes: buffer, contentType, extension }
+    } catch (err) {
+      console.warn('Vapi mono-recording download attempt failed:', err)
+    }
+  }
+  return null
+}
+
+function buildTranscriptFromArtifact(
+  call: Record<string, unknown> | null,
+  fallback: unknown[],
+): string {
+  const artifact = isRecord(call?.artifact) ? call.artifact : null
+  const direct = artifact && typeof artifact.transcript === 'string' ? artifact.transcript.trim() : ''
+  if (direct) return direct
+
+  const messages = Array.isArray(artifact?.messages) ? artifact.messages : []
+  const lines: string[] = []
+  for (const msg of messages) {
+    if (!isRecord(msg)) continue
+    const role = String(msg.role ?? 'unknown')
+    const text = String(msg.message ?? msg.content ?? msg.transcript ?? '').trim()
+    if (!text) continue
+    lines.push(`${role}: ${text}`)
+  }
+  if (lines.length) return lines.join('\n')
+
+  for (const msg of fallback) {
+    if (!isRecord(msg)) continue
+    const role = String(msg.role ?? 'unknown')
+    const text = String(msg.text ?? msg.content ?? '').trim()
+    if (!text || text.startsWith('[')) continue
+    lines.push(`${role}: ${text}`)
+  }
+  return lines.join('\n')
+}
+
+function extractStructuredClaim(call: Record<string, unknown> | null): Record<string, unknown> {
+  const artifact = isRecord(call?.artifact) ? call.artifact : null
+  const outputs = isRecord(artifact?.structuredOutputs) ? artifact.structuredOutputs : null
+  if (!outputs) return {}
+
+  const preferredId = Deno.env.get('VAPI_CLAIM_STRUCTURED_OUTPUT_ID')?.trim()
+  if (preferredId && isRecord(outputs[preferredId])) {
+    const result = outputs[preferredId].result
+    if (isRecord(result)) return result
+  }
+
+  for (const value of Object.values(outputs)) {
+    if (!isRecord(value)) continue
+    const name = String(value.name ?? '').toLowerCase()
+    const result = value.result
+    if (!isRecord(result)) continue
+    if (name.includes('claim') || name.includes('aegis') || result.title != null) {
+      return result
+    }
+  }
+
+  const first = Object.values(outputs)[0]
+  if (isRecord(first) && isRecord(first.result)) return first.result
+  return {}
+}
+
+function normalizeMatchText(value: string): string {
+  return value.toUpperCase().replace(/[^A-Z0-9]/g, '')
+}
+
+async function matchEmployeeRiskItem(
+  admin: ReturnType<typeof getServiceClient>,
+  accountId: string,
+  employeeId: string,
+  preferredId: string | null,
+  assetHint: string | null,
+) {
+  if (preferredId) {
+    const { data } = await admin
+      .from('portal_risk_items')
+      .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id')
+      .eq('id', preferredId)
+      .eq('account_id', accountId)
+      .maybeSingle()
+    if (data && (!data.employee_id || data.employee_id === employeeId)) return data
+  }
+
+  const { data: items } = await admin
+    .from('portal_risk_items')
+    .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id, asset_tag')
+    .eq('account_id', accountId)
+    .eq('employee_id', employeeId)
+
+  if (!items?.length) return null
+  if (!assetHint?.trim()) return items.length === 1 ? items[0] : null
+
+  const hint = normalizeMatchText(assetHint)
+  for (const item of items) {
+    const plate = extractPlateFromItem({
+      name: String(item.name ?? ''),
+      zoho_fields: (item.zoho_fields as Record<string, unknown>) ?? {},
+    })
+    const candidates = [
+      String(item.name ?? ''),
+      String(item.asset_tag ?? ''),
+      plate ?? '',
+    ].map(normalizeMatchText)
+    if (candidates.some((c) => c && (c.includes(hint) || hint.includes(c)))) {
+      return item
+    }
+  }
+  return null
+}
+
+async function storeVapiArtifacts(opts: {
+  admin: ReturnType<typeof getServiceClient>
+  accountId: string
+  employeeId: string
+  callId: string
+  recording: { bytes: Uint8Array; contentType: string; extension: string } | null
+  transcript: string
+}): Promise<{ recordingPath: string | null; transcriptPath: string | null }> {
+  const base = `${opts.accountId}/employee-claims/${opts.employeeId}/vapi-${opts.callId}`
+  let recordingPath: string | null = null
+  let transcriptPath: string | null = null
+
+  if (opts.recording) {
+    recordingPath = `${base}/recording.${opts.recording.extension}`
+    const { error } = await opts.admin.storage
+      .from('claim-attachments')
+      .upload(recordingPath, opts.recording.bytes, {
+        contentType: opts.recording.contentType,
+        upsert: true,
+      })
+    if (error) {
+      console.warn('Failed to store Vapi recording:', error)
+      recordingPath = null
+    }
+  }
+
+  if (opts.transcript.trim()) {
+    transcriptPath = `${base}/transcript.txt`
+    const bytes = new TextEncoder().encode(opts.transcript)
+    const { error } = await opts.admin.storage
+      .from('claim-attachments')
+      .upload(transcriptPath, bytes, {
+        contentType: 'text/plain; charset=utf-8',
+        upsert: true,
+      })
+    if (error) {
+      console.warn('Failed to store Vapi transcript file:', error)
+      transcriptPath = null
+    }
+  }
+
+  return { recordingPath, transcriptPath }
 }
 
 async function signAttachmentUrls(
@@ -585,15 +885,21 @@ Deno.serve(async (req) => {
         })
         .eq('id', session.id)
 
+      const caller = await loadVerifiedCallerProfile(emp.id, emp.account_id)
+
       return json({
         ok: true,
         session_token: sessionToken,
         expires_at: sessionExpires,
-        employee: {
-          id: emp.id,
-          full_name: emp.full_name,
-        },
+        employee: caller,
       })
+    }
+
+    // GET /profile — verified staff member for the active claim session (used by Vapi caller context)
+    if (req.method === 'GET' && action === 'profile') {
+      const session = await requireClaimSession(req)
+      const employee = await loadVerifiedCallerProfile(session.employee_id, session.account_id)
+      return json({ ok: true, employee })
     }
 
     // GET|POST /items — risk items for the verified employee
@@ -723,8 +1029,35 @@ Deno.serve(async (req) => {
         body.roadside_provider && typeof body.roadside_provider === 'object'
           ? body.roadside_provider
           : null
+      const vapiCallId = body.vapi_call_id ? String(body.vapi_call_id) : null
+      const vapiTranscript = body.vapi_transcript ? String(body.vapi_transcript) : null
+      const vapiRecordingPath = body.vapi_recording_path
+        ? String(body.vapi_recording_path)
+        : voice_note_url
+      const vapiTranscriptPath = body.vapi_transcript_path
+        ? String(body.vapi_transcript_path)
+        : null
+      const submittedVia = body.submitted_via === 'employee_vapi' ? 'employee_vapi' : 'employee_qr'
 
+      const attachmentSet = new Set<string>(attachments)
+      if (vapiRecordingPath) attachmentSet.add(vapiRecordingPath)
+      if (vapiTranscriptPath) attachmentSet.add(vapiTranscriptPath)
+      const mergedAttachments = [...attachmentSet]
       const admin = getServiceClient()
+
+      if (vapiCallId) {
+        const { data: existing } = await admin
+          .from('portal_claims')
+          .select(
+            'id, title, status, created_at, zoho_claim_id, risk_item_id, zoho_policy_id, vapi_call_id',
+          )
+          .eq('vapi_call_id', vapiCallId)
+          .maybeSingle()
+        if (existing) {
+          return json({ ok: true, claim: existing, status: 'submitted', duplicate: true })
+        }
+      }
+
       const { data: risk, error: riskErr } = await admin
         .from('portal_risk_items')
         .select('id, name, category, branch, zoho_risk_id, item_extensions, zoho_fields, employee_id')
@@ -772,6 +1105,7 @@ Deno.serve(async (req) => {
             risk.zoho_risk_id ? `Zoho risk: ${risk.zoho_risk_id}` : '',
             employee?.full_name ? `Employee: ${employee.full_name}` : '',
             broker_message ? `Broker notes:\n${broker_message}` : '',
+            vapiCallId ? `Vapi call: ${vapiCallId}` : '',
           ]
             .filter(Boolean)
             .join('\n'),
@@ -789,26 +1123,70 @@ Deno.serve(async (req) => {
           title,
           description,
           status: 'Submitted',
-          attachments,
-          voice_note_url,
+          attachments: mergedAttachments,
+          voice_note_url: vapiRecordingPath ?? voice_note_url,
           claim_amount: Number.isFinite(claim_amount as number) ? claim_amount : null,
           latitude,
           longitude,
           location_accuracy,
           photo_meta,
-          submitted_via: 'employee_qr',
+          submitted_via: submittedVia,
           broker_message,
           roadside_needed,
           roadside_call_preference: roadside_needed ? roadside_call_preference : null,
           roadside_provider:
             roadside_needed && roadside_call_preference === 'broker' ? roadside_provider : null,
+          vapi_call_id: vapiCallId,
+          vapi_transcript: vapiTranscript,
+          vapi_recording_path: vapiRecordingPath,
         })
-        .select('id, title, status, created_at, zoho_claim_id, risk_item_id, zoho_policy_id')
+        .select(
+          'id, title, status, created_at, zoho_claim_id, risk_item_id, zoho_policy_id, vapi_call_id, vapi_recording_path',
+        )
         .single()
       if (error) throw error
 
+      if (zohoClaimId) {
+        if (vapiRecordingPath) {
+          const { data: recFile } = await admin.storage
+            .from('claim-attachments')
+            .download(vapiRecordingPath)
+          if (recFile) {
+            const bytes = new Uint8Array(await recFile.arrayBuffer())
+            const ext = vapiRecordingPath.split('.').pop() || 'wav'
+            await uploadZohoClaimAttachment(
+              zohoClaimId,
+              `vapi-recording.${ext}`,
+              bytes,
+              recFile.type || 'audio/wav',
+            )
+          }
+        }
+        if (vapiTranscript || vapiTranscriptPath) {
+          let transcriptBytes: Uint8Array | null = null
+          if (vapiTranscriptPath) {
+            const { data: txtFile } = await admin.storage
+              .from('claim-attachments')
+              .download(vapiTranscriptPath)
+            if (txtFile) transcriptBytes = new Uint8Array(await txtFile.arrayBuffer())
+          }
+          if (!transcriptBytes && vapiTranscript) {
+            transcriptBytes = new TextEncoder().encode(vapiTranscript)
+          }
+          if (transcriptBytes) {
+            await uploadZohoClaimAttachment(
+              zohoClaimId,
+              'vapi-transcript.txt',
+              transcriptBytes,
+              'text/plain; charset=utf-8',
+            )
+          }
+        }
+      }
+
       const signedUrls = await signAttachmentUrls(admin, [
-        ...attachments,
+        ...mergedAttachments,
+        ...(vapiRecordingPath ? [vapiRecordingPath] : []),
         ...(voice_note_url ? [voice_note_url] : []),
       ])
 
@@ -826,7 +1204,9 @@ Deno.serve(async (req) => {
         : 'No'
 
       const waBody = [
-        'Aegis employee claim submitted',
+        submittedVia === 'employee_vapi'
+          ? 'Aegis employee voice claim submitted'
+          : 'Aegis employee claim submitted',
         `Employee: ${employee?.full_name ?? session.employee_id}`,
         employee?.whatsapp_number ? `Employee WA: ${employee.whatsapp_number}` : null,
         `Item: ${risk.name} (${risk.category})`,
@@ -838,6 +1218,7 @@ Deno.serve(async (req) => {
         description ? `Details: ${description}` : null,
         `Location: ${locationLine}`,
         `Roadside: ${roadsideLine}`,
+        vapiCallId ? `Vapi call: ${vapiCallId}` : null,
         broker_message ? `Extension / broker notes:\n${broker_message}` : null,
         signedUrls.length ? `Attachments:\n${signedUrls.map((u, i) => `${i + 1}. ${u}`).join('\n')}` : null,
         `Claim id: ${claim.id}`,
@@ -845,13 +1226,228 @@ Deno.serve(async (req) => {
         .filter(Boolean)
         .join('\n')
 
-      const waResult = await sendBrokerWhatsApp(waBody, signedUrls.filter((u) => /\.(jpe?g|png|gif|webp)(\?|$)/i.test(u) || u.includes('claim-attachments')))
+      const waResult = await sendBrokerWhatsApp(
+        waBody,
+        signedUrls.filter(
+          (u) => /\.(jpe?g|png|gif|webp)(\?|$)/i.test(u) || u.includes('claim-attachments'),
+        ),
+      )
 
       return json({
         ok: true,
+        status: 'submitted',
         claim,
         extension_notes: extNotes,
         broker_whatsapp: waResult,
+      })
+    }
+
+    // POST /vapi/complete — finish voice claim from Vapi call id
+    if (req.method === 'POST' && action === 'vapi' && segments[1] === 'complete') {
+      const session = await requireClaimSession(req)
+      const body = await req.json()
+      const callId = String(body.vapi_call_id ?? '').trim()
+      if (!callId) throw new Error('vapi_call_id is required')
+
+      const admin = getServiceClient()
+      const { data: existing } = await admin
+        .from('portal_claims')
+        .select(
+          'id, title, status, created_at, zoho_claim_id, risk_item_id, zoho_policy_id, vapi_call_id',
+        )
+        .eq('vapi_call_id', callId)
+        .maybeSingle()
+      if (existing) {
+        return json({ ok: true, status: 'submitted', claim: existing, duplicate: true })
+      }
+
+      const call = await fetchVapiCall(callId)
+      const structured = extractStructuredClaim(call)
+      const fallbackMessages = Array.isArray(body.transcript_fallback)
+        ? body.transcript_fallback
+        : []
+      const transcript = buildTranscriptFromArtifact(call, fallbackMessages)
+      const recording = await downloadVapiMonoRecording(callId)
+      const stored = await storeVapiArtifacts({
+        admin,
+        accountId: session.account_id,
+        employeeId: session.employee_id,
+        callId,
+        recording,
+        transcript,
+      })
+
+      const title = String(structured.title ?? '').trim()
+      const description = String(structured.description ?? '').trim()
+      const assetHint = String(structured.asset_name_or_plate ?? '').trim() || null
+      const preferredRiskId = body.risk_item_id ? String(body.risk_item_id) : null
+      const claimAmount =
+        structured.claim_amount != null && Number.isFinite(Number(structured.claim_amount))
+          ? Number(structured.claim_amount)
+          : null
+      const brokerMessage = String(structured.broker_message ?? '').trim()
+      const roadsideNeeded = structured.roadside_needed === true
+      const readyToSubmit = structured.ready_to_submit !== false
+
+      const risk = await matchEmployeeRiskItem(
+        admin,
+        session.account_id,
+        session.employee_id,
+        preferredRiskId,
+        assetHint,
+      )
+
+      const draft = {
+        title: title || (assetHint ? `Claim — ${assetHint}` : ''),
+        description:
+          description ||
+          (transcript
+            ? `Voice claim transcript summary:\n${transcript.slice(0, 1500)}`
+            : ''),
+        broker_message: brokerMessage || null,
+        claim_amount: claimAmount,
+        roadside_needed: roadsideNeeded,
+        risk_item_id: risk?.id ?? preferredRiskId,
+        asset_name_or_plate: assetHint,
+        ready_to_submit: readyToSubmit,
+      }
+
+      const canSubmit = Boolean(draft.title && risk?.id && readyToSubmit)
+      if (!canSubmit) {
+        return json({
+          ok: true,
+          status: 'needs_review',
+          draft,
+          vapi_call_id: callId,
+          vapi_recording_path: stored.recordingPath,
+          vapi_transcript_path: stored.transcriptPath,
+          vapi_transcript: transcript || null,
+          recording_ready: Boolean(stored.recordingPath),
+        })
+      }
+
+      const latitude = body.latitude != null ? Number(body.latitude) : null
+      const longitude = body.longitude != null ? Number(body.longitude) : null
+      const location_accuracy =
+        body.location_accuracy != null ? Number(body.location_accuracy) : null
+
+      const policy =
+        (await findLinkedPolicy(
+          admin,
+          session.account_id,
+          risk!.id,
+          risk!.zoho_risk_id ? String(risk!.zoho_risk_id) : null,
+        )) ?? null
+      const zohoPolicyId = policy?.zoho_policy_id ?? null
+      const extNotes = extensionNotesFromItem({
+        item_extensions: risk!.item_extensions,
+        covered_item: policy?.covered_item ?? null,
+        section_extensions: policy?.section_extensions,
+      })
+      const broker_message = [brokerMessage, ...extNotes].filter(Boolean).join('\n') || null
+
+      const { data: employee } = await admin
+        .from('portal_employees')
+        .select('id, full_name, whatsapp_number, email, job_title')
+        .eq('id', session.employee_id)
+        .maybeSingle()
+
+      let zohoClaimId: string | null = null
+      if (zohoPolicyId) {
+        zohoClaimId = await createZohoClaimBestEffort({
+          Name: draft.title,
+          Claim_Status: 'Submitted',
+          Client_Name: zohoPolicyId,
+          Claim_Address: [
+            draft.description,
+            `Risk item: ${risk!.name} (${risk!.category})`,
+            risk!.zoho_risk_id ? `Zoho risk: ${risk!.zoho_risk_id}` : '',
+            employee?.full_name ? `Employee: ${employee.full_name}` : '',
+            broker_message ? `Broker notes:\n${broker_message}` : '',
+            `Vapi call: ${callId}`,
+          ]
+            .filter(Boolean)
+            .join('\n'),
+        })
+      }
+
+      const attachments = [stored.recordingPath, stored.transcriptPath].filter(
+        Boolean,
+      ) as string[]
+      const { data: claim, error } = await admin
+        .from('portal_claims')
+        .insert({
+          account_id: session.account_id,
+          employee_id: session.employee_id,
+          risk_item_id: risk!.id,
+          zoho_policy_id: zohoPolicyId,
+          zoho_claim_id: zohoClaimId,
+          title: draft.title,
+          description: draft.description,
+          status: 'Submitted',
+          attachments,
+          voice_note_url: stored.recordingPath,
+          claim_amount: claimAmount,
+          latitude,
+          longitude,
+          location_accuracy,
+          photo_meta: [],
+          submitted_via: 'employee_vapi',
+          broker_message,
+          roadside_needed: roadsideNeeded,
+          roadside_call_preference: null,
+          roadside_provider: null,
+          vapi_call_id: callId,
+          vapi_transcript: transcript || null,
+          vapi_recording_path: stored.recordingPath,
+        })
+        .select(
+          'id, title, status, created_at, zoho_claim_id, risk_item_id, zoho_policy_id, vapi_call_id, vapi_recording_path',
+        )
+        .single()
+      if (error) throw error
+
+      if (zohoClaimId) {
+        if (recording && stored.recordingPath) {
+          await uploadZohoClaimAttachment(
+            zohoClaimId,
+            `vapi-recording.${recording.extension}`,
+            recording.bytes,
+            recording.contentType,
+          )
+        }
+        if (transcript) {
+          await uploadZohoClaimAttachment(
+            zohoClaimId,
+            'vapi-transcript.txt',
+            new TextEncoder().encode(transcript),
+            'text/plain; charset=utf-8',
+          )
+        }
+      }
+
+      const signedUrls = await signAttachmentUrls(admin, attachments)
+      const waBody = [
+        'Aegis employee voice claim submitted',
+        `Employee: ${employee?.full_name ?? session.employee_id}`,
+        `Item: ${risk!.name} (${risk!.category})`,
+        `Title: ${draft.title}`,
+        draft.description ? `Details: ${draft.description}` : null,
+        `Vapi call: ${callId}`,
+        `Claim id: ${claim.id}`,
+        signedUrls.length ? `Recording/transcript:\n${signedUrls.join('\n')}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+      const waResult = await sendBrokerWhatsApp(waBody, [])
+
+      return json({
+        ok: true,
+        status: 'submitted',
+        claim,
+        broker_whatsapp: waResult,
+        vapi_recording_path: stored.recordingPath,
+        vapi_transcript_path: stored.transcriptPath,
       })
     }
 

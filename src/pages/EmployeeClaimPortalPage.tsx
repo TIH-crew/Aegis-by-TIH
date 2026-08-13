@@ -1,8 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Camera, Car, Loader2, MapPin, Mic, MicOff, PhoneCall, ShieldCheck } from 'lucide-react'
+import { AegisSplashLoader } from '../components/brand/AegisSplashLoader'
+import { VapiCallPanel } from '../components/vapi/VapiCallPanel'
+import {
+  ROADSIDE_PROVIDERS,
+  type RoadsideCallPreference,
+  type RoadsideProvider,
+} from '../config/roadside-providers'
+import type { VapiCallerContext } from '../lib/vapi-caller-context'
 import {
   clearClaimSession,
+  completeVapiClaim,
+  fetchClaimProfile,
   listClaimItems,
   loadClaimSession,
   matchClaimVehicle,
@@ -14,13 +24,9 @@ import {
   verifyClaimOtp,
   type ClaimPhotoMeta,
   type ClaimRiskItem,
+  type ClaimVerifiedEmployee,
 } from '../services/employee-claim.service'
-import {
-  ROADSIDE_PROVIDERS,
-  type RoadsideCallPreference,
-  type RoadsideProvider,
-} from '../config/roadside-providers'
-import { AegisSplashLoader } from '../components/brand/AegisSplashLoader'
+import type { VapiCallSessionRecord } from '../types/vapi-call'
 
 type Step = 'loading' | 'otp' | 'form' | 'done' | 'error'
 
@@ -48,6 +54,15 @@ export function EmployeeClaimPortalPage() {
   const [otpChannel, setOtpChannel] = useState<string | null>(null)
   const [sessionToken, setSessionToken] = useState<string | null>(null)
   const [employeeName, setEmployeeName] = useState('')
+  const [verifiedEmployee, setVerifiedEmployee] = useState<ClaimVerifiedEmployee | null>(null)
+  const [completingVoice, setCompletingVoice] = useState(false)
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null)
+  const [stagedVapi, setStagedVapi] = useState<{
+    callId: string
+    recordingPath: string | null
+    transcriptPath: string | null
+    transcript: string | null
+  } | null>(null)
 
   const [items, setItems] = useState<ClaimRiskItem[]>([])
   const [loadingItems, setLoadingItems] = useState(false)
@@ -82,6 +97,20 @@ export function EmployeeClaimPortalPage() {
   const selectedItem = items.find((i) => i.id === selectedItemId) ?? null
   const showVehicleId =
     identifyVehicle || (selectedItem != null && isMotorCategory(selectedItem.category))
+
+  const callerContext = useMemo<VapiCallerContext | null>(() => {
+    if (!verifiedEmployee) return null
+    return {
+      employee: verifiedEmployee,
+      claim: {
+        selected_item_id: selectedItem?.id ?? null,
+        selected_item_name: selectedItem?.name ?? null,
+        selected_item_category: selectedItem?.category ?? null,
+        latitude: geo?.latitude ?? null,
+        longitude: geo?.longitude ?? null,
+      },
+    }
+  }, [verifiedEmployee, selectedItem, geo])
 
   const watchGeo = useCallback(() => {
     if (!navigator.geolocation) {
@@ -136,6 +165,21 @@ export function EmployeeClaimPortalPage() {
           setSessionToken(existing.token)
           setStep('form')
           watchGeo()
+          try {
+            const profile = await fetchClaimProfile(existing.token)
+            if (!cancelled) {
+              setVerifiedEmployee(profile.employee)
+              setEmployeeName(profile.employee.full_name)
+            }
+          } catch {
+            // Session may be stale — fall through to OTP
+            if (!cancelled) {
+              clearClaimSession()
+              setSessionToken(null)
+              setStep('otp')
+              return
+            }
+          }
           await loadItems(existing.token)
         } else {
           setStep('otp')
@@ -181,6 +225,7 @@ export function EmployeeClaimPortalPage() {
       const result = await verifyClaimOtp(token, otpCode)
       saveClaimSession(result.session_token, result.expires_at)
       setSessionToken(result.session_token)
+      setVerifiedEmployee(result.employee)
       setEmployeeName(result.employee.full_name)
       setStep('form')
       watchGeo()
@@ -291,6 +336,57 @@ export function EmployeeClaimPortalPage() {
     setRecording(false)
   }
 
+  async function handleVapiCallEnded(session: VapiCallSessionRecord) {
+    if (!sessionToken || !session.callId) {
+      setVoiceNotice('Call ended, but no call id was available to lodge the claim.')
+      return
+    }
+    setCompletingVoice(true)
+    setError(null)
+    setVoiceNotice('Saving call recording and lodging your claim…')
+    try {
+      const result = await completeVapiClaim(sessionToken, {
+        vapi_call_id: session.callId,
+        risk_item_id: selectedItemId,
+        latitude: geo?.latitude ?? null,
+        longitude: geo?.longitude ?? null,
+        location_accuracy: geo?.accuracy ?? null,
+        transcript_fallback: session.messages
+          .filter((m) => m.role === 'user' || m.role === 'assistant')
+          .map((m) => ({ role: String(m.role), text: m.text })),
+      })
+
+      if (result.status === 'submitted') {
+        clearClaimSession()
+        setShownProviders([])
+        setVoiceNotice('Voice claim submitted. Recording and transcript were saved.')
+        setStep('done')
+        return
+      }
+
+      const draft = result.draft
+      if (draft?.title) setTitle(draft.title)
+      if (draft?.description) setDescription(draft.description)
+      if (draft?.broker_message) setBrokerMessage(draft.broker_message)
+      if (draft?.roadside_needed) setRoadsideNeeded(true)
+      if (draft?.risk_item_id) setSelectedItemId(draft.risk_item_id)
+      setStagedVapi({
+        callId: result.vapi_call_id ?? session.callId,
+        recordingPath: result.vapi_recording_path ?? null,
+        transcriptPath: result.vapi_transcript_path ?? null,
+        transcript: result.vapi_transcript ?? null,
+      })
+      setVoiceNotice(
+        'We saved the call recording and transcript. Please confirm the claim details below and submit.',
+      )
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to complete voice claim')
+      setVoiceNotice(null)
+    } finally {
+      setCompletingVoice(false)
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!sessionToken) return
@@ -321,16 +417,26 @@ export function EmployeeClaimPortalPage() {
         longitude: geo?.longitude ?? null,
         location_accuracy: geo?.accuracy ?? null,
         photo_meta: photos,
-        attachments: photos.map((p) => p.url),
-        voice_note_url,
+        attachments: [
+          ...photos.map((p) => p.url),
+          ...(stagedVapi?.transcriptPath ? [stagedVapi.transcriptPath] : []),
+          ...(stagedVapi?.recordingPath ? [stagedVapi.recordingPath] : []),
+        ],
+        voice_note_url: stagedVapi?.recordingPath ?? voice_note_url,
         roadside_needed: roadsideNeeded,
         roadside_call_preference: roadsideNeeded ? roadsidePref : null,
         roadside_provider:
           roadsideNeeded && roadsidePref === 'broker' && selectedProvider
             ? { ...selectedProvider }
             : null,
+        vapi_call_id: stagedVapi?.callId ?? null,
+        vapi_transcript: stagedVapi?.transcript ?? null,
+        vapi_recording_path: stagedVapi?.recordingPath ?? null,
+        vapi_transcript_path: stagedVapi?.transcriptPath ?? null,
+        submitted_via: stagedVapi ? 'employee_vapi' : 'employee_qr',
       })
       clearClaimSession()
+      setStagedVapi(null)
       if (roadsideNeeded && roadsidePref === 'broker') {
         setShownProviders(ROADSIDE_PROVIDERS)
       } else {
@@ -353,8 +459,8 @@ export function EmployeeClaimPortalPage() {
           </p>
           <h1 className="mt-2 text-2xl font-semibold">Employee claim</h1>
           <p className="mt-1 text-sm text-rose-100/80">
-            Verify via WhatsApp, choose the insured item, then submit photos, location and a voice
-            note.
+            Verify via WhatsApp, then log your claim by voice with the assistant or complete the
+            form with photos, location and a voice note.
           </p>
         </header>
 
@@ -435,12 +541,41 @@ export function EmployeeClaimPortalPage() {
         )}
 
         {step === 'form' && (
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-5 rounded-2xl border border-white/10 bg-black/25 p-5 shadow-xl backdrop-blur"
-          >
+          <div className="space-y-5">
+            <VapiCallPanel
+              theme="claim"
+              callerContext={callerContext}
+              onCallEnded={(session) => void handleVapiCallEnded(session)}
+            />
+            {(completingVoice || voiceNotice) && (
+              <p className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-rose-100/90">
+                {completingVoice ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 size={12} className="animate-spin" /> Saving recording & lodging claim…
+                  </span>
+                ) : (
+                  voiceNotice
+                )}
+              </p>
+            )}
+            {stagedVapi?.transcript && (
+              <details className="rounded-xl border border-white/15 bg-black/20 px-3 py-2 text-xs text-rose-100/85">
+                <summary className="cursor-pointer font-medium text-white">Call transcript</summary>
+                <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap font-sans">
+                  {stagedVapi.transcript}
+                </pre>
+              </details>
+            )}
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5 rounded-2xl border border-white/10 bg-black/25 p-5 shadow-xl backdrop-blur"
+            >
             <p className="text-sm text-rose-100/80">
               Signed in as <span className="font-medium text-white">{employeeName || firstName}</span>
+              {verifiedEmployee?.company_name ? (
+                <span className="text-rose-100/70"> · {verifiedEmployee.company_name}</span>
+              ) : null}
             </p>
 
             {selectedItem && (
@@ -765,6 +900,7 @@ export function EmployeeClaimPortalPage() {
               {submitting ? 'Submitting…' : 'Submit claim'}
             </button>
           </form>
+          </div>
         )}
 
         {step === 'done' && (
@@ -772,7 +908,11 @@ export function EmployeeClaimPortalPage() {
             <div className="text-center">
               <p className="text-lg font-semibold text-emerald-100">Claim submitted</p>
               <p className="mt-2 text-sm text-emerald-100/80">
-                Your broker has received the details, photos, location and voice note.
+                Your broker has received the details
+                {stagedVapi || voiceNotice?.includes('Voice claim')
+                  ? ', call recording and transcript'
+                  : ', photos, location and voice note'}
+                .
               </p>
             </div>
             {shownProviders.length > 0 && (

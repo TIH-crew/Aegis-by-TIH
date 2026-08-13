@@ -124,15 +124,36 @@ export function ClaimDetailPage() {
             </p>
           </div>
         )}
-        {claim.voice_note_url && (
-          <a
-            href={claim.voice_note_url}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-          >
-            <Mic size={14} /> Voice note
-          </a>
+        {(claim.vapi_recording_url || claim.voice_note_url) && (
+          <div className="mt-4 rounded-lg border border-border bg-page px-4 py-3">
+            <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted">
+              <Mic size={12} />
+              {claim.vapi_call_id ? 'Vapi call recording' : 'Voice note'}
+            </p>
+            {claim.vapi_recording_url ? (
+              <audio controls src={claim.vapi_recording_url} className="w-full" />
+            ) : claim.voice_note_url ? (
+              <a
+                href={claim.voice_note_url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              >
+                <Mic size={14} /> Open voice file
+              </a>
+            ) : null}
+            {claim.vapi_call_id && (
+              <p className="mt-2 text-xs text-muted">Call id: {claim.vapi_call_id}</p>
+            )}
+          </div>
+        )}
+        {claim.vapi_transcript && (
+          <div className="mt-3 rounded-lg border border-border bg-page px-4 py-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted">Call transcript</p>
+            <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap font-sans text-sm text-gray-900">
+              {claim.vapi_transcript}
+            </pre>
+          </div>
         )}
       </section>
 
