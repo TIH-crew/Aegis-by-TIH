@@ -393,17 +393,33 @@ async function attachItemExtensions(
   accountId: string,
   items: CoveredItem[],
 ): Promise<CoveredItem[]> {
-  const riskIds = items
-    .map((item) => item.risk_item_id)
-    .filter((id): id is string => Boolean(id))
+  const riskIds = [
+    ...new Set(
+      items
+        .map((item) => item.risk_item_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ]
   if (riskIds.length === 0) return items
 
-  const { data: riskRows } = await supabase
-    .from('portal_risk_items')
-    .select('id, item_extensions')
-    .eq('account_id', accountId)
-    .in('id', riskIds)
-  const byId = new Map((riskRows ?? []).map((risk) => [risk.id, risk.item_extensions]))
+  const byId = new Map<string, unknown>()
+  const chunkSize = 80
+  for (let i = 0; i < riskIds.length; i += chunkSize) {
+    const chunk = riskIds.slice(i, i + chunkSize)
+    const { data: riskRows, error } = await supabase
+      .from('portal_risk_items')
+      .select('id, item_extensions')
+      .eq('account_id', accountId)
+      .in('id', chunk)
+    if (error) {
+      console.warn('attachItemExtensions chunk failed:', error.message)
+      continue
+    }
+    for (const risk of riskRows ?? []) {
+      byId.set(risk.id, risk.item_extensions)
+    }
+  }
+
   return items.map((item) => ({
     ...item,
     selected_extensions: item.risk_item_id
@@ -777,6 +793,55 @@ export async function fetchPolicy(id: string): Promise<PolicyDetail> {
   if (!zohoAccountId) return fetchPortalPolicy(accountId, id)
 
   const portalRow = await findPortalPolicy(accountId, id).catch(() => null)
+
+  // Prefer the portal schedule whenever it has items — Zoho Covered_Items subforms
+  // are often sparse/empty for large motor fleets (e.g. B00000050).
+  if (portalRow) {
+    const portalItems = mapStoredCoveredItems(portalRow.covered_items)
+    if (portalItems.length > 0) {
+      const enriched = await attachItemExtensions(
+        accountId,
+        await enrichCoveredItemsFromScheduleBundle(portalRow.policy_number, portalItems),
+      )
+      let zohoMeta: Partial<PolicyDetail> = {}
+      const zohoPolicyId =
+        portalRow.zoho_policy_id && /^\d{10,}$/.test(String(portalRow.zoho_policy_id))
+          ? String(portalRow.zoho_policy_id)
+          : null
+      if (zohoPolicyId) {
+        try {
+          const data = await crmFetch<{ policy: PolicyDetail }>(`policies/${zohoPolicyId}`)
+          zohoMeta = data.policy
+        } catch {
+          /* portal schedule is enough */
+        }
+      }
+      return {
+        id: String(portalRow.id),
+        zoho_policy_id: portalRow.zoho_policy_id ?? zohoMeta.zoho_policy_id ?? null,
+        policy_number: portalRow.policy_number ?? zohoMeta.policy_number ?? 'Policy',
+        insurer_policy_number:
+          portalRow.insurer_policy_number ?? zohoMeta.insurer_policy_number ?? null,
+        status: portalRow.status ?? zohoMeta.status ?? null,
+        premium: portalRow.premium != null ? Number(portalRow.premium) : (zohoMeta.premium ?? null),
+        sasria_premium:
+          portalRow.sasria_premium != null
+            ? Number(portalRow.sasria_premium)
+            : (zohoMeta.sasria_premium ?? null),
+        fee_premium:
+          portalRow.fee_premium != null ? Number(portalRow.fee_premium) : (zohoMeta.fee_premium ?? null),
+        inception_date: portalRow.inception_date ?? zohoMeta.inception_date ?? null,
+        renewal_date: portalRow.renewal_date ?? zohoMeta.renewal_date ?? null,
+        insurer: portalRow.insurer ?? zohoMeta.insurer ?? null,
+        product_line: portalRow.product_line ?? zohoMeta.product_line ?? null,
+        frequency: portalRow.frequency ?? zohoMeta.frequency ?? null,
+        covered_items: enriched,
+        section_extensions: sectionExtensionsForPolicy(portalRow, enriched),
+        attachments: zohoMeta.attachments ?? [],
+      }
+    }
+  }
+
   const zohoPolicyId =
     portalRow?.zoho_policy_id && /^\d{10,}$/.test(String(portalRow.zoho_policy_id))
       ? String(portalRow.zoho_policy_id)
@@ -785,31 +850,15 @@ export async function fetchPolicy(id: string): Promise<PolicyDetail> {
   try {
     const data = await crmFetch<{ policy: PolicyDetail }>(`policies/${zohoPolicyId}`)
     const zohoPolicy = data.policy
-
-    if (portalRow) {
-      const portalItems = mapStoredCoveredItems(portalRow.covered_items)
-      const enriched = await attachItemExtensions(
-        accountId,
-        await enrichCoveredItemsFromScheduleBundle(portalRow.policy_number, portalItems),
-      )
-      if (enriched.length >= (zohoPolicy.covered_items?.length ?? 0)) {
-        return {
-          ...zohoPolicy,
-          id: portalRow.id,
-          zoho_policy_id: portalRow.zoho_policy_id ?? zohoPolicy.zoho_policy_id,
-          policy_number: portalRow.policy_number ?? zohoPolicy.policy_number,
-          insurer_policy_number:
-            portalRow.insurer_policy_number ?? zohoPolicy.insurer_policy_number,
-          covered_items: enriched,
-          section_extensions: sectionExtensionsForPolicy(portalRow, enriched),
-        }
-      }
-      if ((zohoPolicy.covered_items?.length ?? 0) > 0) {
-        return { ...zohoPolicy, id: portalRow.id, zoho_policy_id: portalRow.zoho_policy_id ?? undefined }
-      }
+    if ((zohoPolicy.covered_items?.length ?? 0) > 0) {
+      return portalRow
+        ? {
+            ...zohoPolicy,
+            id: portalRow.id,
+            zoho_policy_id: portalRow.zoho_policy_id ?? zohoPolicy.zoho_policy_id,
+          }
+        : zohoPolicy
     }
-
-    if ((zohoPolicy.covered_items?.length ?? 0) > 0) return zohoPolicy
     return fetchPortalPolicy(accountId, id)
   } catch {
     return fetchPortalPolicy(accountId, id)

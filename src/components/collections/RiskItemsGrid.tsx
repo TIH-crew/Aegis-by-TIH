@@ -64,6 +64,9 @@ export function RiskItemsGrid({ items, visibleColumns }: RiskItemsGridProps) {
             {visibleColumns.branch && (
               <Row label="Branch" value={item.branch ?? '—'} />
             )}
+            {visibleColumns.employee_name && (
+              <Row label="Assigned to" value={item.employee_name ?? 'Unassigned'} />
+            )}
             {visibleColumns.unit_cost && (
               <Row label="Unit cost" value={formatCurrency(item.unit_cost)} />
             )}

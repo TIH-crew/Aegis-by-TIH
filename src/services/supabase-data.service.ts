@@ -16,6 +16,7 @@ function mapRow(row: RiskItem): RiskItem {
     zoho_risk_id: row.zoho_risk_id ?? null,
     item_extensions: row.item_extensions ?? [],
     employee_id: row.employee_id ?? null,
+    employee_name: row.employee_name ?? null,
     assignment_status: row.assignment_status ?? 'unassigned',
     vehicle_verification: (row.vehicle_verification as Record<string, unknown>) ?? {},
     is_rental: Boolean(row.is_rental),
@@ -51,17 +52,24 @@ export function createSupabaseDataService(
 
   return {
     async getRiskItems() {
-      let q = supabase
-        .from('portal_risk_items')
-        .select('*')
-        .eq('account_id', accountId)
-        .order('record_date', { ascending: false })
-      if (branchId) q = q.eq('branch_id', branchId)
+      const pageSize = 1000
+      const rows: RiskItem[] = []
+      for (let from = 0; ; from += pageSize) {
+        let q = supabase
+          .from('portal_risk_items')
+          .select('*')
+          .eq('account_id', accountId)
+          .order('record_date', { ascending: false })
+          .range(from, from + pageSize - 1)
+        if (branchId) q = q.eq('branch_id', branchId)
 
-      const { data, error } = await q
-
-      if (error) throw error
-      return (data ?? []).map(mapRow)
+        const { data, error } = await q
+        if (error) throw error
+        const batch = (data ?? []).map(mapRow)
+        rows.push(...batch)
+        if (batch.length < pageSize) break
+      }
+      return rows
     },
 
     async getRiskItem(id) {

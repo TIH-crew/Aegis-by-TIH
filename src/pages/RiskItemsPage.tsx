@@ -55,6 +55,10 @@ export function RiskItemsPage() {
     return [...new Set([...fromBranches, ...fromItems])].sort()
   }, [riskItems, branches])
 
+  const assigneeOptions = useMemo(() => {
+    return [...new Set(riskItems.map((i) => i.employee_name).filter(Boolean) as string[])].sort()
+  }, [riskItems])
+
   const displayedItems = useMemo(() => {
     const filtered = riskItems.filter(
       (item) => matchesSearch(item, query) && matchesFilters(item, filters),
@@ -115,6 +119,20 @@ export function RiskItemsPage() {
                 {branchOptions.map((b) => (
                   <option key={b} value={b}>
                     {b}
+                  </option>
+                ))}
+              </select>
+            </FilterField>
+            <FilterField label="Assigned to">
+              <select
+                className="field-input"
+                value={filters.employee_name}
+                onChange={(e) => setFilters((f) => ({ ...f, employee_name: e.target.value }))}
+              >
+                <option value="">All staff</option>
+                {assigneeOptions.map((name) => (
+                  <option key={name} value={name}>
+                    {name}
                   </option>
                 ))}
               </select>

@@ -146,29 +146,49 @@ ON CONFLICT (id) DO UPDATE SET
   status = 'active',
   updated_at = now();
 
--- Assign a portion of items to employees
+-- Assign a portion of Kawari items to employees (keep ~1/3 assigned)
 UPDATE portal_risk_items r
 SET employee_id = CASE
-  WHEN r.account_id = 'b1111111-1111-4111-8111-111111111147' AND r.branch_id = 'c4444444-4444-4444-8444-444444444401'
+  WHEN r.branch_id = 'c4444444-4444-4444-8444-444444444401'
     THEN (ARRAY['e5555555-5555-4555-8555-555555555501'::uuid,'e5555555-5555-4555-8555-555555555502'::uuid])[1 + (abs(hashtext(r.id::text)) % 2)]
-  WHEN r.account_id = 'b1111111-1111-4111-8111-111111111147'
-    THEN (ARRAY['e5555555-5555-4555-8555-555555555503'::uuid,'e5555555-5555-4555-8555-555555555504'::uuid])[1 + (abs(hashtext(r.id::text)) % 2)]
-  WHEN r.account_id = 'b1111111-1111-4111-8111-111111111151'
-    THEN (ARRAY['e5555555-5555-4555-8555-555555555511'::uuid,'e5555555-5555-4555-8555-555555555512'::uuid,'e5555555-5555-4555-8555-555555555513'::uuid,'e5555555-5555-4555-8555-555555555514'::uuid])[1 + (abs(hashtext(r.id::text)) % 4)]
-  ELSE r.employee_id
+  ELSE (ARRAY['e5555555-5555-4555-8555-555555555503'::uuid,'e5555555-5555-4555-8555-555555555504'::uuid])[1 + (abs(hashtext(r.id::text)) % 2)]
 END,
-assignment_status = CASE WHEN (abs(hashtext(r.id::text)) % 3) = 0 THEN 'assigned' ELSE r.assignment_status END,
+assignment_status = 'assigned',
 updated_at = now()
-WHERE r.account_id IN (
-  'b1111111-1111-4111-8111-111111111147',
-  'b1111111-1111-4111-8111-111111111151'
-)
-AND (abs(hashtext(r.id::text)) % 3) = 0;
+WHERE r.account_id = 'b1111111-1111-4111-8111-111111111147'
+  AND (abs(hashtext(r.id::text)) % 3) = 0;
+
+-- Assign every Medilogistics item to staff by role
+UPDATE portal_risk_items r
+SET
+  employee_id = CASE
+    WHEN r.category = 'Motor'
+      AND (
+        r.name ~* '(FRR|NMR|NPR|FAW|FORKLIFT|BENDI|CROWN|TRAILER|YAMAHA|YBR|SCORPION|CHALLENGER)'
+        OR coalesce(r.insurance_section, '') ~* '(Heavy|Forklift|Trailer|Motor Cycle)'
+        OR coalesce(r.zoho_fields->>'vehicle_type', '') ~* '(Heavy|Forklift|Trailer|Motor Cycle)'
+      )
+      THEN 'e5555555-5555-4555-8555-555555555511'::uuid
+    WHEN r.category = 'Motor'
+      THEN (ARRAY[
+        'e5555555-5555-4555-8555-555555555511'::uuid,
+        'e5555555-5555-4555-8555-555555555513'::uuid
+      ])[1 + (abs(hashtext(r.id::text)) % 2)]
+    WHEN r.category = 'Electronic Equipment'
+      THEN 'e5555555-5555-4555-8555-555555555514'::uuid
+    WHEN r.category IN ('Building', 'Contents', 'Liability')
+      OR r.insurance_section IN ('Fire', 'Office Contents', 'Public Liability', 'Accidental Damage')
+      THEN 'e5555555-5555-4555-8555-555555555512'::uuid
+    ELSE 'e5555555-5555-4555-8555-555555555514'::uuid
+  END,
+  assignment_status = 'assigned',
+  updated_at = now()
+WHERE r.account_id = 'b1111111-1111-4111-8111-111111111151';
 
 UPDATE portal_risk_items r
 SET employee_name = e.full_name
 FROM portal_employees e
-WHERE r.employee_id = e.id AND (r.employee_name IS NULL OR r.employee_name = '');
+WHERE r.employee_id = e.id AND (r.employee_name IS NULL OR r.employee_name <> e.full_name);
 
 -- 7) Pharmacy sample assets
 INSERT INTO portal_risk_items (

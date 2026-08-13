@@ -31,6 +31,7 @@ export function RiskItemsTable({ items, visibleColumns, selectedId, onSelect }: 
               {visibleColumns.attachments && <th className="px-4 py-3">Attachments</th>}
               {visibleColumns.category && <th className="px-4 py-3">Category</th>}
               {visibleColumns.branch && <th className="px-4 py-3">Branch</th>}
+              {visibleColumns.employee_name && <th className="px-4 py-3">Assigned To</th>}
               {visibleColumns.unit_cost && <th className="px-4 py-3">Unit Cost</th>}
               {visibleColumns.record_date && <th className="px-4 py-3">Date</th>}
               {visibleColumns.insurance_status && <th className="px-4 py-3">Status</th>}
@@ -75,6 +76,9 @@ export function RiskItemsTable({ items, visibleColumns, selectedId, onSelect }: 
                 )}
                 {visibleColumns.branch && (
                   <td className="px-4 py-3 text-gray-700">{item.branch ?? '—'}</td>
+                )}
+                {visibleColumns.employee_name && (
+                  <td className="px-4 py-3 text-gray-700">{item.employee_name ?? 'Unassigned'}</td>
                 )}
                 {visibleColumns.unit_cost && (
                   <td className="px-4 py-3 text-gray-700">{formatCurrency(item.unit_cost)}</td>

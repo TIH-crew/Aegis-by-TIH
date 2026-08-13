@@ -105,7 +105,7 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
     const body = new URLSearchParams({
       To: `whatsapp:${toE164}`,
       From: fromWa,
-      Body: `Aegis claim verification code: ${code}. Valid for 10 minutes.`,
+      Body: `The Hive (AEGIS portal) claim verification code: ${code}. Valid for 10 minutes.`,
     })
     const res = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,

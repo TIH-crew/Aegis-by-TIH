@@ -33,19 +33,34 @@ export async function refreshPortalAccountFromZoho(
   const zohoAccount = await fetchZohoAccount(zohoAccountId)
   const snapshot = mapZohoAccountSnapshot(zohoAccount)
 
+  // Subsidiary display names (Kawari / Medilogistics / Pharmacy) are curated in Aegis.
+  // Zoho Account_Name often mirrors the parent brand and must not overwrite them.
+  const { data: existing } = await supabase
+    .from('portal_accounts')
+    .select('id, parent_account_id, name')
+    .eq('id', portalAccountId)
+    .maybeSingle()
+
+  const patch: Record<string, unknown> = {
+    phone: snapshot.phone,
+    website: snapshot.website,
+    registration_number: snapshot.registration_number,
+    vat_number: snapshot.vat_number,
+    industry: snapshot.industry,
+    zoho_synced_at: new Date().toISOString(),
+  }
+  if (!existing?.parent_account_id) {
+    patch.name = snapshot.name
+  }
+
   const { error } = await supabase
     .from('portal_accounts')
-    .update({
-      name: snapshot.name,
-      phone: snapshot.phone,
-      website: snapshot.website,
-      registration_number: snapshot.registration_number,
-      vat_number: snapshot.vat_number,
-      industry: snapshot.industry,
-      zoho_synced_at: new Date().toISOString(),
-    })
+    .update(patch)
     .eq('id', portalAccountId)
 
   if (error) throw error
-  return snapshot
+  return {
+    ...snapshot,
+    name: existing?.parent_account_id ? String(existing.name) : snapshot.name,
+  }
 }

@@ -3,8 +3,14 @@ BEGIN;
 UPDATE portal_accounts SET registration_number = '2014/089301/07', name = 'Medipost FTRR&I' WHERE id = '3a842763-e5f2-43f7-87c2-2a5429738fb3';
 INSERT INTO portal_accounts (id, name, parent_account_id, zoho_account_id, industry, registration_number, phone, aegis_status)
 VALUES ('b1111111-1111-4111-8111-111111111147', 'Kawari Wholesalers (Pty) Ltd', '3a842763-e5f2-43f7-87c2-2a5429738fb3', '7351644000003979001', 'Wholesale', '2004/015737/07', '+27 12 426 4001', 'active')
-ON CONFLICT (id) DO UPDATE SET parent_account_id = EXCLUDED.parent_account_id, zoho_account_id = EXCLUDED.zoho_account_id,
-  registration_number = EXCLUDED.registration_number, aegis_status = 'active';
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  parent_account_id = EXCLUDED.parent_account_id,
+  zoho_account_id = EXCLUDED.zoho_account_id,
+  registration_number = EXCLUDED.registration_number,
+  industry = EXCLUDED.industry,
+  phone = EXCLUDED.phone,
+  aegis_status = 'active';
 INSERT INTO portal_accounts (id, name, parent_account_id, zoho_account_id, industry, registration_number, phone, aegis_status)
 VALUES ('b1111111-1111-4111-8111-111111111151', 'Medilogistics FTRR&I', '3a842763-e5f2-43f7-87c2-2a5429738fb3', '7351644000003987001', 'Logistics', '2011/129984/07', '+27 12 426 4000', 'active')
 ON CONFLICT (id) DO UPDATE SET parent_account_id = EXCLUDED.parent_account_id, zoho_account_id = EXCLUDED.zoho_account_id,
