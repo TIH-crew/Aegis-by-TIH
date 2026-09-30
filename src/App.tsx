@@ -34,6 +34,11 @@ import { MovementsPage } from './pages/MovementsPage'
 import { FinancePage } from './pages/FinancePage'
 import { TaxPage } from './pages/TaxPage'
 import { InsuranceHubPage } from './pages/InsuranceHubPage'
+import { LedgerAssetsPage } from './pages/LedgerAssetsPage'
+import { LedgerAssetDetailPage } from './pages/LedgerAssetDetailPage'
+import { IncidentsPage, IncidentDetailPage } from './pages/IncidentsPage'
+import { AssetImportPage } from './pages/AssetImportPage'
+import { AuditsPage } from './pages/AuditsPage'
 import { AegisSplashLoader } from './components/brand/AegisSplashLoader'
 import { useAuth } from './context/AuthContext'
 
@@ -92,6 +97,12 @@ export default function App() {
                 <Route element={<RequireCapability capability="risk_items" />}>
                   <Route path="/assets" element={<RiskItemsPage />} />
                   <Route path="/assets/new" element={<AddRiskItemPage />} />
+                  <Route path="/assets/ledger" element={<LedgerAssetsPage />} />
+                  <Route path="/assets/ledger/:id" element={<LedgerAssetDetailPage />} />
+                  <Route path="/assets/incidents" element={<IncidentsPage />} />
+                  <Route path="/assets/incidents/:id" element={<IncidentDetailPage />} />
+                  <Route path="/assets/import" element={<AssetImportPage />} />
+                  <Route path="/assets/audits" element={<AuditsPage />} />
                   <Route path="/assets/:id" element={<RiskItemDetailPage />} />
                   {/* Backward-compatible paths */}
                   <Route path="/collections/risk-items" element={<RiskItemsPage />} />

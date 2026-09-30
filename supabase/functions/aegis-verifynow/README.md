@@ -1,10 +1,20 @@
-# Proxy for VerifyNow.co.za (drivers licence, licence disc, number plate / vehicle lookup).
+# aegis-verifynow
 
-POST /aegis-verifynow/drivers-licence
-POST /aegis-verifynow/vehicle-licence-disc
-POST /aegis-verifynow/vehicle   (number plate lookup)
+Proxy for VerifyNow.co.za. **Drivers licence barcode verification only.**
 
-Requires Authorization: Bearer <portal user JWT>.
+Vehicle licence-disc scan and number-plate lookup have been **retired** (HTTP 410). Enter motor asset details manually in the portal.
 
-Set secret:
-  supabase secrets set VERIFYNOW_API_KEY=vn_live_...
+## Endpoints
+
+| Method | Path | Status |
+|--------|------|--------|
+| POST | `/aegis-verifynow/drivers-licence` | Active |
+| POST | `/aegis-verifynow/vehicle` | Retired (410) |
+| POST | `/aegis-verifynow/vehicle-licence-disc` | Retired (410) |
+| GET | `/aegis-verifynow/health` | Active |
+
+## Secrets
+
+```bash
+supabase secrets set VERIFYNOW_API_KEY=vn_live_...
+```

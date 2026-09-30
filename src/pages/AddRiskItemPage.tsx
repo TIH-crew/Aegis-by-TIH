@@ -9,7 +9,6 @@ import {
   validateMotorRental,
   type MotorRentalValue,
 } from '../components/risk-items/MotorRentalPanel'
-import { MotorVerifyPanel } from '../components/risk-items/MotorVerifyPanel'
 import {
   PurchaseProofPanel,
   emptyPurchaseProof,
@@ -58,7 +57,6 @@ export function AddRiskItemPage() {
   const [rental, setRental] = useState<MotorRentalValue>(emptyRental)
   const [extras, setExtras] = useState<ExtrasQuestionnaireAnswers>(emptyExtrasAnswers())
   const [purchase, setPurchase] = useState<PurchaseProofValue>(emptyPurchaseProof())
-  const [motorVerified, setMotorVerified] = useState(false)
   const [form, setForm] = useState({
     name: '',
     category: RISK_CATEGORIES[0] as string,
@@ -126,8 +124,8 @@ export function AddRiskItemPage() {
         return
       }
       const plate = String(form.zoho_fields?.Registration_Number ?? '').trim()
-      if (!motorVerified && !plate) {
-        setError('Scan the licence disc or look up the number plate before saving a vehicle.')
+      if (!plate) {
+        setError('Enter the vehicle registration / number plate before saving.')
         return
       }
     }
@@ -395,22 +393,76 @@ export function AddRiskItemPage() {
 
         {isMotor && (
           <>
-            <MotorVerifyPanel
-              registrationNumber={String(form.zoho_fields?.Registration_Number ?? '')}
-              onApply={(payload) => {
-                setMotorVerified(true)
-                setForm((prev) => ({
-                  ...prev,
-                  name: payload.name || prev.name,
-                  serial_number: payload.serial_number ?? prev.serial_number,
-                  zoho_fields: { ...prev.zoho_fields, ...payload.zoho_fields },
-                  vehicle_verification: {
-                    ...prev.vehicle_verification,
-                    ...payload.vehicle_verification,
-                  },
-                }))
-              }}
-            />
+            <div className="rounded-lg border border-border bg-page p-4">
+              <h3 className="text-sm font-semibold text-ink">Vehicle details</h3>
+              <p className="mt-0.5 text-xs text-muted">
+                Enter registration and identifiers manually. Automated VerifyNow vehicle lookups have
+                been removed.
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium">
+                    Registration / number plate <span className="text-red-600">*</span>
+                  </span>
+                  <input
+                    className="field-input uppercase"
+                    value={String(form.zoho_fields?.Registration_Number ?? '')}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        zoho_fields: {
+                          ...prev.zoho_fields,
+                          Registration_Number: e.target.value.toUpperCase(),
+                        },
+                      }))
+                    }
+                    placeholder="e.g. CA123456"
+                    autoComplete="off"
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium">VIN (optional)</span>
+                  <input
+                    className="field-input"
+                    value={String(form.zoho_fields?.VIN_Number ?? '')}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        zoho_fields: { ...prev.zoho_fields, VIN_Number: e.target.value },
+                        serial_number: e.target.value || prev.serial_number,
+                      }))
+                    }
+                    placeholder="Vehicle identification number"
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium">Make (optional)</span>
+                  <input
+                    className="field-input"
+                    value={String(form.zoho_fields?.Vehicle_Make ?? '')}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        zoho_fields: { ...prev.zoho_fields, Vehicle_Make: e.target.value },
+                      }))
+                    }
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium">Model (optional)</span>
+                  <input
+                    className="field-input"
+                    value={String(form.zoho_fields?.Vehicle_Model ?? '')}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        zoho_fields: { ...prev.zoho_fields, Vehicle_Model: e.target.value },
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+            </div>
             <MotorRentalPanel value={rental} onChange={setRental} />
 
             <label className="block text-sm">

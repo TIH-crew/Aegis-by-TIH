@@ -54,6 +54,15 @@ export interface AamAsset {
   replacement_value: string | null
   replacement_value_date: string | null
   replacement_value_source: string | null
+  processing_status?: string
+  barcode?: string | null
+  barcode_kind?: 'physical' | 'internal_only'
+  barcode_reason?: string | null
+  condition_code?: string | null
+  last_verified_at?: string | null
+  market_value?: string | null
+  market_value_date?: string | null
+  market_value_source?: string | null
   created_at: string
   updated_at: string
 }

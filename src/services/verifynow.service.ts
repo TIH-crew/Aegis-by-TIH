@@ -68,79 +68,8 @@ export interface DriversLicenceResult {
   error?: string
 }
 
-export interface VehicleDiscResult {
-  success?: boolean
-  requestId?: string
-  reportType?: string
-  creditsUsed?: number
-  data?: {
-    registrationNumber?: string
-    vin?: string
-    make?: string
-    model?: string
-    expiryDate?: string
-    expired?: boolean
-    colour?: string
-    color?: string
-    engineNumber?: string
-    vehicleClass?: string
-    [key: string]: unknown
-  }
-  verification?: Record<string, unknown>
-  error?: string
-}
-
-export interface NumberPlateResult {
-  success?: boolean
-  requestId?: string
-  registrationNumber?: string
-  vehicle?: {
-    make?: string
-    model?: string
-    year?: string
-    color?: string
-    colour?: string
-    engineNumber?: string
-    vin?: string
-    [key: string]: unknown
-  }
-  remainingCredits?: number
-  error?: string
-}
-
+/** Drivers licence barcode verification only — vehicle disc / plate lookup removed. */
 export async function verifyDriversLicence(imageFile: File): Promise<DriversLicenceResult> {
   const image_base64 = await fileToBase64(imageFile)
   return verifynowFetch<DriversLicenceResult>('drivers-licence', { image_base64 })
-}
-
-export async function scanVehicleLicenceDisc(
-  imageFile: File,
-  reportType: 'barcode' | 'plate' = 'barcode',
-): Promise<VehicleDiscResult> {
-  const image_base64 = await fileToBase64(imageFile)
-  return verifynowFetch<VehicleDiscResult>('vehicle-licence-disc', {
-    image_base64,
-    report_type: reportType,
-    allow_visual_fallback: true,
-  })
-}
-
-export async function lookupNumberPlate(registrationNumber: string): Promise<NumberPlateResult> {
-  return verifynowFetch<NumberPlateResult>('vehicle', { registrationNumber })
-}
-
-/** Map VerifyNow vehicle fields onto portal Motor zoho_fields keys. */
-export function vehicleResultToZohoFields(
-  source: VehicleDiscResult['data'] | NumberPlateResult['vehicle'] | undefined,
-): Record<string, string> {
-  if (!source) return {}
-  const out: Record<string, string> = {}
-  if (source.make) out.Vehicle_Make = String(source.make)
-  if (source.model) out.Vehicle_Model = String(source.model)
-  if ('year' in source && source.year) out.Vehicle_Year = String(source.year)
-  if ('registrationNumber' in source && source.registrationNumber) {
-    out.Registration_Number = String(source.registrationNumber)
-  }
-  if (source.vin) out.VIN_Number = String(source.vin)
-  return out
 }

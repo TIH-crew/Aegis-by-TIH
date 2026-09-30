@@ -41,6 +41,13 @@ export const PRIMARY_NAV: NavItem[] = [
     icon: Package,
     capability: 'risk_items',
     matchPaths: ['/assets', '/collections/risk-items'],
+    children: [
+      { label: 'Insurance schedule', path: '/assets', capability: 'risk_items' },
+      { label: 'Ledger register', path: '/assets/ledger', capability: 'risk_items' },
+      { label: 'Incidents & write-offs', path: '/assets/incidents', capability: 'risk_items' },
+      { label: 'Bulk import', path: '/assets/import', capability: 'risk_items' },
+      { label: 'Physical audits', path: '/assets/audits', capability: 'risk_items' },
+    ],
   },
   {
     id: 'movements',

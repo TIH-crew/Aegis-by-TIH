@@ -1,6 +1,6 @@
 /**
- * Proxy for VerifyNow.co.za external API.
- * Keeps the API key server-side. Auth: portal user JWT.
+ * Proxy for VerifyNow.co.za — drivers licence only.
+ * Vehicle disc / number-plate lookup endpoints are retired.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
@@ -20,11 +20,9 @@ function json(body: unknown, status = 200) {
 }
 
 function apiKey() {
-  return (
-    Deno.env.get('VERIFYNOW_API_KEY') ||
-    // Temporary fallback until secrets are rotated in the dashboard.
-    'vn_live_654f47c37f1a9e1e2f54e468454066db2361eba6bf92d0a42cd969aa420c6bee'
-  )
+  const key = Deno.env.get('VERIFYNOW_API_KEY')
+  if (!key) throw new Error('VERIFYNOW_API_KEY is not configured')
+  return key
 }
 
 async function requirePortalUser(req: Request) {
@@ -70,12 +68,31 @@ Deno.serve(async (req) => {
     const path = url.pathname.replace(/^\/aegis-verifynow\/?/, '').replace(/^\//, '')
 
     if (req.method === 'GET' && (path === 'health' || path === '')) {
-      const res = await fetch(`${VERIFYNOW_BASE}/health`)
-      const data = await res.json().catch(() => ({}))
-      return json({ ok: res.ok, verifynow: data })
+      return json({
+        ok: true,
+        drivers_licence: true,
+        vehicle_lookup: false,
+        vehicle_licence_disc: false,
+      })
     }
 
     if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
+
+    // Retired — portal no longer offers VerifyNow vehicle validation
+    if (
+      path === 'vehicle' ||
+      path === 'number-plate' ||
+      path === 'vehicle-licence-disc'
+    ) {
+      return json(
+        {
+          error: 'This endpoint has been retired.',
+          message:
+            'VerifyNow vehicle disc and number-plate lookup are no longer available. Enter vehicle details manually.',
+        },
+        410,
+      )
+    }
 
     const payload = (await req.json()) as Record<string, unknown>
     const idempotencyKey =
@@ -98,43 +115,6 @@ Deno.serve(async (req) => {
       if (barcodeBase64) body.barcode_base64 = String(barcodeBase64).replace(/^data:[^;]+;base64,/, '')
 
       const result = await callVerifyNow('/drivers-licence', body, idempotencyKey)
-      return json(result.data, result.ok ? 200 : result.status)
-    }
-
-    if (path === 'vehicle-licence-disc') {
-      const imageBase64 = payload.image_base64 ?? payload.imageBase64
-      const barcodeText = payload.barcode_text ?? payload.barcodeText
-      if (!imageBase64 && !barcodeText) {
-        return json({ error: 'Provide image_base64 (disc photo) or barcode_text' }, 400)
-      }
-      const reportType = payload.report_type === 'plate' ? 'plate' : 'barcode'
-      const body: Record<string, unknown> = {
-        bundle: 'vehicle_licence_disc',
-        report_type: reportType,
-        authority_confirmed: true,
-        allow_visual_fallback: payload.allow_visual_fallback !== false,
-        mode,
-      }
-      if (imageBase64) body.image_base64 = String(imageBase64).replace(/^data:[^;]+;base64,/, '')
-      if (barcodeText) body.barcode_text = String(barcodeText)
-
-      const result = await callVerifyNow('/vehicle-licence-disc', body, idempotencyKey)
-      return json(result.data, result.ok ? 200 : result.status)
-    }
-
-    if (path === 'vehicle' || path === 'number-plate') {
-      const registrationNumber = String(
-        payload.registrationNumber ?? payload.registration_number ?? '',
-      ).trim()
-      if (!registrationNumber) {
-        return json({ error: 'registrationNumber is required' }, 400)
-      }
-      const body = {
-        bundle: 'vehicle_lookup',
-        registrationNumber,
-        mode,
-      }
-      const result = await callVerifyNow('/vehicle', body, idempotencyKey)
       return json(result.data, result.ok ? 200 : result.status)
     }
 
