@@ -71,7 +71,7 @@ export function MyAssetsPage() {
               </div>
               {row.risk_item_id && (
                 <Link
-                  to={`/collections/risk-items/${row.risk_item_id}`}
+                  to={`/assets/${row.risk_item_id}`}
                   className="text-sm text-primary hover:underline"
                 >
                   View

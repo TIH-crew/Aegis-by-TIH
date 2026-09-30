@@ -75,7 +75,16 @@ export interface DashboardStats {
   insuredWithUsCount: number
   pipelineCount: number
   uninsuredCount: number
+  /** @deprecated Prefer labelled acquisition / insured figures — ambiguous “total value”. */
   totalValue: number
+  /** Sum of purchase_value where captured (acquisition cost). */
+  acquisitionCost: number
+  acquisitionCostCount: number
+  /** Sum of unit_cost for items insured with us (declared / schedule value — not book value). */
+  insuredDeclaredValue: number
+  missingCustodianCount: number
+  missingPurchaseEvidenceCount: number
+  inAcquisitionCount: number
 }
 
 export interface CollectionConfig {

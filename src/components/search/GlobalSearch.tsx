@@ -19,7 +19,7 @@ export function GlobalSearch() {
     const trimmed = query.trim()
     if (!trimmed) return
     setOpen(false)
-    navigate(`/collections/risk-items?q=${encodeURIComponent(trimmed)}`)
+    navigate(`/assets?q=${encodeURIComponent(trimmed)}`)
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -72,11 +72,11 @@ export function GlobalSearch() {
               {previewResults.map((item) => (
                 <li key={item.id}>
                   <Link
-                    to={`/collections/risk-items/${item.id}`}
+                    to={`/assets/${item.id}`}
                     onClick={() => setOpen(false)}
-                    className="block px-4 py-2.5 hover:bg-accent-light/50"
+                    className="block px-4 py-2.5 hover:bg-page"
                   >
-                    <p className="truncate text-sm font-medium text-burgundy">{item.name}</p>
+                    <p className="truncate text-sm font-medium text-ink">{item.name}</p>
                     <p className="truncate text-xs text-muted">
                       {item.asset_tag} · {item.category}
                       {item.branch ? ` · ${item.branch}` : ''}

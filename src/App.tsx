@@ -30,6 +30,10 @@ import { MyProfilePage } from './pages/MyProfilePage'
 import { MyAssetsPage } from './pages/MyAssetsPage'
 import { EmployeeClaimPortalPage } from './pages/EmployeeClaimPortalPage'
 import { EmployeeClaimEntryPage } from './pages/EmployeeClaimEntryPage'
+import { MovementsPage } from './pages/MovementsPage'
+import { FinancePage } from './pages/FinancePage'
+import { TaxPage } from './pages/TaxPage'
+import { InsuranceHubPage } from './pages/InsuranceHubPage'
 import { AegisSplashLoader } from './components/brand/AegisSplashLoader'
 import { useAuth } from './context/AuthContext'
 
@@ -46,7 +50,6 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
-          {/* Public employee claim portal — WhatsApp OTP gated */}
           <Route path="/claim/:token" element={<EmployeeClaimPortalPage />} />
 
           <Route element={<RequireSession />}>
@@ -79,6 +82,7 @@ export default function App() {
 
                 <Route element={<RequireCapability capability="reports" />}>
                   <Route path="/reports" element={<ReportsPage />} />
+                  <Route path="/insurance/endorsements" element={<ReportsPage />} />
                 </Route>
 
                 <Route element={<RequireCapability capability="settings" />}>
@@ -86,38 +90,63 @@ export default function App() {
                 </Route>
 
                 <Route element={<RequireCapability capability="risk_items" />}>
+                  <Route path="/assets" element={<RiskItemsPage />} />
+                  <Route path="/assets/new" element={<AddRiskItemPage />} />
+                  <Route path="/assets/:id" element={<RiskItemDetailPage />} />
+                  {/* Backward-compatible paths */}
                   <Route path="/collections/risk-items" element={<RiskItemsPage />} />
                   <Route path="/collections/risk-items/new" element={<AddRiskItemPage />} />
                   <Route path="/collections/risk-items/:id" element={<RiskItemDetailPage />} />
                 </Route>
 
-                <Route element={<RequireCapability capability="quotations" />}>
-                  <Route path="/collections/quotations" element={<QuotationsPage />} />
-                  <Route path="/collections/quotations/:id" element={<QuotationDetailPage />} />
+                <Route element={<RequireCapability capability="forms_custody" />}>
+                  <Route path="/movements" element={<MovementsPage />} />
+                  <Route path="/movements/assign" element={<AssignToPage />} />
+                  <Route path="/movements/check-out" element={<CheckOutPage />} />
+                  <Route path="/movements/check-in" element={<CheckInPage />} />
+                  <Route path="/forms/assign-to" element={<AssignToPage />} />
+                  <Route path="/forms/check-out" element={<CheckOutPage />} />
+                  <Route path="/forms/check-in" element={<CheckInPage />} />
+                </Route>
+
+                <Route element={<RequireCapability capability="policies_financials" />}>
+                  <Route path="/finance" element={<FinancePage />} />
+                  <Route path="/tax" element={<TaxPage />} />
                 </Route>
 
                 <Route element={<RequireCapability capability="policies" />}>
+                  <Route path="/insurance" element={<InsuranceHubPage />} />
+                  <Route path="/insurance/policies" element={<PoliciesPage />} />
+                  <Route path="/insurance/policies/:id" element={<PolicyDetailPage />} />
+                  <Route path="/insurance/pi-members" element={<PiMembersPage />} />
                   <Route path="/collections/policies" element={<PoliciesPage />} />
                   <Route path="/collections/policies/:id" element={<PolicyDetailPage />} />
                   <Route path="/collections/pi-members" element={<PiMembersPage />} />
                 </Route>
 
+                <Route element={<RequireCapability capability="quotations" />}>
+                  <Route path="/insurance/quotations" element={<QuotationsPage />} />
+                  <Route path="/insurance/quotations/:id" element={<QuotationDetailPage />} />
+                  <Route path="/collections/quotations" element={<QuotationsPage />} />
+                  <Route path="/collections/quotations/:id" element={<QuotationDetailPage />} />
+                </Route>
+
                 <Route element={<RequireCapability capability="claims" />}>
+                  <Route path="/insurance/claims" element={<ClaimsPage />} />
+                  <Route path="/insurance/claims/new" element={<NewClaimPage />} />
+                  <Route path="/insurance/claims/:id" element={<ClaimDetailPage />} />
                   <Route path="/collections/claims" element={<ClaimsPage />} />
                   <Route path="/collections/claims/new" element={<NewClaimPage />} />
                   <Route path="/collections/claims/:id" element={<ClaimDetailPage />} />
                 </Route>
 
                 <Route element={<RequireCapability capability="employees" />}>
+                  <Route path="/people" element={<EmployeesPage />} />
+                  <Route path="/people/new" element={<EmployeeDetailPage />} />
+                  <Route path="/people/:id" element={<EmployeeDetailPage />} />
                   <Route path="/collections/employees" element={<EmployeesPage />} />
                   <Route path="/collections/employees/new" element={<EmployeeDetailPage />} />
                   <Route path="/collections/employees/:id" element={<EmployeeDetailPage />} />
-                </Route>
-
-                <Route element={<RequireCapability capability="forms_custody" />}>
-                  <Route path="/forms/assign-to" element={<AssignToPage />} />
-                  <Route path="/forms/check-out" element={<CheckOutPage />} />
-                  <Route path="/forms/check-in" element={<CheckInPage />} />
                 </Route>
               </Route>
             </Route>

@@ -18,6 +18,10 @@ export type AppCapability =
   | 'my_profile'
   | 'my_assets'
   | 'employee_claim'
+  | 'asset_ledger'
+  | 'finance_prepare'
+  | 'finance_approve'
+  | 'tax_review'
 
 export type PortalAppRole = 'admin' | 'employee'
 
@@ -56,6 +60,10 @@ const ADMIN_CAPS: AppCapability[] = [
   'reports',
   'my_profile',
   'my_assets',
+  'asset_ledger',
+  'finance_prepare',
+  'finance_approve',
+  'tax_review',
 ]
 
 const EMPLOYEE_CAPS: AppCapability[] = ['employee_claim']

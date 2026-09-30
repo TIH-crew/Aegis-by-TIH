@@ -383,7 +383,7 @@ export function EmployeeDetailPage() {
                 {attachedItems.map((item) => (
                   <tr key={item.id} className="border-b border-border last:border-0">
                     <td className="px-4 py-3">
-                      <Link to={`/collections/risk-items/${item.id}`} className="font-medium text-primary">
+                      <Link to={`/assets/${item.id}`} className="font-medium text-primary">
                         {item.name}
                       </Link>
                     </td>

@@ -1,9 +1,14 @@
 export type RiskItemsColumnId =
+  | 'asset_tag'
   | 'name'
-  | 'attachments'
   | 'category'
   | 'branch'
   | 'employee_name'
+  | 'lifecycle'
+  | 'acquisition_cost'
+  | 'insured_value'
+  | 'exception'
+  | 'attachments'
   | 'unit_cost'
   | 'record_date'
   | 'insurance_status'
@@ -15,14 +20,19 @@ export interface RiskItemsColumn {
 }
 
 export const RISK_ITEMS_COLUMNS: RiskItemsColumn[] = [
-  { id: 'name', label: 'Item Name', defaultVisible: true },
-  { id: 'attachments', label: 'Attachments', defaultVisible: true },
-  { id: 'category', label: 'Category', defaultVisible: true },
-  { id: 'branch', label: 'Branch', defaultVisible: true },
-  { id: 'employee_name', label: 'Assigned To', defaultVisible: true },
-  { id: 'unit_cost', label: 'Unit Cost', defaultVisible: true },
-  { id: 'record_date', label: 'Date', defaultVisible: true },
-  { id: 'insurance_status', label: 'Status', defaultVisible: true },
+  { id: 'asset_tag', label: 'Asset tag', defaultVisible: true },
+  { id: 'name', label: 'Name', defaultVisible: true },
+  { id: 'category', label: 'Asset class', defaultVisible: true },
+  { id: 'branch', label: 'Branch / location', defaultVisible: true },
+  { id: 'employee_name', label: 'Custodian', defaultVisible: true },
+  { id: 'lifecycle', label: 'Lifecycle', defaultVisible: true },
+  { id: 'acquisition_cost', label: 'Acquisition cost', defaultVisible: true },
+  { id: 'insured_value', label: 'Insured / declared value', defaultVisible: true },
+  { id: 'exception', label: 'Exception', defaultVisible: true },
+  { id: 'attachments', label: 'Photo', defaultVisible: false },
+  { id: 'unit_cost', label: 'Unit cost (legacy)', defaultVisible: false },
+  { id: 'record_date', label: 'Record date', defaultVisible: false },
+  { id: 'insurance_status', label: 'Insurance status', defaultVisible: false },
 ]
 
 export function defaultVisibleColumns(): Record<RiskItemsColumnId, boolean> {

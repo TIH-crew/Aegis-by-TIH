@@ -272,7 +272,9 @@ export function createSupabaseDataService(
     async getDashboardStats() {
       let q = supabase
         .from('portal_risk_items')
-        .select('unit_cost, insurance_status')
+        .select(
+          'unit_cost, insurance_status, purchase_value, purchase_invoice_url, employee_id, employee_name, assignment_status',
+        )
         .eq('account_id', accountId)
       if (branchId) q = q.eq('branch_id', branchId)
 
@@ -286,9 +288,12 @@ export function createSupabaseDataService(
         status === 'Insured elsewhere' ||
         status === 'Covered Elsewhere'
 
+      const withPurchase = rows.filter((r) => r.purchase_value != null && Number(r.purchase_value) > 0)
+      const insuredRows = rows.filter((r) => r.insurance_status === 'Insured with us')
+
       return {
         totalRecords: rows.length,
-        insuredWithUsCount: rows.filter((r) => r.insurance_status === 'Insured with us').length,
+        insuredWithUsCount: insuredRows.length,
         pipelineCount: rows.filter(
           (r) =>
             r.insurance_status === 'Brand new' || r.insurance_status === 'In acquisition',
@@ -296,6 +301,19 @@ export function createSupabaseDataService(
         // Legacy "Insured elsewhere" rows count as Uninsured until migration runs.
         uninsuredCount: rows.filter((r) => isUninsured(r.insurance_status)).length,
         totalValue: rows.reduce((sum, r) => sum + Number(r.unit_cost), 0),
+        acquisitionCost: withPurchase.reduce((sum, r) => sum + Number(r.purchase_value), 0),
+        acquisitionCostCount: withPurchase.length,
+        insuredDeclaredValue: insuredRows.reduce((sum, r) => sum + Number(r.unit_cost), 0),
+        missingCustodianCount: rows.filter(
+          (r) =>
+            r.assignment_status === 'unassigned' ||
+            (!r.employee_id && !r.employee_name),
+        ).length,
+        missingPurchaseEvidenceCount: rows.filter(
+          (r) =>
+            (r.purchase_value != null && Number(r.purchase_value) > 0) && !r.purchase_invoice_url,
+        ).length,
+        inAcquisitionCount: rows.filter((r) => r.insurance_status === 'In acquisition').length,
       } satisfies DashboardStats
     },
   }

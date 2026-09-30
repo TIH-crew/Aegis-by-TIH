@@ -251,12 +251,12 @@ export function AddRiskItemPage() {
         }
 
         await refreshRiskItems()
-        navigate(`/collections/risk-items/${created.id}`, { state: { toast: brokerNote } })
+        navigate(`/assets/${created.id}`, { state: { toast: brokerNote } })
         return
       }
 
       await refreshRiskItems()
-      navigate(`/collections/risk-items/${created.id}`)
+      navigate(`/assets/${created.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create record')
     } finally {
@@ -267,14 +267,14 @@ export function AddRiskItemPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <Link
-        to="/collections/risk-items"
+        to="/assets"
         className="mb-4 inline-flex items-center gap-2 text-sm text-muted hover:text-gray-900"
       >
         <ArrowLeft size={16} />
-        Back to Risk Items
+        Back to assets
       </Link>
 
-      <h1 className="mb-6 text-2xl font-semibold">Add Risk Item</h1>
+      <h1 className="mb-6 text-2xl font-semibold">Add asset</h1>
 
       {error && (
         <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -459,7 +459,7 @@ export function AddRiskItemPage() {
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
-            onClick={() => navigate('/collections/risk-items')}
+            onClick={() => navigate('/assets')}
             className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-gray-50"
           >
             Cancel

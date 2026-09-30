@@ -1,11 +1,11 @@
 import type { CollectionConfig } from '../types'
 
 export const COLLECTIONS: CollectionConfig[] = [
-  { key: 'risk_items', label: 'Risk Items', path: '/collections/risk-items', table: 'portal_risk_items' },
-  { key: 'quotations', label: 'Quotations', path: '/collections/quotations', table: 'portal_quotations' },
-  { key: 'policies', label: 'Policies', path: '/collections/policies', table: 'portal_policies' },
-  { key: 'claims', label: 'Claims', path: '/collections/claims', table: 'portal_claims' },
-  { key: 'employees', label: 'Employees', path: '/collections/employees', table: 'portal_employees' },
+  { key: 'risk_items', label: 'Assets', path: '/assets', table: 'portal_risk_items' },
+  { key: 'quotations', label: 'Quotations', path: '/insurance/quotations', table: 'portal_quotations' },
+  { key: 'policies', label: 'Policies', path: '/insurance/policies', table: 'portal_policies' },
+  { key: 'claims', label: 'Claims', path: '/insurance/claims', table: 'portal_claims' },
+  { key: 'employees', label: 'People', path: '/people', table: 'portal_employees' },
 ]
 
 /** Single insurance category per risk item (section + category combined). */

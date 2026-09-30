@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { StageBadge } from '../components/crm/StageBadge'
+import { PageHeader } from '../components/workspace/WorkspaceUi'
 import { useAuth } from '../context/AuthContext'
 import { fetchPolicies } from '../services/crm.service'
 import { formatCurrency, formatDate } from '../lib/utils'
@@ -36,12 +37,10 @@ export function PoliciesPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Policies</h1>
-        <p className="text-sm text-muted">
-          Coverage schedule, premiums, renewal dates, and policy documents.
-        </p>
-      </div>
+      <PageHeader
+        title="Policies"
+        description="Coverage schedule, premiums, renewal dates, and policy documents for this legal entity."
+      />
 
       {loading && (
         <p className="flex items-center gap-2 text-sm text-muted">
@@ -51,20 +50,21 @@ export function PoliciesPage() {
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="rounded-lg border border-dashed border-border bg-surface p-6 text-sm text-muted">
+        <p className="ws-panel border-dashed px-5 py-8 text-sm text-muted">
           No policies found for this company.
         </p>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
-        <table className="min-w-full text-sm">
-          <thead className="border-b border-border bg-page text-left text-xs uppercase text-muted">
+      <div className="ws-panel overflow-hidden">
+        <div className="overflow-x-auto">
+        <table className="ws-table min-w-[720px]">
+          <thead>
             <tr>
-              <th className="px-4 py-3">Policy</th>
-              <th className="px-4 py-3">Insurer</th>
-              <th className="px-4 py-3">Premium</th>
-              <th className="px-4 py-3">Renewal date</th>
-              <th className="px-4 py-3">Status</th>
+              <th>Policy</th>
+              <th>Insurer</th>
+              <th>Premium</th>
+              <th>Renewal date</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -74,11 +74,11 @@ export function PoliciesPage() {
                 <tr
                   key={p.id}
                   className="cursor-pointer border-b border-border last:border-0 hover:bg-page/50"
-                  onClick={() => navigate(`/collections/policies/${p.id}`)}
+                  onClick={() => navigate(`/insurance/policies/${p.id}`)}
                 >
                   <td className="px-4 py-3">
                     <Link
-                      to={`/collections/policies/${p.id}`}
+                      to={`/insurance/policies/${p.id}`}
                       className="font-medium text-primary hover:underline"
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -123,6 +123,7 @@ export function PoliciesPage() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

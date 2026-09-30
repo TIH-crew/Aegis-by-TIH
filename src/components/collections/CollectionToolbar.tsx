@@ -16,7 +16,9 @@ type ToolbarPanel = 'filter' | 'sort' | 'columns'
 interface CollectionToolbarProps {
   title: string
   recordCount: number
+  subtitle?: string
   addPath?: string
+  addLabel?: string
   toolbarActions?: ReactNode
   viewMode: 'list' | 'grid'
   onViewModeChange: (mode: 'list' | 'grid') => void
@@ -29,7 +31,9 @@ interface CollectionToolbarProps {
 export function CollectionToolbar({
   title,
   recordCount,
+  subtitle,
   addPath,
+  addLabel = 'Add asset',
   toolbarActions,
   viewMode,
   onViewModeChange,
@@ -51,9 +55,9 @@ export function CollectionToolbar({
     <div ref={toolbarRef} className="relative mb-4">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">{title}</h1>
           <p className="text-sm text-muted">
-            {recordCount.toLocaleString()} Records in collection
+            {subtitle ?? `${recordCount.toLocaleString()} assets in view`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -92,10 +96,10 @@ export function CollectionToolbar({
           {addPath && (
             <Link
               to={addPath}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-accent-hover"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-sm font-medium text-white hover:bg-burgundy-dark"
             >
               <Plus size={16} />
-              Add +
+              {addLabel}
             </Link>
           )}
         </div>

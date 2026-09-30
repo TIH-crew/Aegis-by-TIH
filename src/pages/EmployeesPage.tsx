@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, MessageCircle, Plus, QrCode, UserRound } from 'lucide-react'
+import { Loader2, Plus, QrCode } from 'lucide-react'
+import { StatusBadge } from '../components/collections/StatusBadge'
+import { EmptyState, PageHeader } from '../components/workspace/WorkspaceUi'
 import { useAuth } from '../context/AuthContext'
 import { listEmployees } from '../services/employee.service'
-import { whatsappHref } from '../lib/extensions'
 import type { Employee } from '../types/employee'
 
 export function EmployeesPage() {
@@ -12,6 +13,7 @@ export function EmployeesPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!accountId) return
@@ -19,7 +21,7 @@ export function EmployeesPage() {
     setError(null)
     void listEmployees(accountId)
       .then(setItems)
-      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load employees'))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load people'))
       .finally(() => setLoading(false))
   }, [accountId])
 
@@ -27,95 +29,130 @@ export function EmployeesPage() {
     const q = query.trim().toLowerCase()
     if (!q) return items
     return items.filter((employee) =>
-      [employee.full_name, employee.job_title, employee.branch_name, employee.whatsapp_number]
+      [employee.full_name, employee.job_title, employee.branch_name, employee.employee_number]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(q)),
     )
   }, [items, query])
 
+  const selected = items.find((e) => e.id === selectedId) ?? null
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Employees</h1>
-          <p className="text-sm text-muted">
-            People who hold company assets. Open an employee to view/print their <strong>claim QR</strong>{' '}
-            — staff scan it, verify on WhatsApp, then lodge a claim. Admins can still add claims under
-            Claims.
-          </p>
-        </div>
-        <Link
-          to="/collections/employees/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white"
-        >
-          <Plus size={14} />
-          Add employee
-        </Link>
-      </div>
+      <PageHeader
+        title="People"
+        description="Custodian directory for the selected legal entity. Phone numbers are hidden in the directory by default."
+        actions={
+          <Link
+            to="/people/new"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-3.5 py-2 text-sm font-medium text-white hover:bg-burgundy-dark"
+          >
+            <Plus size={14} />
+            Add person
+          </Link>
+        }
+      />
 
       <input
         className="field-input max-w-md"
-        placeholder="Search name, branch, WhatsApp…"
+        placeholder="Search name, role, branch, employee number…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        aria-label="Search people"
       />
 
       {loading && (
         <p className="flex items-center gap-2 text-sm text-muted">
-          <Loader2 size={14} className="animate-spin" /> Loading employees…
+          <Loader2 size={14} className="animate-spin" /> Loading directory…
         </p>
       )}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && filtered.length === 0 && (
-        <p className="rounded-lg border border-dashed border-border bg-surface p-6 text-sm text-muted">
-          No employees yet. Add a person with a WhatsApp number, then use Assign to attach items.
-        </p>
+        <EmptyState
+          title="No custodians yet"
+          description="Add a person, then use Movements → Assign to attach assets."
+          action={
+            <Link to="/people/new" className="text-sm font-medium text-primary underline">
+              Add person
+            </Link>
+          }
+        />
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {filtered.map((employee) => {
-          const wa = whatsappHref(employee.whatsapp_number)
-          return (
-            <Link
-              key={employee.id}
-              to={`/collections/employees/${employee.id}`}
-              className="rounded-lg border border-border bg-surface p-4 shadow-sm hover:border-accent/40"
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-muted">
-                  {employee.image_url ? (
-                    <img src={employee.image_url} alt="" className="h-full w-full object-cover" />
-                  ) : (
-                    <UserRound size={28} />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-gray-900">{employee.full_name}</p>
-                  <p className="text-xs text-muted">{employee.job_title ?? 'Employee'}</p>
-                  <p className="text-xs text-muted">{employee.branch_name ?? 'No branch'}</p>
-                  <p className="mt-2 text-xs text-muted">
-                    {employee.item_count ?? 0} attached item
-                    {(employee.item_count ?? 0) === 1 ? '' : 's'}
-                  </p>
-                  <p className="mt-2 inline-flex items-center gap-1 rounded-md bg-accent-light px-2 py-1 text-xs font-medium text-primary">
-                    <QrCode size={12} />
-                    Open → print claim QR
-                  </p>
-                  {employee.drivers_licence_verified_at && (
-                    <p className="mt-1 text-xs font-medium text-emerald-700">Licence verified</p>
-                  )}
-                  {wa && (
-                    <span className="mt-2 inline-flex items-center gap-1 text-xs text-emerald-700">
-                      <MessageCircle size={12} />
-                      {employee.whatsapp_number}
-                    </span>
-                  )}
-                </div>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,340px)]">
+        <div className="ws-panel overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="ws-table min-w-[640px]">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Branch</th>
+                  <th className="text-right">Assets</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((employee) => (
+                  <tr
+                    key={employee.id}
+                    className="cursor-pointer"
+                    onClick={() => setSelectedId(employee.id)}
+                  >
+                    <td className="font-medium text-ink">{employee.full_name}</td>
+                    <td>{employee.job_title ?? '—'}</td>
+                    <td>{employee.branch_name ?? '—'}</td>
+                    <td className="text-right tabular-nums">{employee.item_count ?? 0}</td>
+                    <td>
+                      <StatusBadge status={employee.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside className="ws-panel p-4">
+          {!selected ? (
+            <p className="text-sm text-muted">Select a person to view custody summary and claim QR access.</p>
+          ) : (
+            <div className="space-y-3">
+              <div>
+                <h2 className="text-base font-semibold text-ink">{selected.full_name}</h2>
+                <p className="text-sm text-muted">{selected.job_title ?? 'Custodian'}</p>
+                <p className="text-xs text-muted">{selected.branch_name ?? 'No branch'}</p>
               </div>
-            </Link>
-          )
-        })}
+              <p className="text-sm">
+                <span className="font-medium tabular-nums">{selected.item_count ?? 0}</span>{' '}
+                assigned asset{(selected.item_count ?? 0) === 1 ? '' : 's'}
+              </p>
+              {selected.drivers_licence_verified_at && (
+                <p className="text-xs font-medium text-emerald-700">Drivers licence verified</p>
+              )}
+              <div className="flex flex-col gap-2 border-t border-border pt-3">
+                <Link
+                  to={`/people/${selected.id}`}
+                  className="rounded-md border border-border px-3 py-2 text-center text-sm font-medium hover:bg-page"
+                >
+                  Open full profile
+                </Link>
+                <Link
+                  to={`/people/${selected.id}`}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-md bg-page px-3 py-2 text-sm text-muted hover:text-ink"
+                  title="Claim QR requires profile access"
+                >
+                  <QrCode size={14} />
+                  Claim QR (secondary)
+                </Link>
+              </div>
+              <p className="text-[11px] text-muted">
+                WhatsApp and phone numbers are available on the profile for users with people access — not shown in the directory grid.
+              </p>
+            </div>
+          )}
+        </aside>
       </div>
     </div>
   )
