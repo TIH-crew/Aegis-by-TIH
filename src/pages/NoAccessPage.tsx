@@ -17,10 +17,10 @@ export function NoAccessPage() {
           {user?.email ? (
             <>
               Signed in as <span className="font-medium text-gray-900">{user.email}</span>, but
-              this account does not have an active Aegis invitation.
+              this account does not have an active ASSETS invitation.
             </>
           ) : (
-            'You need an invitation from your broker to access Aegis.'
+            'You need an invitation from your broker to access ASSETS.'
           )}
         </p>
 

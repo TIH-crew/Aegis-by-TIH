@@ -148,7 +148,7 @@ export function PolicyCoveredItems({ policy }: PolicyCoveredItemsProps) {
         context_zoho_id: policy.zoho_policy_id ?? policy.id,
         context_label: policy.policy_number,
         request_type: 'remove_items',
-        task_subject: `Aegis: Request removal of ${chosen.length} item(s) — ${policy.policy_number}`,
+        task_subject: `ASSETS: Request removal of ${chosen.length} item(s) — ${policy.policy_number}`,
         notify_email: 'jananda@theinsurancehub.co.za',
         message: [
           'Please remove the following items from the policy schedule / Nimbis.',

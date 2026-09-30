@@ -696,7 +696,7 @@ export function groupExtrasByBryteGroup(extras: ExtraDefinition[]): {
 }
 
 /**
- * Nimbis / schedule section name → Aegis portal category.
+ * Nimbis / schedule section name → ASSETS portal category.
  * Fire section items map to Building (still noted as Fire via insurance_section).
  */
 export const SECTION_TO_CATEGORY: Record<string, RiskCategory> = {

@@ -1,6 +1,6 @@
 /**
- * Zoho CRM Client_Risks field mappings for Aegis risk categories.
- * Aegis is commercial-only: all portal assets sync to Commercial Lines / Commercial Assets.
+ * Zoho CRM Client_Risks field mappings for ASSETS risk categories.
+ * ASSETS is commercial-only: all portal assets sync to Commercial Lines / Commercial Assets.
  * Verified against live Zoho CRM via MCP (module: Client_Risks, layout: Commercial Assets).
  */
 import { INSURANCE_STATUSES, RISK_CATEGORIES, type RiskCategory } from './collections'
@@ -8,7 +8,7 @@ import { INSURANCE_STATUSES, RISK_CATEGORIES, type RiskCategory } from './collec
 export const ZOHO_CLIENT_RISKS_MODULE = 'Client_Risks' as const
 export const ZOHO_QUOTATIONS_MODULE = 'Deals' as const
 
-/** Every Aegis risk item maps to Commercial Lines in Zoho CRM. */
+/** Every ASSETS risk item maps to Commercial Lines in Zoho CRM. */
 export const AEGIS_ZOHO_RISK_CATEGORY = 'Commercial Lines' as const
 
 export const ZOHO_LAYOUTS = {
@@ -17,7 +17,7 @@ export const ZOHO_LAYOUTS = {
     apiName: 'Commercial_Assets',
     displayName: 'Commercial Assets',
   },
-  /** Reference only — Aegis does not use Personal Assets. Item_Owned_By is not on this layout. */
+  /** Reference only — ASSETS does not use Personal Assets. Item_Owned_By is not on this layout. */
   clientRisksPersonalAssets: {
     id: '7351644000001352473',
     apiName: 'Personal_Assets',
@@ -65,7 +65,7 @@ export interface CategoryZohoMapping {
   notes?: string
 }
 
-/** Maps Aegis insurance status to Zoho Risk_Status + Currently_Insured */
+/** Maps ASSETS insurance status to Zoho Risk_Status + Currently_Insured */
 export const INSURANCE_STATUS_TO_ZOHO: Record<
   (typeof INSURANCE_STATUSES)[number],
   { riskStatus: string; currentlyInsured: string }

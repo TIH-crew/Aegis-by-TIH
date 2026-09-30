@@ -109,7 +109,7 @@ export function LedgerAssetDetailPage() {
     if (!record?.asset.barcode) return
     const w = window.open('', '_blank', 'width=420,height=320')
     if (!w) return
-    const company = organization?.name ?? homeAccountName ?? 'Aegis'
+    const company = organization?.name ?? homeAccountName ?? 'ASSETS'
     w.document.write(`<!doctype html><html><head><title>Label</title>
       <style>
         body{font-family:ui-monospace,monospace;padding:24px}

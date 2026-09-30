@@ -1,10 +1,10 @@
-# Vapi assistant setup for Aegis employee claims
+# Vapi assistant setup for ASSETS employee claims
 
 Configure this once in the [Vapi Dashboard](https://dashboard.vapi.ai) for the assistant ID in `VITE_VAPI_ASSISTANT_ID`.
 
 ## 1. Structured Output
 
-Create a Structured Output named **Aegis Employee Claim** with this JSON schema:
+Create a Structured Output named **ASSETS Employee Claim** with this JSON schema:
 
 ```json
 {
@@ -35,18 +35,18 @@ On the assistant **Artifact Plan**:
 - Enable **recording** (`recordingEnabled: true`)
 - Ensure transcripts / conversation messages are produced
 
-Aegis downloads the mono recording via the private API after the call ends.
+ASSETS downloads the mono recording via the private API after the call ends.
 
 ## 3. System prompt variables
 
-Aegis passes these at call start — reference them with Liquid syntax:
+ASSETS passes these at call start — reference them with Liquid syntax:
 
 `{{employee_name}}`, `{{first_name}}`, `{{company_name}}`, `{{branch_name}}`, `{{job_title}}`, `{{employee_number}}`, `{{email}}`, `{{whatsapp_number}}`, `{{selected_item_name}}`, `{{selected_item_category}}`, `{{call_purpose}}`
 
 Example guidance:
 
 ```text
-You are the Aegis claims assistant helping verified staff member {{employee_name}}
+You are the ASSETS claims assistant helping verified staff member {{employee_name}}
 ({{company_name}}{{#if branch_name}}, {{branch_name}}{{/if}}) log an insurance claim.
 
 Collect title, description, asset/plate, amount if known, broker notes, and roadside need.

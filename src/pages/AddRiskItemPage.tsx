@@ -231,9 +231,9 @@ export function AddRiskItemPage() {
               risk_item_id: created.id,
               nimbis_add: true,
               notify_email: BROKER_NOTIFY_EMAIL,
-              task_subject: `Aegis: Add motor item to Nimbis — ${policy.policy_number || 'policy'}`,
+              task_subject: `ASSETS: Add motor item to Nimbis — ${policy.policy_number || 'policy'}`,
               message: [
-                `New motor risk item added via Aegis portal.`,
+                `New motor risk item added via ASSETS portal.`,
                 rentalLine,
                 `Please add this item to the policy on Nimbis.`,
               ].join(' '),

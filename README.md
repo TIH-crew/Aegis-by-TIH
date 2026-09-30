@@ -1,6 +1,6 @@
-# Aegis by TIH
+# ASSETS by TIH
 
-Client-facing asset and risk management portal — **Aegis by TIH** (Hartbeespoort Insurance Hub). Burgundy branding, Supabase backend, Asset Panda-style UI.
+Client-facing asset and risk management portal — **ASSETS by TIH** (Hartbeespoort Insurance Hub). Burgundy branding, Supabase backend, Asset Panda-style UI.
 
 ## Phase 2 — Authentication
 
@@ -66,7 +66,7 @@ Google OAuth is configured in **two places**: Google Cloud Console and Supabase.
 
 Organizations are **provisioned from Zoho Accounts** when a broker sends an invite — clients do not create orgs themselves.
 
-1. Broker opens an **Account** in Zoho CRM → **Invite to Aegis** widget
+1. Broker opens an **Account** in Zoho CRM → **Invite to ASSETS** widget
 2. Edge function `aegis-invite` provisions `portal_accounts` from Zoho data and sends a magic link
 3. Client signs in → `accept_portal_invite_for_current_user()` links them to the org
 4. Company profile is prefilled in **Organization settings** (editable)

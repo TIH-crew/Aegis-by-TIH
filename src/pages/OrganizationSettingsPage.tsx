@@ -120,7 +120,7 @@ export function OrganizationSettingsPage() {
         <div>
           <h2 className="text-lg font-semibold">Company profile</h2>
           <p className="text-sm text-muted">
-            Your logo appears in the sidebar next to Aegis by TIH.
+            Your logo appears in the sidebar next to ASSETS by TIH.
           </p>
         </div>
 

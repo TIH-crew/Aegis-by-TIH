@@ -1,8 +1,8 @@
 export const BRAND = {
-  name: 'Aegis',
-  fullName: 'Aegis by TIH',
+  name: 'ASSETS',
+  fullName: 'ASSETS by TIH',
   shortName: 'TIH',
   tagline: 'by TIH',
   logoSrc: '/assets/aegis-logo.png',
-  logoAlt: 'Aegis by TIH logo',
+  logoAlt: 'ASSETS by TIH logo',
 } as const

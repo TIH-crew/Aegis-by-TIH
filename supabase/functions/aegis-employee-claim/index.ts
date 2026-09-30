@@ -112,7 +112,7 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
     const body = new URLSearchParams({
       To: `whatsapp:${toE164}`,
       From: fromWa,
-      Body: `The Hive (AEGIS portal) claim verification code: ${code}. Valid for 10 minutes.`,
+      Body: `The Hive (ASSETS portal) claim verification code: ${code}. Valid for 10 minutes.`,
     })
     const res = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
@@ -137,7 +137,7 @@ async function sendWhatsAppOtp(toE164: string, code: string): Promise<{ channel:
     const body = new URLSearchParams({
       To: toE164,
       From: smsFrom,
-      Body: `Aegis claim verification code: ${code}. Valid for 10 minutes.`,
+      Body: `ASSETS claim verification code: ${code}. Valid for 10 minutes.`,
     })
     const res = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
@@ -978,12 +978,12 @@ async function notifyClaimHandler(input: ClaimNotifyInput): Promise<{ ok: boolea
 
   const waBody = pdfSignedUrl
     ? [
-        `New Aegis claim for ${handlerName}`,
+        `New ASSETS claim for ${handlerName}`,
         `${input.employee?.full_name ?? 'Employee'} · ${input.companyName ?? 'Company'}`,
         `${input.risk.name} · ${policyLine}`,
       ].join('\n')
     : [
-        `New Aegis claim for ${handlerName}`,
+        `New ASSETS claim for ${handlerName}`,
         `Employee: ${input.employee?.full_name ?? 'Employee'}`,
         input.companyName ? `Company: ${input.companyName}` : null,
         `Item: ${input.risk.name}`,

@@ -454,7 +454,7 @@ export function EmployeeClaimPortalPage() {
       <div className="mx-auto w-full max-w-lg space-y-6">
         <header className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-200/80">
-            Aegis by TIH
+            ASSETS by TIH
           </p>
           <h1 className="mt-2 text-2xl font-semibold">Employee claim</h1>
           <p className="mt-1 text-sm text-rose-100/80">

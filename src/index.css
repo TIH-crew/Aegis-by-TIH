@@ -114,7 +114,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Aegis splash — Yoco-style wordmark / pill while context loads */
+/* ASSETS splash — wordmark / pill while context loads */
 @keyframes aegis-splash-in {
   0% {
     opacity: 0;

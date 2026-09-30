@@ -114,7 +114,7 @@ export function AssetImportPage() {
           <a
             className="ws-btn-secondary text-sm"
             href={`data:text/csv;charset=utf-8,${encodeURIComponent(TEMPLATE)}`}
-            download="aegis-asset-import-template.csv"
+            download="assets-by-tih-import-template.csv"
           >
             Download template
           </a>

@@ -1,4 +1,4 @@
-# Aegis fixed-asset accounting & ZA tax foundation
+# ASSETS fixed-asset accounting & ZA tax foundation
 
 ## Inspection summary (pre-implementation)
 

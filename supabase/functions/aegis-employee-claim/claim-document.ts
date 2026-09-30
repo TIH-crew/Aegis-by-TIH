@@ -98,10 +98,10 @@ export function buildClaimSummaryHtml(opts: ClaimFormDocInput): string {
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Aegis Claim — ${escapeHtml(opts.title)}</title>
+  <title>ASSETS Claim — ${escapeHtml(opts.title)}</title>
 </head>
 <body style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#111827;max-width:900px;margin:24px auto;padding:0 16px">
-  <h1 style="font-size:22px;margin:0 0 4px">Aegis employee claim</h1>
+  <h1 style="font-size:22px;margin:0 0 4px">ASSETS employee claim</h1>
   <p style="color:#6b7280;margin:0 0 20px">Generated ${escapeHtml(opts.docGeneratedAt)}</p>
   <table style="width:100%;border-collapse:collapse;margin:16px 0">${tableRows}</table>
   ${descriptionBlock}
@@ -258,7 +258,7 @@ export function buildClaimSummaryPdf(opts: ClaimFormDocInput): Uint8Array {
     }
   }
 
-  addText('Aegis employee claim', margin, 2, 18, 60)
+  addText('ASSETS employee claim', margin, 2, 18, 60)
   page.y -= 4
   addText(`Generated ${opts.docGeneratedAt}`, margin, 1, 9, 90)
   page.y -= 10

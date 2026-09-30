@@ -151,7 +151,7 @@ export async function launchAudit(accountId: string, auditId: string) {
           `You have been asked to verify ${assetsForUser.length} asset(s) for "${audit.name}".`,
           `Deadline: ${audit.submission_deadline} (Africa/Johannesburg).`,
           `Assets: ${tags}`,
-          `Open Aegis → Audits to complete your report. Do not share this request.`,
+          `Open ASSETS → Audits to complete your report. Do not share this request.`,
         ].join('\n\n'),
         idempotencyKey: `audit-invite-${auditId}-${email}`,
         payload: { auditId, assetIds: assetsForUser.map((a) => a.id) },

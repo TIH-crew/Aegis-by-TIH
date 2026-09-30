@@ -458,7 +458,7 @@ async function createBrokerRequest(
       : ''
 
   const description = [
-    'Client request from Aegis portal',
+    'Client request from ASSETS portal',
     ctx.orgName ? `Organisation: ${ctx.orgName}` : '',
     contextLabel ? `Context: ${contextLabel}` : '',
     riskSummary,
@@ -473,10 +473,10 @@ async function createBrokerRequest(
   const subject =
     taskSubjectOverride ||
     (isRemoveRequest
-      ? `Aegis: Remove items from policy${contextLabel ? ` — ${contextLabel}` : ''}`
+      ? `ASSETS: Remove items from policy${contextLabel ? ` — ${contextLabel}` : ''}`
       : nimbisAdd
-        ? `Aegis: Add item to Nimbis${contextLabel ? ` — ${contextLabel}` : ''}`
-        : `Aegis: Add risk item${contextLabel ? ` — ${contextLabel}` : ''}`)
+        ? `ASSETS: Add item to Nimbis${contextLabel ? ` — ${contextLabel}` : ''}`
+        : `ASSETS: Add risk item${contextLabel ? ` — ${contextLabel}` : ''}`)
 
   const taskPayload: Record<string, unknown> = {
     Subject: subject,
