@@ -1,4 +1,4 @@
-import { INSURANCE_STATUSES, RISK_CATEGORIES } from '../config/collections'
+import { RISK_CATEGORIES } from '../config/collections'
 import type { RiskItemInput } from '../types'
 import type { Branch } from '../types/branch'
 
@@ -8,7 +8,6 @@ export const RISK_ITEMS_IMPORT_HEADERS = [
   'Branch',
   'Unit Cost',
   'Repair Cost',
-  'Insurance Status',
   'Employee',
   'Serial Number',
   'Description',
@@ -16,8 +15,8 @@ export const RISK_ITEMS_IMPORT_HEADERS = [
 ] as const
 
 export const RISK_ITEMS_IMPORT_TEMPLATE = `${RISK_ITEMS_IMPORT_HEADERS.join(',')}
-Office Laptop,Electronic Equipment,Head Office,18500,0,Brand new,Jane Doe,SN-001,Finance dept laptop,2026-01-15
-Company Vehicle,Motor,Head Office,320000,15000,Uninsured,,ABC123GP,Fleet vehicle,2026-01-15`
+Office Laptop,Electronic Equipment,Head Office,18500,0,Jane Doe,SN-001,Finance dept laptop,2026-01-15
+Company Vehicle,Motor,Head Office,320000,15000,,ABC123GP,Fleet vehicle,2026-01-15`
 
 const COLUMN_ALIASES: Record<string, keyof ParsedRowFields> = {
   'item name': 'name',
@@ -30,9 +29,6 @@ const COLUMN_ALIASES: Record<string, keyof ParsedRowFields> = {
   value: 'unit_cost',
   'repair cost': 'repair_cost',
   repair_cost: 'repair_cost',
-  'insurance status': 'insurance_status',
-  insurance_status: 'insurance_status',
-  status: 'insurance_status',
   employee: 'employee_name',
   employee_name: 'employee_name',
   'serial number': 'serial_number',
@@ -50,7 +46,6 @@ interface ParsedRowFields {
   branch: string
   unit_cost: string
   repair_cost: string
-  insurance_status: string
   employee_name: string
   serial_number: string
   description: string
@@ -225,19 +220,6 @@ export function parseRiskItemsCsv(
     const repairCost = parseNumber(fields.repair_cost ?? '', 'Repair Cost')
     if (repairCost.error) errors.push(repairCost.error)
 
-    const statusRaw = (fields.insurance_status ?? '').trim()
-    // Legacy CSV values "Insured elsewhere" / "Covered Elsewhere" → Uninsured
-    const legacyUninsured =
-      /^insured\s+elsewhere$/i.test(statusRaw) || /^covered\s+elsewhere$/i.test(statusRaw)
-    const insuranceStatus = legacyUninsured
-      ? ('Uninsured' as (typeof INSURANCE_STATUSES)[number])
-      : statusRaw
-        ? matchEnum(statusRaw, INSURANCE_STATUSES)
-        : ('Uninsured' as (typeof INSURANCE_STATUSES)[number])
-    if (statusRaw && !insuranceStatus && !legacyUninsured) {
-      errors.push(`Unknown insurance status "${statusRaw}"`)
-    }
-
     const recordDate = parseDate(fields.record_date ?? '')
     if (recordDate.error) errors.push(recordDate.error)
 
@@ -249,7 +231,6 @@ export function parseRiskItemsCsv(
             branch_id: branchId,
             unit_cost: unitCost.value,
             repair_cost: repairCost.value,
-            insurance_status: insuranceStatus ?? 'Uninsured',
             employee_name: (fields.employee_name ?? '').trim() || null,
             serial_number: (fields.serial_number ?? '').trim() || null,
             description: (fields.description ?? '').trim() || null,

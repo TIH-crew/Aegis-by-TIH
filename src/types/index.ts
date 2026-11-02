@@ -35,6 +35,8 @@ export interface RiskItem {
   finance_house: string | null
   finance_account_number: string | null
   finance_amount: number | null
+  nfc_uid: string | null
+  rfid_epc: string | null
   created_at: string
   updated_at: string
 }

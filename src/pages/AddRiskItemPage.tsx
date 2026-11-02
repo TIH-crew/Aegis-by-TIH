@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { INSURANCE_STATUSES, RISK_CATEGORIES } from '../config/collections'
-import { BROKER_NOTIFY_EMAIL } from '../config/motor-rental'
+import { RISK_CATEGORIES } from '../config/collections'
 import {
   MotorRentalPanel,
   resolveRentalCompany,
@@ -14,25 +13,12 @@ import {
   emptyPurchaseProof,
   type PurchaseProofValue,
 } from '../components/risk-items/PurchaseProofPanel'
-import {
-  ItemExtrasQuestionnaire,
-  answersToSelectedExtensions,
-  emptyExtrasAnswers,
-  validateExtrasQuestionnaire,
-  type ExtrasQuestionnaireAnswers,
-} from '../components/risk-items/ItemExtrasQuestionnaire'
 import { useBranches } from '../context/BranchesContext'
 import { useSearch } from '../context/SearchContext'
 import { useAuth } from '../context/AuthContext'
 import { useDataService } from '../hooks/useDataService'
-import {
-  attachRiskItemToPolicy,
-  fetchPolicies,
-  sendBrokerRequest,
-} from '../services/crm.service'
 import { validateAssignmentPurchase } from '../services/purchase-proof.service'
 import { listEmployees } from '../services/employee.service'
-import type { PolicySummary } from '../types/crm'
 import type { Employee } from '../types/employee'
 
 const emptyRental: MotorRentalValue = {
@@ -52,10 +38,7 @@ export function AddRiskItemPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [employees, setEmployees] = useState<Employee[]>([])
-  const [policies, setPolicies] = useState<PolicySummary[]>([])
-  const [policyId, setPolicyId] = useState('')
   const [rental, setRental] = useState<MotorRentalValue>(emptyRental)
-  const [extras, setExtras] = useState<ExtrasQuestionnaireAnswers>(emptyExtrasAnswers())
   const [purchase, setPurchase] = useState<PurchaseProofValue>(emptyPurchaseProof())
   const [form, setForm] = useState({
     name: '',
@@ -65,10 +48,8 @@ export function AddRiskItemPage() {
     branch_id: '',
     employee_id: '',
     employee_name: '',
-    insurance_status: 'Brand new' as string,
     serial_number: '',
     description: '',
-    item_extensions: [] as unknown,
     vehicle_verification: {} as Record<string, unknown>,
     zoho_fields: {} as Record<string, unknown>,
   })
@@ -89,16 +70,6 @@ export function AddRiskItemPage() {
     )
   }, [accountId])
 
-  useEffect(() => {
-    if (!isMotor) return
-    void fetchPolicies()
-      .then((rows) => {
-        setPolicies(rows)
-        setPolicyId((prev) => prev || rows[0]?.id || '')
-      })
-      .catch(() => setPolicies([]))
-  }, [isMotor])
-
   async function handleSubmit() {
     if (!form.name.trim()) {
       setError('Item name is required.')
@@ -117,10 +88,6 @@ export function AddRiskItemPage() {
       const rentalError = validateMotorRental(rental)
       if (rentalError) {
         setError(rentalError)
-        return
-      }
-      if (!policyId) {
-        setError('Select a policy to add this motor item to.')
         return
       }
       const plate = String(form.zoho_fields?.Registration_Number ?? '').trim()
@@ -145,26 +112,15 @@ export function AddRiskItemPage() {
       }
     }
 
-    const extrasError = validateExtrasQuestionnaire(form.category, extras)
-    if (extrasError) {
-      setError(extrasError)
-      return
-    }
-
     setSaving(true)
     setError(null)
     try {
       const rentalCompany = resolveRentalCompany(rental)
-      const selectedExtras = answersToSelectedExtensions(extras, form.category)
-      const coverKey =
-        extras.cover_type_key ||
-        (form.category !== 'Motor' ? 'standard' : extras.cover_type_key)
       const created = await dataService.createRiskItem({
         ...form,
         unit_cost: form.unit_cost || purchase.purchase_value || 0,
         employee_id: form.employee_id || null,
         branch_id: form.branch_id,
-        item_extensions: selectedExtras,
         purchase_value: purchase.purchase_value || form.unit_cost || null,
         purchase_invoice_url: purchase.purchase_invoice_url || null,
         purchase_invoice_name: purchase.purchase_invoice_name || null,
@@ -175,83 +131,13 @@ export function AddRiskItemPage() {
         finance_amount: purchase.is_financed ? purchase.finance_amount : null,
         zoho_fields: {
           ...form.zoho_fields,
-          ...(coverKey ? { Cover_Type: coverKey } : {}),
-          ...(extras.vehicle_use ? { Vehicle_Use: extras.vehicle_use } : {}),
-          ...(extras.is_financed != null || purchase.is_financed
-            ? { Is_Financed: purchase.is_financed || extras.is_financed }
-            : {}),
-          ...(purchase.is_financed && purchase.finance_house
-            ? { Finance_House: purchase.finance_house }
-            : extras.finance_house
-              ? { Finance_House: extras.finance_house }
-              : {}),
-          ...(extras.has_tracker != null
-            ? { Tracking_Device: extras.has_tracker ? 'Yes' : 'No' }
-            : {}),
-          ...(selectedExtras.some((e) => e.code === 'credit_shortfall')
-            ? { Credit_shortfall: true }
-            : {}),
+          ...(purchase.is_financed ? { Is_Financed: true, Finance_House: purchase.finance_house } : {}),
         },
         is_rental: isMotor ? rental.is_rental : false,
         rental_company: isMotor && rental.is_rental ? rentalCompany : null,
         rental_start_date: isMotor && rental.is_rental ? rental.rental_start_date : null,
         rental_end_date: isMotor && rental.is_rental ? rental.rental_end_date : null,
       })
-
-      if (isMotor && policyId) {
-        const policy = policies.find((p) => p.id === policyId)
-        await attachRiskItemToPolicy({
-          policyId,
-          riskItem: {
-            id: created.id,
-            name: created.name,
-            category: created.category,
-            unit_cost: created.unit_cost,
-            branch: created.branch,
-            description: created.description,
-            is_rental: created.is_rental,
-            rental_company: created.rental_company,
-            rental_start_date: created.rental_start_date,
-            rental_end_date: created.rental_end_date,
-            item_extensions: selectedExtras,
-          },
-        })
-
-        const zohoPolicyId = policy?.zoho_policy_id
-        let brokerNote = `Item added to policy ${policy?.policy_number ?? ''}.`
-        if (zohoPolicyId) {
-          try {
-            const rentalLine = created.is_rental
-              ? `Rental from ${created.rental_company} (${created.rental_start_date} to ${created.rental_end_date}).`
-              : 'Not a rental vehicle.'
-            await sendBrokerRequest({
-              context_type: 'policy',
-              context_zoho_id: zohoPolicyId,
-              context_label: policy.policy_number || policy.id,
-              risk_item_id: created.id,
-              nimbis_add: true,
-              notify_email: BROKER_NOTIFY_EMAIL,
-              task_subject: `ASSETS: Add motor item to Nimbis — ${policy.policy_number || 'policy'}`,
-              message: [
-                `New motor risk item added via ASSETS portal.`,
-                rentalLine,
-                `Please add this item to the policy on Nimbis.`,
-              ].join(' '),
-            })
-            brokerNote = `Item added to policy. Broker (${BROKER_NOTIFY_EMAIL}) notified to add on Nimbis.`
-          } catch {
-            brokerNote =
-              'Item added to policy, but broker notification failed. Please contact the broker manually.'
-          }
-        } else {
-          brokerNote =
-            'Item added to policy. Ask your broker to add it on Nimbis if required.'
-        }
-
-        await refreshRiskItems()
-        navigate(`/assets/${created.id}`, { state: { toast: brokerNote } })
-        return
-      }
 
       await refreshRiskItems()
       navigate(`/assets/${created.id}`)
@@ -309,7 +195,6 @@ export function AddRiskItemPage() {
               onChange={(e) => {
                 const category = e.target.value
                 setForm({ ...form, category })
-                setExtras(emptyExtrasAnswers())
                 if (category !== 'Motor') setRental(emptyRental)
               }}
             >
@@ -336,7 +221,7 @@ export function AddRiskItemPage() {
             </select>
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block font-medium">Unit Cost (R)</span>
+            <span className="mb-1 block font-medium">Purchase cost (R)</span>
             <input
               className="field-input"
               type="number"
@@ -344,20 +229,9 @@ export function AddRiskItemPage() {
               onChange={(e) => setForm({ ...form, unit_cost: Number(e.target.value) })}
             />
           </label>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Insurance Status</span>
-            <select
-              className="field-input"
-              value={form.insurance_status}
-              onChange={(e) => setForm({ ...form, insurance_status: e.target.value })}
-            >
-              {INSURANCE_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
+          <p className="text-sm text-muted md:col-span-2">
+            Insurance is shown as a status after the asset is saved. Cover, sums insured and policy changes are not edited here.
+          </p>
           <label className="block text-sm md:col-span-2">
             <span className="mb-1 block font-medium">Assign to</span>
             <select
@@ -464,27 +338,6 @@ export function AddRiskItemPage() {
               </div>
             </div>
             <MotorRentalPanel value={rental} onChange={setRental} />
-
-            <label className="block text-sm">
-              <span className="mb-1 block font-medium">Add to policy *</span>
-              <select
-                className="field-input"
-                value={policyId}
-                onChange={(e) => setPolicyId(e.target.value)}
-              >
-                <option value="">Select policy</option>
-                {policies.map((policy) => (
-                  <option key={policy.id} value={policy.id}>
-                    {policy.policy_number}
-                    {policy.insurer ? ` · ${policy.insurer}` : ''}
-                    {policy.status ? ` (${policy.status})` : ''}
-                  </option>
-                ))}
-              </select>
-              <span className="mt-1 block text-xs text-muted">
-                Creates an add-item task for {BROKER_NOTIFY_EMAIL} after save.
-              </span>
-            </label>
           </>
         )}
 
@@ -502,12 +355,6 @@ export function AddRiskItemPage() {
           />
         )}
 
-        <ItemExtrasQuestionnaire
-          category={form.category}
-          value={extras}
-          onChange={setExtras}
-        />
-
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
@@ -522,7 +369,7 @@ export function AddRiskItemPage() {
             disabled={saving || !branches.length}
             className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-accent-hover disabled:opacity-60"
           >
-            {saving ? 'Saving...' : isMotor ? 'Save & notify broker' : 'Save'}
+            {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>

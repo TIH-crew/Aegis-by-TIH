@@ -38,6 +38,7 @@ import { LedgerAssetsPage } from './pages/LedgerAssetsPage'
 import { LedgerAssetDetailPage } from './pages/LedgerAssetDetailPage'
 import { IncidentsPage, IncidentDetailPage } from './pages/IncidentsPage'
 import { AssetImportPage } from './pages/AssetImportPage'
+import { AssetScanPage } from './pages/AssetScanPage'
 import { AuditsPage } from './pages/AuditsPage'
 import { AegisSplashLoader } from './components/brand/AegisSplashLoader'
 import { useAuth } from './context/AuthContext'
@@ -103,6 +104,7 @@ export default function App() {
                   <Route path="/assets/incidents/:id" element={<IncidentDetailPage />} />
                   <Route path="/assets/import" element={<AssetImportPage />} />
                   <Route path="/assets/audits" element={<AuditsPage />} />
+                  <Route path="/assets/scan" element={<AssetScanPage />} />
                   <Route path="/assets/:id" element={<RiskItemDetailPage />} />
                   {/* Backward-compatible paths */}
                   <Route path="/collections/risk-items" element={<RiskItemsPage />} />

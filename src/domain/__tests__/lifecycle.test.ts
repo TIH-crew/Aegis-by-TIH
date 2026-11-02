@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest'
+import { normalizeTag } from '../asset-tags'
 import { barcodeNeedsPhysicalLabel, generateAssetBarcode } from '../barcode'
 import { labelledAmount, neverZeroUnknown } from '../asset-display'
 
+describe('nfc and rfid tags', () => {
+  it('normalises reader output to a stable id', () => {
+    expect(normalizeTag('04:a1 b2-c3')).toBe('04A1B2C3')
+    expect(normalizeTag('  epc-001  ')).toBe('EPC001')
+  })
+})
 describe('barcode', () => {
   it('generates stable tenant-scoped payloads', () => {
     const a = generateAssetBarcode({ accountShort: 'atl', assetTag: 'VEH-001', sequence: 12 })

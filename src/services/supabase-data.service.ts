@@ -31,6 +31,8 @@ function mapRow(row: RiskItem): RiskItem {
     finance_house: row.finance_house ?? null,
     finance_account_number: row.finance_account_number ?? null,
     finance_amount: row.finance_amount != null ? Number(row.finance_amount) : null,
+    nfc_uid: row.nfc_uid ?? null,
+    rfid_epc: row.rfid_epc ?? null,
   }
 }
 
@@ -105,7 +107,7 @@ export function createSupabaseDataService(
         rental_company: input.is_rental ? (input.rental_company ?? null) : null,
         rental_start_date: input.is_rental ? (input.rental_start_date ?? null) : null,
         rental_end_date: input.is_rental ? (input.rental_end_date ?? null) : null,
-        insurance_status: input.insurance_status ?? 'Uninsured',
+        insurance_status: 'Uninsured',
         description: input.description ?? null,
         serial_number: input.serial_number ?? null,
         branch_id: input.branch_id ?? null,
@@ -163,7 +165,7 @@ export function createSupabaseDataService(
           rental_company: input.is_rental ? (input.rental_company ?? null) : null,
           rental_start_date: input.is_rental ? (input.rental_start_date ?? null) : null,
           rental_end_date: input.is_rental ? (input.rental_end_date ?? null) : null,
-          insurance_status: input.insurance_status ?? 'Uninsured',
+          insurance_status: 'Uninsured',
           description: input.description ?? null,
           serial_number: input.serial_number ?? null,
           branch_id: input.branch_id ?? null,
@@ -217,7 +219,6 @@ export function createSupabaseDataService(
       if (input.rental_start_date !== undefined) patch.rental_start_date = input.rental_start_date
       if (input.rental_end_date !== undefined) patch.rental_end_date = input.rental_end_date
       if (input.assignment_status !== undefined) patch.assignment_status = input.assignment_status
-      if (input.insurance_status !== undefined) patch.insurance_status = input.insurance_status
       if (input.description !== undefined) patch.description = input.description
       if (input.serial_number !== undefined) patch.serial_number = input.serial_number
       if (input.zoho_fields !== undefined) patch.zoho_fields = input.zoho_fields

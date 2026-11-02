@@ -56,6 +56,8 @@ export interface AamAsset {
   replacement_value_source: string | null
   processing_status?: string
   barcode?: string | null
+  nfc_uid?: string | null
+  rfid_epc?: string | null
   barcode_kind?: 'physical' | 'internal_only'
   barcode_reason?: string | null
   condition_code?: string | null

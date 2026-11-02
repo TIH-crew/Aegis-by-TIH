@@ -9,6 +9,7 @@ import { useDataService } from '../hooks/useDataService'
 import { lifecycleLabel } from '../lib/risk-items-view'
 import { cn, formatCurrency, formatDate } from '../lib/utils'
 import { listEmployees } from '../services/employee.service'
+import { AssetTrackingPanel } from '../components/assets/AssetTrackingPanel'
 import type { RiskItem } from '../types'
 import type { Employee } from '../types/employee'
 
@@ -35,11 +36,12 @@ export function RiskItemDetailPage() {
   const { id } = useParams<{ id: string }>()
   const location = useLocation()
   const { branches } = useBranches()
-  const { accountId } = useAuth()
+  const { accountId, user } = useAuth()
   const dataService = useDataService()
   const [item, setItem] = useState<RiskItem | null>(null)
   const [employees, setEmployees] = useState<Employee[]>([])
   const [tab, setTab] = useState<Tab>('overview')
+  const [reloadKey, setReloadKey] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(
@@ -64,7 +66,7 @@ export function RiskItemDetailPage() {
     return () => {
       cancelled = true
     }
-  }, [id, dataService])
+  }, [id, dataService, reloadKey])
 
   useEffect(() => {
     if (!accountId) return
@@ -124,8 +126,7 @@ export function RiskItemDetailPage() {
           </div>
           <p className="font-mono text-xs text-muted">{item.asset_tag}</p>
           <p className="mt-1 text-sm text-muted">
-            View only for insured schedule changes — request updates via your broker.
-            Insured items may be third-party owned and are not automatically fixed assets.
+            Insurance is a status only. Cover and policy changes are managed outside this record.
           </p>
         </div>
         {item.image_url && (
@@ -201,6 +202,17 @@ export function RiskItemDetailPage() {
               </>
             )}
           </div>
+          {accountId && (
+            <AssetTrackingPanel
+              accountId={accountId}
+              target="risk_item"
+              recordId={item.id}
+              nfcUid={item.nfc_uid}
+              rfidEpc={item.rfid_epc}
+              userId={user?.id}
+              onChanged={() => setReloadKey((n) => n + 1)}
+            />
+          )}
 
           {extraFields.length > 0 && (
             <div className="ws-panel p-4">

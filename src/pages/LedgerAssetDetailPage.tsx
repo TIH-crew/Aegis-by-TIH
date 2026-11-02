@@ -14,6 +14,7 @@ import {
   reportIncident,
   updateAssetFields,
 } from '../services/asset-lifecycle.service'
+import { AssetTrackingPanel } from '../components/assets/AssetTrackingPanel'
 import { cn } from '../lib/utils'
 
 type Tab = 'overview' | 'documents' | 'timeline' | 'values'
@@ -252,6 +253,18 @@ export function LedgerAssetDetailPage() {
                 </Link>
               </div>
             )}
+            {accountId && (
+              <AssetTrackingPanel
+                accountId={accountId}
+                target="ledger"
+                recordId={asset.id}
+                barcode={asset.barcode}
+                nfcUid={asset.nfc_uid}
+                rfidEpc={asset.rfid_epc}
+                userId={user?.id}
+                onChanged={() => void refresh()}
+              />
+            )}
           </section>
           <section className="ws-panel space-y-3 p-4">
             <h3 className="text-sm font-semibold">Edit permitted fields</h3>
@@ -350,6 +363,8 @@ export function LedgerAssetDetailPage() {
             <option value="document_upload">Documents</option>
             <option value="incident_reported">Incidents</option>
             <option value="barcode_created">Barcodes</option>
+            <option value="nfc_assigned">NFC</option>
+            <option value="rfid_assigned">RFID</option>
             <option value="bulk_import">Imports</option>
             <option value="audit_assigned">Audits</option>
             <option value="finance_approved">Finance</option>

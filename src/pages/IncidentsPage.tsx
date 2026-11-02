@@ -8,7 +8,6 @@ import {
   listIncidents,
   receiveReplacementAsset,
   startReplacement,
-  updateIncidentInsurance,
 } from '../services/asset-lifecycle.service'
 import { cn } from '../lib/utils'
 
@@ -97,7 +96,6 @@ export function IncidentDetailPage() {
   const [pack, setPack] = useState<Awaited<ReturnType<typeof getIncident>> | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [claimNo, setClaimNo] = useState('')
   const [spec, setSpec] = useState('')
   const [newTag, setNewTag] = useState('')
 
@@ -106,7 +104,6 @@ export function IncidentDetailPage() {
     try {
       const data = await getIncident(accountId, id)
       setPack(data)
-      setClaimNo(data.incident.claim_number ?? '')
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load case')
@@ -193,94 +190,19 @@ export function IncidentDetailPage() {
         {/* Insurance */}
         <section className="ws-panel space-y-2 p-4">
           <h3 className="text-sm font-semibold">Insurance</h3>
-          <p className="text-xs text-muted">Status: {String(incident.insurance_status).replace(/_/g, ' ')}</p>
+          <p className="text-sm font-medium text-ink">
+            {String(incident.insurance_status).replace(/_/g, ' ')}
+          </p>
+          {incident.claim_number ? (
+            <p className="text-xs text-muted">Claim {incident.claim_number}</p>
+          ) : null}
           {incident.insurance_status === 'review_required' && (
-            <p className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">Insurance review required — no matching cover</p>
+            <p className="rounded bg-amber-50 px-2 py-1 text-xs text-amber-900">
+              Insurance review required — no matching cover
+            </p>
           )}
-          <label className="block text-xs text-muted">
-            Claim number
-            <input
-              className="mt-1 w-full rounded border border-border px-2 py-1 text-sm"
-              value={claimNo}
-              onChange={(e) => setClaimNo(e.target.value)}
-            />
-          </label>
-          <div className="flex flex-wrap gap-1">
-            <button
-              type="button"
-              disabled={busy}
-              className="ws-btn-secondary text-xs"
-              onClick={() =>
-                void run(() =>
-                  updateIncidentInsurance(
-                    accountId!,
-                    incident.id,
-                    { insuranceStatus: 'submitted', claimNumber: claimNo },
-                    { userId: user?.id, label: 'Broker' },
-                  ),
-                )
-              }
-            >
-              Submit claim
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              className="ws-btn-secondary text-xs"
-              onClick={() =>
-                void run(() =>
-                  updateIncidentInsurance(
-                    accountId!,
-                    incident.id,
-                    {
-                      insuranceStatus: 'total_loss_accepted',
-                      coverageDecision: 'total_loss',
-                      claimNumber: claimNo,
-                    },
-                    { userId: user?.id, label: 'Insurer' },
-                  ),
-                )
-              }
-            >
-              Record total loss
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              className="ws-btn-secondary text-xs"
-              onClick={() =>
-                void run(() =>
-                  updateIncidentInsurance(
-                    accountId!,
-                    incident.id,
-                    { insuranceStatus: 'declined', coverageDecision: 'declined' },
-                    { userId: user?.id, label: 'Insurer' },
-                  ),
-                )
-              }
-            >
-              Declined
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              className="ws-btn-secondary text-xs"
-              onClick={() =>
-                void run(() =>
-                  updateIncidentInsurance(
-                    accountId!,
-                    incident.id,
-                    { insuranceStatus: 'repair_authorised', coverageDecision: 'repair' },
-                    { userId: user?.id, label: 'Insurer' },
-                  ),
-                )
-              }
-            >
-              Repair authorised
-            </button>
-          </div>
           <p className="text-[11px] text-muted">
-            Insurer total loss is not automatic authority to remove the asset from the accounting register.
+            Insurance is a status only. Cover and claim decisions are not edited on the asset.
           </p>
         </section>
 

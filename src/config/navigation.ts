@@ -47,6 +47,7 @@ export const PRIMARY_NAV: NavItem[] = [
       { label: 'Incidents & write-offs', path: '/assets/incidents', capability: 'risk_items' },
       { label: 'Bulk import', path: '/assets/import', capability: 'risk_items' },
       { label: 'Physical audits', path: '/assets/audits', capability: 'risk_items' },
+      { label: 'Scan tag', path: '/assets/scan', capability: 'risk_items' },
     ],
   },
   {
