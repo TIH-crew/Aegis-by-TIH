@@ -14,11 +14,18 @@ import {
 } from './zoho.ts'
 import { syncPortalFromZoho } from './sync-portal.ts'
 import { mapZohoAccountSnapshot, refreshPortalAccountFromZoho } from './zoho-account.ts'
+import {
+  mintWidgetSession,
+  requireWidgetSecret,
+  resolveWidgetSession,
+  revokeWidgetSession,
+} from './widget-auth.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type, x-aegis-secret, x-aegis-widget-session',
+  'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
 }
 
 function json(body: unknown, status = 200) {
@@ -35,7 +42,17 @@ function getServiceClient() {
   return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } })
 }
 
-async function getAccountContext(req: Request) {
+type RequestContext = {
+  user: { id: string; email?: string | null }
+  accountId: string
+  portalRole: string
+  zohoAccountId: string
+  orgName: string | null
+  kind: 'portal' | 'widget'
+  scopes?: string[]
+}
+
+async function getPortalJwtContext(req: Request): Promise<RequestContext> {
   const authHeader = req.headers.get('Authorization')
   if (!authHeader?.startsWith('Bearer ')) throw new Error('Unauthorized')
 
@@ -54,7 +71,7 @@ async function getAccountContext(req: Request) {
   const admin = getServiceClient()
   const { data, error: puError } = await admin
     .from('portal_users')
-    .select('account_id')
+    .select('account_id, role')
     .eq('user_id', user.id)
     .maybeSingle()
 
@@ -69,12 +86,79 @@ async function getAccountContext(req: Request) {
   if (orgError || !org) throw new Error('No portal account')
   if (!org.zoho_account_id) throw new Error('Organization is not linked to Zoho CRM')
 
+  // Never trust a browser-supplied Zoho Account ID — resolve only from portal membership.
   return {
-    user,
+    kind: 'portal',
+    user: { id: user.id, email: user.email },
     accountId: data.account_id as string,
+    portalRole: (data.role as string) ?? 'member',
     zohoAccountId: org.zoho_account_id,
     orgName: org.name,
   }
+}
+
+/** Portal JWT or short-lived widget session (X-Aegis-Widget-Session). */
+async function getRequestContext(req: Request): Promise<RequestContext> {
+  const widgetToken = req.headers.get('x-aegis-widget-session')
+  if (widgetToken) {
+    const session = await resolveWidgetSession(widgetToken)
+    return {
+      kind: 'widget',
+      user: session.user,
+      accountId: session.accountId,
+      portalRole: session.portalRole,
+      zohoAccountId: session.zohoAccountId,
+      orgName: session.orgName,
+      scopes: session.scopes,
+    }
+  }
+  return getPortalJwtContext(req)
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value)
+  const hash = await crypto.subtle.digest('SHA-256', data)
+  return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function sendActivationMagicLink(email: string, redirectTo: string) {
+  const url = Deno.env.get('SUPABASE_URL')
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!url || !key) throw new Error('Supabase credentials missing')
+  const res = await fetch(`${url}/auth/v1/otp`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email.toLowerCase().trim(),
+      create_user: true,
+      options: { email_redirect_to: redirectTo },
+    }),
+  })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.msg ?? data.error_description ?? 'Failed to send activation email')
+  }
+}
+
+function canManageWorkforce(role: string) {
+  return role === 'owner' || role === 'admin' || role === 'hr_admin'
+}
+
+function canBrokerWorkforce(role: string) {
+  return role === 'owner' || role === 'admin' || role === 'broker'
+}
+
+/** Widget actors are Zoho users, not auth.users — never write fake UUIDs into FK columns. */
+function actorUserId(ctx: RequestContext): string | null {
+  return ctx.kind === 'portal' ? ctx.user.id : null
+}
+
+function actorLabel(ctx: RequestContext): string | null {
+  return ctx.user.email ?? (ctx.kind === 'widget' ? ctx.user.id : null)
 }
 
 async function searchAccountRelatedLists(
@@ -565,7 +649,7 @@ async function createBrokerRequest(
         .join('\n') || null,
       zoho_task_id: zohoTaskId,
       status: zohoTaskId ? 'sent' : 'failed',
-      created_by: ctx.user.id,
+      created_by: actorUserId(ctx),
     })
     .select('id, zoho_task_id, status, created_at')
     .single()
@@ -648,10 +732,127 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    const ctx = await getAccountContext(req)
     const segments = routePath(new URL(req.url))
     const resource = segments[0] ?? ''
     const id = segments[1]
+    const action = segments[2]
+
+    // --- Widget session mint / revoke (shared secret; no portal JWT) ---
+    if (req.method === 'POST' && resource === 'workforce' && id === 'widget-session') {
+      if (!requireWidgetSecret(req)) {
+        return json({ ok: false, error: 'Unauthorized' }, 401)
+      }
+      const body = await req.json()
+      if (body.action === 'revoke') {
+        const token = String(body.session_token ?? req.headers.get('x-aegis-widget-session') ?? '')
+        if (!token) return json({ ok: false, error: 'session_token required' }, 400)
+        await revokeWidgetSession(token)
+        return json({ ok: true, revoked: true })
+      }
+      const session = await mintWidgetSession({
+        zohoAccountId: String(body.zoho_account_id ?? ''),
+        zohoUserEmail: String(body.zoho_user_email ?? ''),
+        zohoUserId: body.zoho_user_id ? String(body.zoho_user_id) : null,
+      })
+      return json({
+        ok: true,
+        ...session,
+        trust: {
+          account_verified_via: 'zoho_api',
+          user_verified_via: 'zoho_users_api',
+          authorisation: 'portal_membership_or_broker_domain',
+        },
+      })
+    }
+
+    // --- Employee activation (public token; not claim QR) ---
+    if (req.method === 'POST' && resource === 'workforce' && id === 'activation') {
+      const body = await req.json()
+      const plainToken = String(body.token ?? '').trim()
+      if (!plainToken) return json({ ok: false, error: 'token required' }, 400)
+      const tokenHash = await sha256Hex(plainToken)
+      const admin = getServiceClient()
+      const { data: invite } = await admin
+        .from('portal_employee_invites')
+        .select('*, portal_employees(id, full_name, status)')
+        .eq('token_hash', tokenHash)
+        .maybeSingle()
+      if (!invite) return json({ ok: false, error: 'Invalid invitation' }, 404)
+      if (invite.status === 'revoked') return json({ ok: false, error: 'Invitation revoked' }, 410)
+      if (invite.status === 'accepted') return json({ ok: false, error: 'Invitation already accepted' }, 409)
+      if (new Date(invite.expires_at).getTime() < Date.now()) {
+        await admin.from('portal_employee_invites').update({ status: 'expired' }).eq('id', invite.id)
+        return json({ ok: false, error: 'Invitation expired' }, 410)
+      }
+
+      if (body.action === 'validate') {
+        return json({
+          ok: true,
+          email: invite.email,
+          employee_name: (invite as { portal_employees?: { full_name?: string } }).portal_employees
+            ?.full_name,
+          expires_at: invite.expires_at,
+        })
+      }
+
+      if (body.action === 'send_magic_link') {
+        const appUrl = Deno.env.get('AEGIS_APP_URL') ?? 'http://localhost:1420'
+        const redirectTo = `${appUrl.replace(/\/$/, '')}/activate-employee?token=${encodeURIComponent(plainToken)}`
+        await sendActivationMagicLink(invite.email, redirectTo)
+        await sendBrokerNotifyEmail({
+          to: invite.email,
+          subject: 'Activate your AEGIS employee account',
+          text: `You have been invited to activate your AEGIS account.\n\nOpen: ${redirectTo}\n\nThis link expires at ${invite.expires_at}.`,
+        }).catch(() => ({ sent: false }))
+        return json({ ok: true, email: invite.email, magic_link_sent: true })
+      }
+
+      if (body.action === 'accept') {
+        const authHeader = req.headers.get('Authorization')
+        if (!authHeader?.startsWith('Bearer ')) {
+          return json({ ok: false, error: 'Sign in required to accept invitation' }, 401)
+        }
+        const url = Deno.env.get('SUPABASE_URL')!
+        const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
+        const userClient = createClient(url, anonKey, {
+          global: { headers: { Authorization: authHeader } },
+        })
+        const {
+          data: { user },
+        } = await userClient.auth.getUser()
+        if (!user) return json({ ok: false, error: 'Sign in required' }, 401)
+        if (user.email && user.email.toLowerCase() !== String(invite.email).toLowerCase()) {
+          return json({ ok: false, error: 'Signed-in email does not match invitation' }, 403)
+        }
+
+        await admin
+          .from('portal_employee_invites')
+          .update({ status: 'accepted', accepted_at: new Date().toISOString() })
+          .eq('id', invite.id)
+        await admin
+          .from('portal_employees')
+          .update({
+            invitation_status: 'accepted',
+            activated_at: new Date().toISOString(),
+            user_id: user.id,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', invite.employee_id)
+          .eq('account_id', invite.account_id)
+        await admin.from('portal_workforce_audit_events').insert({
+          account_id: invite.account_id,
+          employee_id: invite.employee_id,
+          event_type: 'employee_activated',
+          summary: 'Employee accepted activation invitation',
+          actor_user_id: user.id,
+        })
+        return json({ ok: true, employee_id: invite.employee_id, activated: true })
+      }
+
+      return json({ ok: false, error: 'Unknown activation action' }, 400)
+    }
+
+    const ctx = await getRequestContext(req)
 
     if (req.method === 'GET' && resource === 'quotations' && !id) {
       const items = await listQuotations(ctx.zohoAccountId, ctx.orgName)
@@ -693,6 +894,400 @@ Deno.serve(async (req) => {
       return json({ ok: true, contacts: items })
     }
 
+    // Workforce API for Zoho Account widget / broker tools (Supabase remains employee SoT)
+    if (req.method === 'GET' && resource === 'workforce' && id === 'overview') {
+      const admin = getServiceClient()
+      const { count: total } = await admin
+        .from('portal_employees')
+        .select('*', { count: 'exact', head: true })
+        .eq('account_id', ctx.accountId)
+      const { count: active } = await admin
+        .from('portal_employees')
+        .select('*', { count: 'exact', head: true })
+        .eq('account_id', ctx.accountId)
+        .eq('status', 'active')
+      const { count: exceptions } = await admin
+        .from('portal_workforce_exceptions')
+        .select('*', { count: 'exact', head: true })
+        .eq('account_id', ctx.accountId)
+        .eq('status', 'open')
+      return json({
+        ok: true,
+        overview: {
+          account_id: ctx.accountId,
+          zoho_account_id: ctx.zohoAccountId,
+          total_employees: total ?? 0,
+          active_employees: active ?? 0,
+          open_exceptions: exceptions ?? 0,
+        },
+      })
+    }
+
+    if (req.method === 'GET' && resource === 'workforce' && id === 'exceptions') {
+      const admin = getServiceClient()
+      const { data, error } = await admin
+        .from('portal_workforce_exceptions')
+        .select(
+          'id, exception_type, severity, status, title, employee_id, import_batch_id, created_at, assigned_to, resolution_notes',
+        )
+        .eq('account_id', ctx.accountId)
+        .order('created_at', { ascending: false })
+        .limit(100)
+      if (error) throw error
+      return json({ ok: true, exceptions: data ?? [] })
+    }
+
+    if (req.method === 'GET' && resource === 'workforce' && id === 'employees' && action) {
+      // GET /workforce/employees/:employeeId
+      const admin = getServiceClient()
+      const { data, error } = await admin
+        .from('portal_employees')
+        .select(
+          'id, full_name, first_name, last_name, email, phone, whatsapp_number, employee_number, department, job_title, status, invitation_status, employment_start_date, employment_end_date, zoho_contact_id, zoho_contact_link_status, created_at, updated_at',
+        )
+        .eq('account_id', ctx.accountId)
+        .eq('id', action)
+        .maybeSingle()
+      if (error) throw error
+      if (!data) return json({ ok: false, error: 'Employee not found' }, 404)
+      // Sensitive benefit balances are never returned here
+      return json({ ok: true, employee: data })
+    }
+
+    if (req.method === 'GET' && resource === 'workforce' && (!id || id === 'employees')) {
+      const admin = getServiceClient()
+      const url = new URL(req.url)
+      const q = (url.searchParams.get('q') ?? '').trim()
+      const limit = Math.min(Number(url.searchParams.get('limit') ?? 50), 200)
+      const offset = Math.max(Number(url.searchParams.get('offset') ?? 0), 0)
+      let query = admin
+        .from('portal_employees')
+        .select(
+          'id, full_name, first_name, last_name, email, phone, employee_number, department, job_title, status, invitation_status, zoho_contact_id, zoho_contact_link_status, created_at',
+        )
+        .eq('account_id', ctx.accountId)
+        .order('full_name')
+        .range(offset, offset + limit - 1)
+      if (q) {
+        query = query.or(
+          `full_name.ilike.%${q}%,email.ilike.%${q}%,employee_number.ilike.%${q}%`,
+        )
+      }
+      const { data, error } = await query
+      if (error) throw error
+      return json({ ok: true, employees: data ?? [], offset, limit })
+    }
+
+    if (req.method === 'POST' && resource === 'workforce' && (id === 'employees' || !id)) {
+      if (!canManageWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden: HR role required' }, 403)
+      }
+      const body = await req.json()
+      const fullName = String(body.full_name ?? '').trim()
+      if (!fullName) return json({ ok: false, error: 'full_name required' }, 400)
+      const empNo = body.employee_number ? String(body.employee_number).trim() : null
+      const email = body.email ? String(body.email).trim().toLowerCase() : null
+      if (!empNo && !email) {
+        return json({ ok: false, error: 'employee_number or email required' }, 400)
+      }
+
+      const admin = getServiceClient()
+      if (empNo) {
+        const { data: dup } = await admin
+          .from('portal_employees')
+          .select('id, full_name')
+          .eq('account_id', ctx.accountId)
+          .ilike('employee_number', empNo)
+          .maybeSingle()
+        if (dup) {
+          await admin.from('portal_workforce_exceptions').insert({
+            account_id: ctx.accountId,
+            exception_type: 'suspected_duplicate',
+            severity: 'high',
+            status: 'open',
+            employee_id: dup.id,
+            title: `Duplicate employee number ${empNo}`,
+            details: { attempted: body, existing_id: dup.id },
+            created_by: actorUserId(ctx),
+          })
+          return json({ ok: false, error: `Duplicate employee number matches ${dup.full_name}` }, 409)
+        }
+      }
+
+      const { data: employee, error } = await admin
+        .from('portal_employees')
+        .insert({
+          account_id: ctx.accountId,
+          full_name: fullName,
+          first_name: body.first_name ?? null,
+          last_name: body.last_name ?? null,
+          email,
+          phone: body.phone ?? null,
+          whatsapp_number: body.whatsapp_number ?? '',
+          employee_number: empNo,
+          department: body.department ?? null,
+          job_title: body.job_title ?? null,
+          employment_start_date: body.employment_start_date ?? null,
+          status: 'active',
+          invitation_status: 'not_invited',
+          zoho_contact_link_status: 'none',
+        })
+        .select('*')
+        .single()
+      if (error) throw error
+
+      await admin.from('portal_workforce_audit_events').insert({
+        account_id: ctx.accountId,
+        employee_id: employee.id,
+        event_type: 'employee_created',
+        summary: `Employee created via workforce API: ${fullName}`,
+        detail: { source: 'aegis-crm', zoho_contact_created: false },
+        actor_user_id: actorUserId(ctx),
+      })
+
+      return json({ ok: true, employee, zoho_contact_created: false })
+    }
+
+    // PATCH /workforce/employees/:id — broker/HR edit (no sensitive benefit fields)
+    if (req.method === 'PATCH' && resource === 'workforce' && id === 'employees' && action) {
+      if (!canManageWorkforce(ctx.portalRole) && !canBrokerWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden' }, 403)
+      }
+      const body = await req.json()
+      const patch: Record<string, unknown> = { updated_at: new Date().toISOString() }
+      const allowed = [
+        'full_name',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'whatsapp_number',
+        'employee_number',
+        'department',
+        'job_title',
+        'employment_start_date',
+        'employment_end_date',
+      ] as const
+      for (const key of allowed) {
+        if (body[key] !== undefined) patch[key] = body[key]
+      }
+      // Never accept pension/medical payloads
+      delete (patch as { pension_balance?: unknown }).pension_balance
+      delete (patch as { medical_claims?: unknown }).medical_claims
+
+      const admin = getServiceClient()
+      const { data: employee, error } = await admin
+        .from('portal_employees')
+        .update(patch)
+        .eq('id', action)
+        .eq('account_id', ctx.accountId)
+        .select(
+          'id, full_name, first_name, last_name, email, phone, employee_number, department, job_title, status, invitation_status, zoho_contact_id, zoho_contact_link_status',
+        )
+        .maybeSingle()
+      if (error) throw error
+      if (!employee) return json({ ok: false, error: 'Employee not found' }, 404)
+      await admin.from('portal_workforce_audit_events').insert({
+        account_id: ctx.accountId,
+        employee_id: action,
+        event_type: 'employee_updated',
+        summary: 'Employee updated via workforce API',
+        detail: { fields: Object.keys(patch) },
+        actor_user_id: actorUserId(ctx),
+        actor_label: ctx.user.email ?? null,
+      })
+      return json({ ok: true, employee })
+    }
+
+    // POST /workforce/employees/:id/deactivate
+    if (
+      req.method === 'POST' &&
+      resource === 'workforce' &&
+      id === 'employees' &&
+      action &&
+      segments[3] === 'deactivate'
+    ) {
+      if (!canManageWorkforce(ctx.portalRole) && !canBrokerWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden' }, 403)
+      }
+      const body = await req.json().catch(() => ({}))
+      const reason = String((body as { reason?: string }).reason ?? 'Employment ended')
+      const endDate = new Date().toISOString().slice(0, 10)
+      const admin = getServiceClient()
+      const { data: employee, error } = await admin
+        .from('portal_employees')
+        .update({
+          status: 'inactive',
+          employment_end_date: endDate,
+          deactivated_at: new Date().toISOString(),
+          deactivation_reason: reason,
+          invitation_status: 'revoked',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', action)
+        .eq('account_id', ctx.accountId)
+        .select('id, full_name, status, employment_end_date, zoho_contact_id, zoho_contact_link_status')
+        .maybeSingle()
+      if (error) throw error
+      if (!employee) return json({ ok: false, error: 'Employee not found' }, 404)
+      await admin
+        .from('portal_employee_invites')
+        .update({ status: 'revoked' })
+        .eq('employee_id', action)
+        .eq('status', 'pending')
+      await admin.from('portal_workforce_audit_events').insert({
+        account_id: ctx.accountId,
+        employee_id: action,
+        event_type: 'employee_deactivated',
+        summary: `Employment ended: ${reason}`,
+        detail: { zoho_contact_preserved: Boolean(employee.zoho_contact_id) },
+        actor_user_id: actorUserId(ctx),
+        actor_label: ctx.user.email ?? null,
+      })
+      return json({ ok: true, employee })
+    }
+
+    if (req.method === 'POST' && resource === 'workforce' && id === 'contact-search') {
+      if (!canBrokerWorkforce(ctx.portalRole) && !canManageWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden' }, 403)
+      }
+      const body = await req.json()
+      const email = String(body.email ?? '').trim()
+      const phone = String(body.phone ?? '').trim()
+      const contacts = await listContacts(ctx.zohoAccountId)
+      const matches = contacts.filter((c) => {
+        const emailHit = email && c.email && c.email.toLowerCase() === email.toLowerCase()
+        const phoneHit =
+          phone &&
+          c.phone &&
+          c.phone.replace(/\D/g, '').endsWith(phone.replace(/\D/g, '').slice(-9))
+        return Boolean(emailHit || phoneHit)
+      })
+      return json({ ok: true, matches, searched: { email: email || null, phone: phone || null } })
+    }
+
+    if (req.method === 'POST' && resource === 'workforce' && id === 'contact-promote') {
+      if (!canBrokerWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden: broker role required' }, 403)
+      }
+      const body = await req.json()
+      const employeeId = String(body.employee_id ?? '')
+      const existingContactId = body.zoho_contact_id ? String(body.zoho_contact_id) : null
+      const idempotencyKey = String(body.idempotency_key ?? `promote-${employeeId}`)
+      if (!employeeId) return json({ ok: false, error: 'employee_id required' }, 400)
+
+      const admin = getServiceClient()
+      const { data: prior } = await admin
+        .from('portal_employee_crm_links')
+        .select('*')
+        .eq('account_id', ctx.accountId)
+        .eq('idempotency_key', idempotencyKey)
+        .maybeSingle()
+      if (prior) {
+        return json({ ok: true, duplicated: true, zoho_contact_id: prior.zoho_contact_id, link: prior })
+      }
+
+      const { data: employee, error: empErr } = await admin
+        .from('portal_employees')
+        .select('*')
+        .eq('id', employeeId)
+        .eq('account_id', ctx.accountId)
+        .maybeSingle()
+      if (empErr) throw empErr
+      if (!employee) return json({ ok: false, error: 'Employee not found' }, 404)
+      if (employee.zoho_contact_id) {
+        return json({
+          ok: true,
+          duplicated: true,
+          zoho_contact_id: employee.zoho_contact_id,
+          message: 'Employee already linked',
+        })
+      }
+
+      let contactId = existingContactId
+      if (!contactId) {
+        const nameParts = String(employee.full_name ?? '').trim().split(/\s+/)
+        const first = employee.first_name || nameParts[0] || 'Unknown'
+        const last = employee.last_name || nameParts.slice(1).join(' ') || first
+        // Only standard Contacts fields — do not invent custom AEGIS API names
+        const payload: Record<string, unknown> = {
+          First_Name: first,
+          Last_Name: last,
+          Email: employee.email || undefined,
+          Phone: employee.phone || employee.whatsapp_number || undefined,
+          Account_Name: { id: ctx.zohoAccountId },
+        }
+        let result: unknown
+        try {
+          result = await zohoInsert('Contacts', [payload])
+        } catch (err) {
+          await admin
+            .from('portal_employees')
+            .update({
+              zoho_contact_link_status: 'failed',
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', employeeId)
+          await admin.from('portal_workforce_audit_events').insert({
+            account_id: ctx.accountId,
+            employee_id: employeeId,
+            event_type: 'crm_contact_promote_failed',
+            summary: 'Zoho Contact create failed — employee retained in Supabase',
+            detail: { error: err instanceof Error ? err.message : String(err) },
+            actor_user_id: actorUserId(ctx),
+          })
+          return json({ ok: false, error: 'Zoho Contact create failed', employee_retained: true }, 502)
+        }
+        const created = (result as { data?: Array<{ details?: { id?: string } }> })?.data?.[0]
+        contactId = created?.details?.id ?? null
+        if (!contactId) {
+          await admin
+            .from('portal_employees')
+            .update({ zoho_contact_link_status: 'failed', updated_at: new Date().toISOString() })
+            .eq('id', employeeId)
+          return json({ ok: false, error: 'Zoho Contact create failed', result, employee_retained: true }, 502)
+        }
+      }
+
+      const { data: link, error: linkErr } = await admin
+        .from('portal_employee_crm_links')
+        .insert({
+          account_id: ctx.accountId,
+          employee_id: employeeId,
+          zoho_contact_id: contactId,
+          link_status: 'linked',
+          link_method: 'broker_promote',
+          idempotency_key: idempotencyKey,
+          linked_by: actorUserId(ctx),
+        })
+        .select('*')
+        .single()
+      if (linkErr) throw linkErr
+
+      await admin
+        .from('portal_employees')
+        .update({
+          zoho_contact_id: contactId,
+          zoho_contact_link_status: 'linked',
+          zoho_contact_linked_at: new Date().toISOString(),
+          zoho_contact_linked_by: actorUserId(ctx),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', employeeId)
+
+      await admin.from('portal_workforce_audit_events').insert({
+        account_id: ctx.accountId,
+        employee_id: employeeId,
+        event_type: 'crm_contact_promoted',
+        summary: `Broker promoted employee to Zoho Contact ${contactId}`,
+        detail: { zoho_contact_id: contactId, idempotency_key: idempotencyKey },
+        actor_user_id: actorUserId(ctx),
+        actor_label: actorLabel(ctx),
+      })
+
+      return json({ ok: true, duplicated: false, zoho_contact_id: contactId, link })
+    }
+
     if (req.method === 'GET' && resource === 'account') {
       const account = await getAccountSnapshot(ctx.zohoAccountId)
       return json({ ok: true, account })
@@ -720,7 +1315,19 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: 'Not found' }, 404)
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal server error'
-    const status = message === 'Unauthorized' || message === 'No portal account' ? 401 : 500
+    let status = 500
+    if (
+      message === 'Unauthorized' ||
+      message === 'No portal account' ||
+      message === 'Widget session expired' ||
+      message === 'Widget session revoked'
+    ) {
+      status = 401
+    } else if (message.includes('Not authorised') || message.includes('Forbidden')) {
+      status = 403
+    } else if (message.includes('verification failed') || message.includes('not found for email')) {
+      status = 403
+    }
     console.error('aegis-crm:', err)
     return json({ ok: false, error: message }, status)
   }

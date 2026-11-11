@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext'
 import { BranchesProvider } from './context/BranchesContext'
 import { OrganizationProvider } from './context/OrganizationContext'
 import { AddRiskItemPage } from './pages/AddRiskItemPage'
+import { ActivateEmployeePage } from './pages/ActivateEmployeePage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { ClaimsPage } from './pages/ClaimsPage'
 import { ClaimDetailPage } from './pages/ClaimDetailPage'
@@ -56,6 +57,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/activate-employee" element={<ActivateEmployeePage />} />
           <Route path="/claim/:token" element={<EmployeeClaimPortalPage />} />
 
           <Route element={<RequireSession />}>

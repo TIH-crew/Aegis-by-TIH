@@ -1,3 +1,4 @@
+import { assertClaimWhatsApp } from '../lib/contact-validation'
 import { supabase } from '../lib/supabase'
 import type { Employee, EmployeeInput } from '../types/employee'
 
@@ -80,14 +81,21 @@ export async function createEmployee(accountId: string, input: EmployeeInput): P
     .insert({
       account_id: accountId,
       full_name: input.full_name.trim(),
+      first_name: input.first_name?.trim() || null,
+      last_name: input.last_name?.trim() || null,
       job_title: input.job_title?.trim() || null,
+      department: input.department?.trim() || null,
       email: input.email?.trim() || null,
       phone: input.phone?.trim() || null,
-      whatsapp_number: input.whatsapp_number.trim(),
+      whatsapp_number: input.whatsapp_number?.trim() || '',
       employee_number: input.employee_number?.trim() || null,
       branch_id: input.branch_id || null,
       image_url: input.image_url ?? null,
       status: input.status ?? 'active',
+      employment_start_date: input.employment_start_date || null,
+      employment_end_date: input.employment_end_date || null,
+      invitation_status: 'not_invited',
+      zoho_contact_link_status: 'none',
       id_number: input.id_number?.trim() || null,
       licence_number: input.licence_number?.trim() || null,
       licence_valid_to: input.licence_valid_to || null,
@@ -110,14 +118,19 @@ export async function updateEmployee(
 ): Promise<Employee> {
   const patch: Record<string, unknown> = { updated_at: new Date().toISOString() }
   if (input.full_name !== undefined) patch.full_name = input.full_name.trim()
+  if (input.first_name !== undefined) patch.first_name = input.first_name?.trim() || null
+  if (input.last_name !== undefined) patch.last_name = input.last_name?.trim() || null
   if (input.job_title !== undefined) patch.job_title = input.job_title?.trim() || null
+  if (input.department !== undefined) patch.department = input.department?.trim() || null
   if (input.email !== undefined) patch.email = input.email?.trim() || null
   if (input.phone !== undefined) patch.phone = input.phone?.trim() || null
-  if (input.whatsapp_number !== undefined) patch.whatsapp_number = input.whatsapp_number.trim()
+  if (input.whatsapp_number !== undefined) patch.whatsapp_number = input.whatsapp_number?.trim() || ''
   if (input.employee_number !== undefined) patch.employee_number = input.employee_number?.trim() || null
   if (input.branch_id !== undefined) patch.branch_id = input.branch_id || null
   if (input.image_url !== undefined) patch.image_url = input.image_url
   if (input.status !== undefined) patch.status = input.status
+  if (input.employment_start_date !== undefined) patch.employment_start_date = input.employment_start_date || null
+  if (input.employment_end_date !== undefined) patch.employment_end_date = input.employment_end_date || null
   if (input.id_number !== undefined) patch.id_number = input.id_number?.trim() || null
   if (input.licence_number !== undefined) patch.licence_number = input.licence_number?.trim() || null
   if (input.licence_valid_to !== undefined) patch.licence_valid_to = input.licence_valid_to || null
@@ -165,6 +178,10 @@ export async function rotateEmployeeClaimToken(
   accountId: string,
   employeeId: string,
 ): Promise<Employee> {
+  const existing = await getEmployee(accountId, employeeId)
+  if (!existing) throw new Error('Employee not found')
+  assertClaimWhatsApp(existing.whatsapp_number)
+
   const { data, error } = await supabase
     .from('portal_employees')
     .update({

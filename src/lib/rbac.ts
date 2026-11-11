@@ -22,8 +22,10 @@ export type AppCapability =
   | 'finance_prepare'
   | 'finance_approve'
   | 'tax_review'
+  | 'workforce_hr'
+  | 'workforce_broker'
 
-export type PortalAppRole = 'admin' | 'employee'
+export type PortalAppRole = 'admin' | 'employee' | 'hr_admin' | 'broker'
 
 export function normalizeEmail(email: string | null | undefined): string {
   return (email ?? '').trim().toLowerCase()
@@ -34,14 +36,17 @@ export function isPortalAdminEmail(email: string | null | undefined): boolean {
   return (PORTAL_ADMIN_EMAILS as readonly string[]).includes(normalized)
 }
 
-/** Resolve app role from hard-coded admin emails (portal_users.role is secondary). */
+/** Resolve app role from hard-coded admin emails + portal_users.role. */
 export function resolveAppRole(opts: {
   email: string | null | undefined
   portalRole?: string | null
 }): PortalAppRole {
   if (isPortalAdminEmail(opts.email)) return 'admin'
-  // Explicit portal admin role only — owner is not automatically full admin
-  if (opts.portalRole === 'admin') return 'admin'
+  // Account owners and portal admins manage the org (including workforce).
+  // Ordinary members do not inherit employee mutation privileges.
+  if (opts.portalRole === 'owner' || opts.portalRole === 'admin') return 'admin'
+  if (opts.portalRole === 'hr_admin') return 'hr_admin'
+  if (opts.portalRole === 'broker') return 'broker'
   return 'employee'
 }
 
@@ -64,12 +69,35 @@ const ADMIN_CAPS: AppCapability[] = [
   'finance_prepare',
   'finance_approve',
   'tax_review',
+  'workforce_hr',
+  'workforce_broker',
+]
+
+const HR_CAPS: AppCapability[] = [
+  'employees',
+  'workforce_hr',
+  'my_profile',
+  'dashboard_full',
+]
+
+const BROKER_CAPS: AppCapability[] = [
+  'dashboard_full',
+  'risk_items',
+  'policies',
+  'quotations',
+  'claims',
+  'employees',
+  'workforce_broker',
+  'reports',
 ]
 
 const EMPLOYEE_CAPS: AppCapability[] = ['employee_claim']
 
 export function capabilitiesForRole(role: PortalAppRole): Set<AppCapability> {
-  return new Set(role === 'admin' ? ADMIN_CAPS : EMPLOYEE_CAPS)
+  if (role === 'admin') return new Set(ADMIN_CAPS)
+  if (role === 'hr_admin') return new Set(HR_CAPS)
+  if (role === 'broker') return new Set(BROKER_CAPS)
+  return new Set(EMPLOYEE_CAPS)
 }
 
 export function can(role: PortalAppRole, capability: AppCapability): boolean {

@@ -1,4 +1,4 @@
-export type PortalUserRole = 'owner' | 'admin' | 'member'
+export type PortalUserRole = 'owner' | 'admin' | 'member' | 'hr_admin' | 'broker'
 
 export interface PortalUser {
   id: string

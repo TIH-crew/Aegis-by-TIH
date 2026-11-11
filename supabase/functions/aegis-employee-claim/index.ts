@@ -32,14 +32,31 @@ function getServiceClient() {
   return createClient(url, key)
 }
 
-function normalizeWa(raw: string): string {
-  const digits = raw.replace(/[^\d+]/g, '')
-  if (digits.startsWith('+')) return digits
-  if (digits.startsWith('0') && digits.length >= 10) {
-    return `+27${digits.slice(1)}`
+function normalizeWa(raw: string | null | undefined): string {
+  if (!raw?.trim()) {
+    throw new Error(
+      'This employee has no usable WhatsApp number. Add a mobile number before sending claim OTP.',
+    )
   }
-  if (digits.startsWith('27')) return `+${digits}`
-  return digits.startsWith('+') ? digits : `+${digits}`
+  const digits = raw.replace(/[^\d+]/g, '')
+  if (!digits) {
+    throw new Error(
+      'This employee has no usable WhatsApp number. Add a mobile number before sending claim OTP.',
+    )
+  }
+  let e164 = digits
+  if (digits.startsWith('+')) e164 = digits
+  else if (digits.startsWith('0') && digits.length >= 10) e164 = `+27${digits.slice(1)}`
+  else if (digits.startsWith('27')) e164 = `+${digits}`
+  else e164 = `+${digits}`
+
+  const numeric = e164.replace(/\D/g, '')
+  if (numeric.length < 10 || numeric.length > 15) {
+    throw new Error(
+      'This employee has no usable WhatsApp number. Add a mobile number before sending claim OTP.',
+    )
+  }
+  return e164
 }
 
 function maskWa(wa: string): string {
@@ -1028,11 +1045,20 @@ Deno.serve(async (req) => {
     // GET /resolve/:token
     if (req.method === 'GET' && action === 'resolve' && segments[1]) {
       const emp = await resolveEmployee(segments[1])
+      let whatsapp_masked = '***'
+      let claim_otp_ready = false
+      try {
+        whatsapp_masked = maskWa(normalizeWa(emp.whatsapp_number))
+        claim_otp_ready = true
+      } catch {
+        claim_otp_ready = false
+      }
       return json({
         ok: true,
         employee: {
           first_name: String(emp.full_name).split(/\s+/)[0],
-          whatsapp_masked: maskWa(emp.whatsapp_number),
+          whatsapp_masked,
+          claim_otp_ready,
         },
       })
     }

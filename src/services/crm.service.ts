@@ -1443,6 +1443,51 @@ export async function fetchContacts(): Promise<ContactSummary[]> {
   return data.contacts ?? []
 }
 
+export async function searchWorkforceContacts(opts: {
+  email?: string | null
+  phone?: string | null
+}): Promise<ContactSummary[]> {
+  const data = await crmFetch<{ matches: ContactSummary[] }>('workforce/contact-search', {
+    method: 'POST',
+    body: JSON.stringify({ email: opts.email ?? null, phone: opts.phone ?? null }),
+  })
+  return data.matches ?? []
+}
+
+export async function promoteEmployeeContact(opts: {
+  employeeId: string
+  zohoContactId?: string | null
+  idempotencyKey: string
+}): Promise<{ zoho_contact_id: string; duplicated: boolean }> {
+  const data = await crmFetch<{ zoho_contact_id: string; duplicated?: boolean }>(
+    'workforce/contact-promote',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        employee_id: opts.employeeId,
+        zoho_contact_id: opts.zohoContactId ?? null,
+        idempotency_key: opts.idempotencyKey,
+      }),
+    },
+  )
+  return { zoho_contact_id: data.zoho_contact_id, duplicated: Boolean(data.duplicated) }
+}
+
+export async function fetchWorkforceOverview(): Promise<{
+  total_employees: number
+  active_employees: number
+  open_exceptions: number
+} | null> {
+  try {
+    const data = await crmFetch<{
+      overview: { total_employees: number; active_employees: number; open_exceptions: number }
+    }>('workforce/overview')
+    return data.overview ?? null
+  } catch {
+    return null
+  }
+}
+
 export async function fetchZohoAccountSnapshot(): Promise<ZohoAccountSnapshot | null> {
   const { zohoAccountId } = await getCrmContext()
   if (!zohoAccountId) return null
