@@ -31,13 +31,15 @@ const CHART_SECONDARY = '#b45309'
 const PIE_COLORS = ['#630d16', '#9f1239', '#b45309', '#57534e', '#a8a29e', '#78716c']
 
 function formatMetric(m: MetricValue): string {
-  if (m.availability !== 'available' || m.value == null) {
+  const showValue =
+    (m.availability === 'available' || m.availability === 'derived') && m.value != null
+  if (!showValue) {
     if (m.availability === 'not_connected') return 'Not connected'
     if (m.availability === 'awaiting_provider') return 'Awaiting data'
     return '—'
   }
   if (m.unit === 'percent') return `${m.value}%`
-  if (m.unit === 'zar') return formatCurrency(m.value)
+  if (m.unit === 'zar') return formatCurrency(m.value as number)
   return String(m.value)
 }
 
@@ -52,7 +54,9 @@ function KpiCard({
   to?: string
   hint?: string
 }) {
-  const unavailable = metric.availability !== 'available' || metric.value == null
+  const hasValue =
+    (metric.availability === 'available' || metric.availability === 'derived') &&
+    metric.value != null
   const inner = (
     <div
       className={cn(
@@ -67,7 +71,7 @@ function KpiCard({
       <p
         className={cn(
           'mt-1 text-lg font-semibold tabular-nums tracking-tight',
-          unavailable ? 'text-muted' : 'text-ink',
+          hasValue ? 'text-ink' : 'text-muted',
         )}
       >
         {formatMetric(metric)}
@@ -179,6 +183,20 @@ export function PeopleBenefitsOverviewPage() {
 
       {data && (
         <>
+          {data.isDemoOverlay && (
+            <div
+              className="rounded-md border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-950"
+              role="status"
+            >
+              <span className="font-semibold">Sample demonstration data.</span>{' '}
+              Membership and headcount charts use real AEGIS records where present. Fund value,
+              contribution and medical financial series are illustrative overlays for UI preview —
+              not live administrator or scheme feeds. Set{' '}
+              <code className="rounded bg-amber-100 px-1 text-xs">VITE_PEOPLE_DEMO_DATA=false</code>{' '}
+              to hide overlays.
+            </div>
+          )}
+
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             <KpiCard
               label="Total employees"
@@ -256,13 +274,83 @@ export function PeopleBenefitsOverviewPage() {
               </ChartPanel>
 
               <ChartPanel
-                title="Fund value, contributions & investment performance"
-                empty={{
-                  title: 'Awaiting provider data',
-                  description:
-                    'Closing fund value, employer/employee contributions, investment gains/losses and benefit payments require fund administrator feeds. Growth will not be labelled as investment return without an authoritative source.',
-                }}
-              />
+                title={
+                  data.isDemoOverlay
+                    ? 'Fund value & contributions (sample)'
+                    : 'Fund value, contributions & investment performance'
+                }
+                empty={
+                  !data.retirement.fundValueSeries
+                    ? {
+                        title: 'Awaiting provider data',
+                        description:
+                          'Closing fund value, employer/employee contributions, investment gains/losses and benefit payments require fund administrator feeds. Growth will not be labelled as investment return without an authoritative source.',
+                      }
+                    : undefined
+                }
+              >
+                {data.retirement.fundValueSeries && (
+                  <div className="h-52">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={data.retirement.fundValueSeries}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e7e5e4" />
+                        <XAxis dataKey="period" tick={{ fontSize: 10 }} />
+                        <YAxis
+                          yAxisId="value"
+                          tick={{ fontSize: 10 }}
+                          tickFormatter={(v) =>
+                            v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}m` : String(v)
+                          }
+                        />
+                        <YAxis
+                          yAxisId="flow"
+                          orientation="right"
+                          tick={{ fontSize: 10 }}
+                          tickFormatter={(v) =>
+                            v >= 1_000 ? `${Math.round(v / 1_000)}k` : String(v)
+                          }
+                        />
+                        <Tooltip
+                          formatter={(value, name) => [
+                            typeof value === 'number' ? formatCurrency(value) : String(value ?? ''),
+                            String(name),
+                          ]}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                        <Line
+                          yAxisId="value"
+                          type="monotone"
+                          dataKey="closingValue"
+                          name="Closing value"
+                          stroke={CHART_BURGUNDY}
+                          strokeWidth={2}
+                          dot={{ r: 2 }}
+                        />
+                        <Line
+                          yAxisId="flow"
+                          type="monotone"
+                          dataKey="employerContributions"
+                          name="Employer contrib."
+                          stroke={CHART_SECONDARY}
+                          strokeWidth={1.5}
+                          strokeDasharray={data.isDemoOverlay ? '4 3' : undefined}
+                          dot={false}
+                        />
+                        <Line
+                          yAxisId="flow"
+                          type="monotone"
+                          dataKey="investmentGain"
+                          name="Investment movement"
+                          stroke={CHART_MUTED}
+                          strokeWidth={1.5}
+                          strokeDasharray={data.isDemoOverlay ? '4 3' : undefined}
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </ChartPanel>
             </div>
           </Section>
 
@@ -305,13 +393,59 @@ export function PeopleBenefitsOverviewPage() {
               </ChartPanel>
 
               <ChartPanel
-                title="Contributions & enrolment trend"
-                empty={{
-                  title: 'Data not connected',
-                  description:
-                    'Monthly employer/employee medical contributions and enrolment trends require medical scheme integrations. Individual claims and diagnoses are never shown on this dashboard.',
-                }}
-              />
+                title={
+                  data.isDemoOverlay
+                    ? 'Contributions & enrolment (sample)'
+                    : 'Contributions & enrolment trend'
+                }
+                empty={
+                  !data.medicalAid.contributionTotals
+                    ? {
+                        title: 'Data not connected',
+                        description:
+                          'Monthly employer/employee medical contributions and enrolment trends require medical scheme integrations. Individual claims and diagnoses are never shown on this dashboard.',
+                      }
+                    : undefined
+                }
+              >
+                {data.medicalAid.contributionTotals && (
+                  <div className="h-52">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={data.medicalAid.contributionTotals}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e7e5e4" />
+                        <XAxis dataKey="period" tick={{ fontSize: 10 }} />
+                        <YAxis
+                          tick={{ fontSize: 10 }}
+                          tickFormatter={(v) =>
+                            v >= 1_000 ? `${Math.round(v / 1_000)}k` : String(v)
+                          }
+                        />
+                        <Tooltip
+                          formatter={(value, name) => [
+                            typeof value === 'number' ? formatCurrency(value) : String(value ?? ''),
+                            String(name),
+                          ]}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                        <Bar
+                          dataKey="employer"
+                          name="Employer"
+                          stackId="c"
+                          fill={CHART_BURGUNDY}
+                          radius={[0, 0, 0, 0]}
+                        />
+                        <Bar
+                          dataKey="employee"
+                          name="Employee"
+                          stackId="c"
+                          fill={CHART_SECONDARY}
+                          radius={[3, 3, 0, 0]}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </ChartPanel>
             </div>
           </Section>
 

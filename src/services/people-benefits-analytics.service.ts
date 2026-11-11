@@ -31,8 +31,26 @@ export type WorkforceTrendPoint = {
   headcount: number | null
 }
 
+export type FundMonthPoint = {
+  period: string
+  closingValue: number
+  employerContributions: number
+  employeeContributions: number
+  investmentGain: number
+  benefitPayments: number
+}
+
+export type MedicalContributionPoint = {
+  period: string
+  employer: number
+  employee: number
+  enrolled: number
+}
+
 export type PeopleBenefitsAnalytics = {
   reportingPeriod: { label: string; asOf: string }
+  /** True when sample financial overlays are included for UI preview */
+  isDemoOverlay: boolean
   kpis: {
     totalEmployees: MetricValue
     activeEmployees: MetricValue
@@ -45,17 +63,17 @@ export type PeopleBenefitsAnalytics = {
   }
   retirement: {
     participation: BenefitParticipation | null
-    fundValueSeries: null
-    contributionSeries: null
-    investmentPerformance: null
-    disbursements: null
+    fundValueSeries: FundMonthPoint[] | null
+    contributionSeries: FundMonthPoint[] | null
+    investmentPerformance: FundMonthPoint[] | null
+    disbursements: FundMonthPoint[] | null
     note: string
   }
   medicalAid: {
     participation: BenefitParticipation | null
     schemeDistribution: { name: string; count: number }[]
-    contributionTotals: null
-    enrolmentTrend: null
+    contributionTotals: MedicalContributionPoint[] | null
+    enrolmentTrend: MedicalContributionPoint[] | null
     note: string
   }
   otherBenefits: BenefitParticipation[]
@@ -182,12 +200,14 @@ export async function getPeopleBenefitsAnalytics(
     supabase
       .from('portal_employee_benefit_memberships')
       .select(
-        'benefit_type, enrolment_status, provider_confirmation_status, provider_name',
+        'benefit_type, enrolment_status, provider_confirmation_status, provider_name, notes',
       )
       .eq('account_id', accountId),
     supabase
       .from('portal_employees')
-      .select('id, status, employment_start_date, employment_end_date, deactivated_at')
+      .select(
+        'id, status, employment_start_date, employment_end_date, deactivated_at, employee_number',
+      )
       .eq('account_id', accountId),
   ])
 
@@ -207,6 +227,14 @@ export async function getPeopleBenefitsAnalytics(
   const missingStart = employees.filter((e) => !e.employment_start_date).length
   const series = deriveWorkforceSeries(employees)
 
+  const envDemo = import.meta.env.VITE_PEOPLE_DEMO_DATA
+  const hasDemoSeed =
+    employees.some((e) => String(e.employee_number ?? '').startsWith('DEMO-')) ||
+    memRows.some((m) => String((m as { notes?: string }).notes ?? '') === 'DEMO seed')
+  const isDemoOverlay = envDemo === 'true' || (envDemo !== 'false' && hasDemoSeed)
+  const demoFund = isDemoOverlay ? buildDemoFundSeries() : null
+  const demoMedical = isDemoOverlay ? buildDemoMedicalSeries(medical?.enrolled ?? 0) : null
+
   return {
     reportingPeriod: {
       label: new Intl.DateTimeFormat('en-ZA', { month: 'long', year: 'numeric' }).format(
@@ -214,6 +242,7 @@ export async function getPeopleBenefitsAnalytics(
       ),
       asOf,
     },
+    isDemoOverlay,
     kpis: {
       totalEmployees: {
         availability: 'available',
@@ -256,27 +285,38 @@ export async function getPeopleBenefitsAnalytics(
             unit: 'percent',
             note: 'No medical aid memberships registered',
           },
-      aggregateRetirementFundValue: {
-        availability: 'not_connected',
-        value: null,
-        unit: 'zar',
-        note: 'Fund administrator balances are not connected',
-      },
+      aggregateRetirementFundValue: isDemoOverlay
+        ? {
+            availability: 'derived',
+            value: demoFund?.[demoFund.length - 1]?.closingValue ?? 18_450_000,
+            unit: 'zar',
+            note: 'Sample demonstration balance — not a live fund feed',
+          }
+        : {
+            availability: 'not_connected',
+            value: null,
+            unit: 'zar',
+            note: 'Fund administrator balances are not connected',
+          },
     },
     retirement: {
       participation: retirement,
-      fundValueSeries: null,
-      contributionSeries: null,
-      investmentPerformance: null,
-      disbursements: null,
-      note: 'Contribution, investment and closing-value series require fund administrator feeds. Membership counts use AEGIS benefit records only.',
+      fundValueSeries: demoFund,
+      contributionSeries: demoFund,
+      investmentPerformance: demoFund,
+      disbursements: demoFund,
+      note: isDemoOverlay
+        ? 'Sample demonstration charts for UI preview. Membership counts are real AEGIS records; financial series are not live administrator data.'
+        : 'Contribution, investment and closing-value series require fund administrator feeds. Membership counts use AEGIS benefit records only.',
     },
     medicalAid: {
       participation: medical,
       schemeDistribution: medical?.providers ?? [],
-      contributionTotals: null,
-      enrolmentTrend: null,
-      note: 'Medical scheme contribution totals and claims analytics are not connected. Individual diagnoses are never shown here.',
+      contributionTotals: demoMedical,
+      enrolmentTrend: demoMedical,
+      note: isDemoOverlay
+        ? 'Sample medical contribution/enrolment series for UI preview. Scheme distribution uses registered memberships. Claims/diagnoses are never shown.'
+        : 'Medical scheme contribution totals and claims analytics are not connected. Individual diagnoses are never shown here.',
     },
     otherBenefits,
     workforceTrends: {
@@ -301,20 +341,59 @@ export async function getPeopleBenefitsAnalytics(
       },
       {
         provider: 'Retirement fund administrator',
-        lastSync: null,
-        reportingPeriod: '—',
-        availability: 'not_connected',
-        reconciliationStatus: 'awaiting integration',
+        lastSync: isDemoOverlay ? asOf : null,
+        reportingPeriod: isDemoOverlay ? 'Demo sample period' : '—',
+        availability: isDemoOverlay ? 'derived' : 'not_connected',
+        reconciliationStatus: isDemoOverlay ? 'demo overlay' : 'awaiting integration',
       },
       {
         provider: 'Medical scheme',
-        lastSync: null,
-        reportingPeriod: '—',
-        availability: 'not_connected',
-        reconciliationStatus: 'awaiting integration',
+        lastSync: isDemoOverlay ? asOf : null,
+        reportingPeriod: isDemoOverlay ? 'Demo sample period' : '—',
+        availability: isDemoOverlay ? 'derived' : 'not_connected',
+        reconciliationStatus: isDemoOverlay ? 'demo overlay' : 'awaiting integration',
       },
     ],
   }
+}
+
+function buildDemoFundSeries(): FundMonthPoint[] {
+  const now = new Date()
+  let closing = 15_200_000
+  const out: FundMonthPoint[] = []
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const employerContributions = 420_000 + (11 - i) * 8_500
+    const employeeContributions = 210_000 + (11 - i) * 4_200
+    const investmentGain = Math.round((closing * (0.004 + ((11 - i) % 3) * 0.0015)) / 100) * 100
+    const benefitPayments = 95_000 + ((11 - i) % 4) * 12_000
+    closing = closing + employerContributions + employeeContributions + investmentGain - benefitPayments
+    out.push({
+      period: monthKey(d),
+      closingValue: Math.round(closing),
+      employerContributions,
+      employeeContributions,
+      investmentGain,
+      benefitPayments,
+    })
+  }
+  return out
+}
+
+function buildDemoMedicalSeries(enrolledBase: number): MedicalContributionPoint[] {
+  const now = new Date()
+  const out: MedicalContributionPoint[] = []
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const enrolled = Math.max(enrolledBase, 4) + Math.floor((11 - i) / 3)
+    out.push({
+      period: monthKey(d),
+      employer: enrolled * 2_850,
+      employee: enrolled * 1_150,
+      enrolled,
+    })
+  }
+  return out
 }
 
 function deriveWorkforceSeries(
