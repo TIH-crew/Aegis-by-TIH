@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Plus, Upload } from 'lucide-react'
+import { ArrowLeft, Loader2, Plus, Upload } from 'lucide-react'
 import { StatusBadge } from '../components/collections/StatusBadge'
 import { EmptyState, MetricTile, PageHeader } from '../components/workspace/WorkspaceUi'
 import { useAuth } from '../context/AuthContext'
@@ -147,8 +147,14 @@ export function EmployeesPage() {
 
   return (
     <div className="space-y-4">
+      <Link
+        to="/people"
+        className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"
+      >
+        <ArrowLeft size={14} /> Back to overview
+      </Link>
       <PageHeader
-        title="People"
+        title="Employees"
         description="Corporate workforce directory. Routine HR adds do not need broker approval. Zoho Contacts are never created automatically."
         actions={
           canHr ? (

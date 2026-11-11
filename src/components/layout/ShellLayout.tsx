@@ -31,8 +31,22 @@ function crumbsFor(pathname: string): { label: string; to?: string }[] {
   if (pathname.startsWith('/insurance')) return [{ label: 'Insurance' }]
 
   if (pathname.startsWith('/people') || pathname.startsWith('/collections/employees')) {
-    if (pathname === '/people' || pathname === '/collections/employees') return [{ label: 'People' }]
-    return [{ label: 'People', to: '/people' }, { label: 'Profile' }]
+    if (pathname === '/people') return [{ label: 'People' }]
+    if (pathname === '/people/employees' || pathname === '/collections/employees') {
+      return [{ label: 'People', to: '/people' }, { label: 'Employees' }]
+    }
+    if (pathname === '/people/new' || pathname.endsWith('/employees/new')) {
+      return [
+        { label: 'People', to: '/people' },
+        { label: 'Employees', to: '/people/employees' },
+        { label: 'New' },
+      ]
+    }
+    return [
+      { label: 'People', to: '/people' },
+      { label: 'Employees', to: '/people/employees' },
+      { label: 'Profile' },
+    ]
   }
 
   if (pathname.startsWith('/settings')) return [{ label: 'Settings' }]

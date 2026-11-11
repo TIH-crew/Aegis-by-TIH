@@ -65,6 +65,10 @@ export const PRIMARY_NAV: NavItem[] = [
     icon: Users,
     capability: 'employees',
     matchPaths: ['/people', '/collections/employees'],
+    children: [
+      { label: 'Overview', path: '/people', capability: 'employees' },
+      { label: 'Employees', path: '/people/employees', capability: 'employees' },
+    ],
   },
   {
     id: 'insurance',

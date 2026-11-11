@@ -25,6 +25,7 @@ import { RiskItemDetailPage } from './pages/RiskItemDetailPage'
 import { RiskItemsPage } from './pages/RiskItemsPage'
 import { EmployeesPage } from './pages/EmployeesPage'
 import { EmployeeDetailPage } from './pages/EmployeeDetailPage'
+import { PeopleBenefitsOverviewPage } from './pages/PeopleBenefitsOverviewPage'
 import { PiMembersPage } from './pages/PiMembersPage'
 import { AssignToPage, CheckInPage, CheckOutPage } from './pages/CustodyPages'
 import { MyProfilePage } from './pages/MyProfilePage'
@@ -156,7 +157,8 @@ export default function App() {
                 </Route>
 
                 <Route element={<RequireCapability capability="employees" />}>
-                  <Route path="/people" element={<EmployeesPage />} />
+                  <Route path="/people" element={<PeopleBenefitsOverviewPage />} />
+                  <Route path="/people/employees" element={<EmployeesPage />} />
                   <Route path="/people/new" element={<EmployeeDetailPage />} />
                   <Route path="/people/:id" element={<EmployeeDetailPage />} />
                   <Route path="/collections/employees" element={<EmployeesPage />} />

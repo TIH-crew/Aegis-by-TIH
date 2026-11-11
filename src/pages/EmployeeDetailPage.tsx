@@ -341,8 +341,11 @@ export function EmployeeDetailPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-4">
-      <Link to="/people" className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink">
-        <ArrowLeft size={14} /> Back to people
+      <Link
+        to="/people/employees"
+        className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"
+      >
+        <ArrowLeft size={14} /> Back to employees
       </Link>
 
       {error && (
