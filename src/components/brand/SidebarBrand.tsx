@@ -11,7 +11,7 @@ export function SidebarBrand() {
       <OrganizationMark size="md" />
       <div className="min-w-0 flex-1">
         <p className="truncate text-base font-semibold text-burgundy">{BRAND.name}</p>
-        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-burgundy-dark/75">
+        <p className="truncate text-[11px] font-medium leading-snug text-burgundy-dark/80">
           {BRAND.tagline}
         </p>
         {organization?.name && organization.name !== 'TIH Commercial Demo' && (

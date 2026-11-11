@@ -29,7 +29,10 @@ export function BrandLogo({ variant = 'full', className }: BrandLogoProps) {
         className={cn(LOGO_MARK_CLASS, 'h-10 w-10 shrink-0')}
         draggable={false}
       />
-      <p className="text-sm font-semibold leading-tight text-burgundy">{BRAND.fullName}</p>
+      <div className="min-w-0 leading-tight">
+        <p className="text-sm font-semibold text-burgundy">{BRAND.name}</p>
+        <p className="text-[10px] font-medium text-muted">{BRAND.tagline}</p>
+      </div>
     </div>
   )
 }

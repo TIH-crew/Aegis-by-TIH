@@ -766,6 +766,31 @@ export async function listBenefitMemberships(accountId: string, employeeId: stri
   return data ?? []
 }
 
+export type WorkforceAuditEvent = {
+  id: string
+  event_type: string
+  summary: string
+  detail: Record<string, unknown>
+  actor_user_id: string | null
+  actor_label: string | null
+  created_at: string
+}
+
+export async function listEmployeeAuditEvents(
+  accountId: string,
+  employeeId: string,
+): Promise<WorkforceAuditEvent[]> {
+  const { data, error } = await supabase
+    .from('portal_workforce_audit_events')
+    .select('id, event_type, summary, detail, actor_user_id, actor_label, created_at')
+    .eq('account_id', accountId)
+    .eq('employee_id', employeeId)
+    .order('created_at', { ascending: false })
+    .limit(100)
+  if (error) throw error
+  return (data ?? []) as WorkforceAuditEvent[]
+}
+
 /** Record CRM Contact link without inventing Zoho custom field API names. */
 export async function linkEmployeeToZohoContact(
   accountId: string,

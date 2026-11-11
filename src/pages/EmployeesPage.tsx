@@ -149,7 +149,7 @@ export function EmployeesPage() {
     <div className="space-y-4">
       <PageHeader
         title="People"
-        description="Corporate workforce for this legal entity. Routine adds do not need broker approval. Zoho Contacts are never created automatically."
+        description="Corporate workforce directory. Routine HR adds do not need broker approval. Zoho Contacts are never created automatically."
         actions={
           canHr ? (
             <div className="flex flex-wrap gap-2">
@@ -262,7 +262,7 @@ export function EmployeesPage() {
       {!loading && !error && filtered.length === 0 && (
         <EmptyState
           title="No people yet"
-          description="Add employees individually or import a CSV. They stay in ASSETS — not Zoho Contacts."
+          description="Add employees individually or import a CSV. They stay in AEGIS — not Zoho Contacts."
           action={
             canHr ? (
               <Link to="/people/new" className="text-sm font-medium text-primary underline">

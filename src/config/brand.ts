@@ -1,8 +1,8 @@
 export const BRAND = {
-  name: 'ASSETS',
-  fullName: 'ASSETS by TIH',
+  name: 'AEGIS',
+  fullName: 'AEGIS by The Insurance Advisors Hub',
   shortName: 'TIH',
-  tagline: 'by TIH',
+  tagline: 'by The Insurance Advisors Hub',
   logoSrc: '/assets/aegis-logo.png',
-  logoAlt: 'ASSETS by TIH logo',
+  logoAlt: 'AEGIS by The Insurance Advisors Hub',
 } as const
