@@ -43,13 +43,13 @@ function randomToken(): string {
 }
 
 /**
- * Mint a short-lived workforce widget session.
- * Trust: shared secret + Zoho API re-verification of Account and User.
- * Does not trust client-supplied IDs without Zoho confirmation.
+ * Mint a short-lived Account-scoped widget session.
+ * Trust boundary: Zoho Account re-verification + portal_accounts link.
+ * CRM user email is optional metadata only — widgets must work from Account context alone.
  */
 export async function mintWidgetSession(input: {
   zohoAccountId: string
-  zohoUserEmail: string
+  zohoUserEmail?: string | null
   zohoUserId?: string | null
 }): Promise<{
   session_token: string
@@ -62,8 +62,8 @@ export async function mintWidgetSession(input: {
   const zohoAccountId = String(input.zohoAccountId ?? '').trim()
   const email = String(input.zohoUserEmail ?? '').trim().toLowerCase()
   const requestedUserId = input.zohoUserId ? String(input.zohoUserId).trim() : null
-  if (!zohoAccountId || !email) {
-    throw new Error('zoho_account_id and zoho_user_email are required')
+  if (!zohoAccountId) {
+    throw new Error('zoho_account_id is required')
   }
 
   // 1) Verify Account exists in Zoho (not client-trusted alone)
@@ -77,13 +77,22 @@ export async function mintWidgetSession(input: {
     throw new Error('Zoho Account verification failed')
   }
 
-  // 2) Verify CRM user exists
-  const verifiedUserId = await findZohoUserIdByEmail(email)
-  if (!verifiedUserId) {
-    throw new Error('Zoho CRM user not found for email')
-  }
-  if (requestedUserId && requestedUserId !== verifiedUserId) {
-    throw new Error('Zoho user id does not match verified email')
+  // 2) Soft-resolve CRM user when email is present — never hard-fail widgets on Users API
+  let verifiedUserId: string | null = null
+  if (email) {
+    verifiedUserId = await findZohoUserIdByEmail(email)
+    if (
+      requestedUserId &&
+      verifiedUserId &&
+      requestedUserId !== verifiedUserId
+    ) {
+      // Prefer Zoho Users API id when it conflicts; keep requested id if lookup missed
+      verifiedUserId = verifiedUserId
+    } else if (!verifiedUserId && requestedUserId) {
+      verifiedUserId = requestedUserId
+    }
+  } else if (requestedUserId) {
+    verifiedUserId = requestedUserId
   }
 
   const admin = getServiceClient()
@@ -97,28 +106,32 @@ export async function mintWidgetSession(input: {
     throw new Error('No AEGIS portal organisation linked to this Zoho Account')
   }
 
-  // 3) Authorise: portal membership OR TIH broker email domain
-  const { data: memberships } = await admin
-    .from('portal_users')
-    .select('account_id, role, email')
-    .ilike('email', email)
-
-  const accountIds = new Set<string>([org.id])
-  if (org.parent_account_id) accountIds.add(org.parent_account_id)
-
+  // 3) Authorise from Account link; enrich role from portal membership / broker domain when known
   let role: string | null = null
-  for (const m of memberships ?? []) {
-    if (!accountIds.has(m.account_id)) continue
-    if (['owner', 'admin', 'broker', 'hr_admin'].includes(m.role)) {
-      role = m.role
-      break
+  if (email) {
+    const { data: memberships } = await admin
+      .from('portal_users')
+      .select('account_id, role, email')
+      .ilike('email', email)
+
+    const accountIds = new Set<string>([org.id])
+    if (org.parent_account_id) accountIds.add(org.parent_account_id)
+
+    for (const m of memberships ?? []) {
+      if (!accountIds.has(m.account_id)) continue
+      if (['owner', 'admin', 'broker', 'hr_admin'].includes(m.role)) {
+        role = m.role
+        break
+      }
+    }
+    if (!role && isBrokerDomain(email)) {
+      role = 'broker'
     }
   }
-  if (!role && isBrokerDomain(email)) {
-    role = 'broker'
-  }
+
+  // Account-verified CRM widgets are allowed with broker scope even without a CRM user match
   if (!role) {
-    throw new Error('Not authorised for this Account workforce')
+    role = 'broker'
   }
 
   const ttlMs = Number(Deno.env.get('AEGIS_WIDGET_SESSION_TTL_MS') ?? 30 * 60 * 1000)
@@ -126,6 +139,7 @@ export async function mintWidgetSession(input: {
   const token = randomToken()
   const tokenHash = await sha256Hex(token)
   const scopes = ['workforce:read', 'workforce:write', 'crm:promote']
+  const emailForStore = email || `account:${zohoAccountId}`
 
   const { data: session, error } = await admin
     .from('portal_workforce_widget_sessions')
@@ -133,7 +147,7 @@ export async function mintWidgetSession(input: {
       account_id: org.id,
       zoho_account_id: zohoAccountId,
       zoho_user_id: verifiedUserId,
-      zoho_user_email: email,
+      zoho_user_email: emailForStore,
       token_hash: tokenHash,
       role,
       scopes,
@@ -146,14 +160,16 @@ export async function mintWidgetSession(input: {
   await admin.from('portal_workforce_audit_events').insert({
     account_id: org.id,
     event_type: 'widget_session_minted',
-    summary: `Widget session for ${email}`,
+    summary: `Widget session for Account ${zohoAccountId}${email ? ` (${email})` : ''}`,
     detail: {
       zoho_account_id: zohoAccountId,
       zoho_user_id: verifiedUserId,
+      zoho_user_email: email || null,
       role,
       session_id: session.id,
+      auth_mode: 'account_context',
     },
-    actor_label: email,
+    actor_label: email || `account:${zohoAccountId}`,
   })
 
   return {
@@ -197,13 +213,20 @@ export async function resolveWidgetSession(
     .update({ last_used_at: new Date().toISOString() })
     .eq('id', session.id)
 
+  const storedEmail = String(session.zoho_user_email ?? '')
+  const email =
+    storedEmail.startsWith('account:') ? undefined : (storedEmail || undefined)
+
   return {
     kind: 'widget',
     accountId: session.account_id,
     zohoAccountId: org.zoho_account_id,
     orgName: org.name,
     portalRole: session.role,
-    user: { id: `zoho:${session.zoho_user_id ?? session.zoho_user_email}`, email: session.zoho_user_email },
+    user: {
+      id: `zoho:${session.zoho_user_id ?? session.zoho_user_email}`,
+      email,
+    },
     sessionId: session.id,
     scopes: session.scopes ?? [],
   }
