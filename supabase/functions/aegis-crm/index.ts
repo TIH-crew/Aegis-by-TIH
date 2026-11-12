@@ -287,9 +287,15 @@ async function listPolicies(zohoAccountId: string) {
   let rows: Record<string, unknown>[] = []
 
   try {
-    rows = await zohoCoql(
-      `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line from Policies where Policy_Holder1.id = '${zohoAccountId}' order by Created_Time desc`,
-    )
+    try {
+      rows = await zohoCoql(
+        `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line, Product_Name from Policies where Policy_Holder1.id = '${zohoAccountId}' order by Created_Time desc`,
+      )
+    } catch {
+      rows = await zohoCoql(
+        `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line from Policies where Policy_Holder1.id = '${zohoAccountId}' order by Created_Time desc`,
+      )
+    }
   } catch (err) {
     console.warn('Policies COQL failed, using related list:', err)
     rows = await searchAccountRelatedLists(zohoAccountId, ['Policies'])
@@ -304,6 +310,7 @@ async function listPolicies(zohoAccountId: string) {
     renewal_date: r.Renewal_Date ?? null,
     insurer: lookupName(r.Insurer),
     product_line: r.Product_Line ? String(r.Product_Line) : null,
+    product_name: r.Product_Name ? String(r.Product_Name) : null,
   }))
 }
 
@@ -323,8 +330,9 @@ async function listContacts(zohoAccountId: string) {
     let rows: Record<string, unknown>[] = []
 
     const coqlQueries = [
+      `select id, Full_Name, Email, Phone, Title, Occupation from Contacts where Account_Name.id = '${zohoAccountId}' order by Created_Time desc`,
+      `select id, Full_Name, Email, Phone, Title, Occupation from Contacts where Account_Name = '${zohoAccountId}' order by Created_Time desc`,
       `select id, Full_Name, Email, Phone, Title from Contacts where Account_Name.id = '${zohoAccountId}' order by Created_Time desc`,
-      `select id, Full_Name, Email, Phone, Title from Contacts where Account_Name = '${zohoAccountId}' order by Created_Time desc`,
     ]
 
     for (const query of coqlQueries) {
@@ -346,10 +354,190 @@ async function listContacts(zohoAccountId: string) {
       email: r.Email ? String(r.Email) : null,
       phone: r.Phone ? String(r.Phone) : null,
       title: r.Title ? String(r.Title) : null,
+      occupation: r.Occupation ? String(r.Occupation) : null,
     }))
   } catch (err) {
     console.error('listContacts failed:', err)
     return []
+  }
+}
+
+const CLIENT_RISK_SELECT =
+  'id, Name, Risk_Type, Risk_Status, Risk_Category, Item_Type, Tag, Total_Sum_Insured, Total_Contents_Value, Accidental_damage_sum_insured, Item_Value, Description, Currently_Insured'
+
+async function listClientRisks(zohoAccountId: string) {
+  try {
+    let rows: Record<string, unknown>[] = []
+    try {
+      rows = await zohoCoql(
+        `select ${CLIENT_RISK_SELECT} from Client_Risks where Item_Owned_By.id = '${zohoAccountId}' order by Created_Time desc`,
+      )
+    } catch (err) {
+      console.warn('Client_Risks COQL failed, using related list:', err)
+      rows = await searchAccountRelatedLists(zohoAccountId, ['Client_Risks', 'Risks'])
+    }
+
+    return rows.map((r) => {
+      const sumInsured = r.Total_Sum_Insured != null ? Number(r.Total_Sum_Insured) : null
+      const itemValue = r.Item_Value != null ? Number(r.Item_Value) : null
+      const contents = r.Total_Contents_Value != null ? Number(r.Total_Contents_Value) : null
+      return {
+        id: String(r.id),
+        name: String(r.Name ?? 'Risk'),
+        risk_type: r.Risk_Type ? String(r.Risk_Type) : null,
+        risk_status: r.Risk_Status ? String(r.Risk_Status) : null,
+        risk_category: r.Risk_Category ? String(r.Risk_Category) : null,
+        item_type: r.Item_Type ? String(r.Item_Type) : null,
+        tag: r.Tag ? String(r.Tag) : null,
+        total_sum_insured: Number.isFinite(sumInsured as number) ? sumInsured : null,
+        item_value: Number.isFinite(itemValue as number) ? itemValue : null,
+        contents_value: Number.isFinite(contents as number) ? contents : null,
+        description: r.Description ? String(r.Description) : null,
+        currently_insured: r.Currently_Insured != null ? Boolean(r.Currently_Insured) : null,
+      }
+    })
+  } catch (err) {
+    console.error('listClientRisks failed:', err)
+    return []
+  }
+}
+
+async function listContactPolicies(contactId: string) {
+  const safeId = escapeCoql(contactId)
+  let rows: Record<string, unknown>[] = []
+  const queries = [
+    `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line, Product_Name from Policies where Policy_Holder.id = '${safeId}' order by Created_Time desc`,
+    `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line, Product_Name from Policies where Primary_Contact.id = '${safeId}' order by Created_Time desc`,
+    `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line from Policies where Policy_Holder.id = '${safeId}' order by Created_Time desc`,
+    `select id, Name, Policy_Status, Policy_Premium, Inception_Date, Renewal_Date, Product_Line from Policies where Primary_Contact.id = '${safeId}' order by Created_Time desc`,
+  ]
+
+  const seen = new Set<string>()
+  for (const query of queries) {
+    try {
+      const batch = await zohoCoql(query)
+      for (const r of batch) {
+        const id = String(r.id ?? '')
+        if (!id || seen.has(id)) continue
+        seen.add(id)
+        rows.push(r)
+      }
+    } catch (err) {
+      console.warn('Contact policies COQL attempt failed:', err)
+    }
+  }
+
+  return rows.map((r) => ({
+    id: String(r.id),
+    policy_number: String(r.Name ?? 'Policy'),
+    status: r.Policy_Status ? String(r.Policy_Status) : null,
+    premium: r.Policy_Premium != null ? Number(r.Policy_Premium) : null,
+    inception_date: r.Inception_Date ?? null,
+    renewal_date: r.Renewal_Date ?? null,
+    product_line: r.Product_Line ? String(r.Product_Line) : null,
+    product_name: r.Product_Name ? String(r.Product_Name) : null,
+  }))
+}
+
+async function getPortfolioBundle(zohoAccountId: string) {
+  const dataAvailability: {
+    account: boolean
+    policies: boolean
+    risks: boolean
+    contacts: boolean
+    quotations: boolean
+    contact_policies: boolean
+    partialFailure: string | null
+  } = {
+    account: true,
+    policies: true,
+    risks: true,
+    contacts: true,
+    quotations: true,
+    contact_policies: true,
+    partialFailure: null,
+  }
+
+  const failures: string[] = []
+
+  const settled = await Promise.allSettled([
+    fetchZohoAccount(zohoAccountId),
+    listClientRisks(zohoAccountId),
+    listPolicies(zohoAccountId),
+    listContacts(zohoAccountId),
+    listQuotations(zohoAccountId),
+  ])
+
+  const accountRaw =
+    settled[0].status === 'fulfilled' ? settled[0].value : null
+  if (settled[0].status === 'rejected') {
+    dataAvailability.account = false
+    failures.push('Account fetch failed')
+    throw settled[0].reason instanceof Error
+      ? settled[0].reason
+      : new Error('Failed to load Zoho Account for portfolio')
+  }
+
+  const risks = settled[1].status === 'fulfilled' ? settled[1].value : []
+  if (settled[1].status === 'rejected') {
+    dataAvailability.risks = false
+    failures.push('Client_Risks unavailable')
+  }
+
+  const policies = settled[2].status === 'fulfilled' ? settled[2].value : []
+  if (settled[2].status === 'rejected') {
+    dataAvailability.policies = false
+    failures.push('Policies unavailable')
+  }
+
+  const contacts = settled[3].status === 'fulfilled' ? settled[3].value : []
+  if (settled[3].status === 'rejected') {
+    dataAvailability.contacts = false
+    failures.push('Contacts unavailable')
+  }
+
+  const quotations = settled[4].status === 'fulfilled' ? settled[4].value : []
+  if (settled[4].status === 'rejected') {
+    dataAvailability.quotations = false
+    failures.push('Quotations/Deals unavailable')
+  }
+
+  const keyContacts = contacts.filter((c) => {
+    const occ = (c.occupation ?? '').toLowerCase()
+    const title = (c.title ?? '').toLowerCase()
+    return (
+      occ === 'director' ||
+      /director|owner|ceo|managing/.test(title)
+    )
+  })
+
+  const contactPolicies: Record<string, Awaited<ReturnType<typeof listContactPolicies>>> = {}
+  try {
+    await Promise.all(
+      keyContacts.slice(0, 25).map(async (c) => {
+        contactPolicies[c.id] = await listContactPolicies(c.id)
+      }),
+    )
+  } catch (err) {
+    dataAvailability.contact_policies = false
+    failures.push('Contact-linked policies partially unavailable')
+    console.warn('contact policies aggregation failed:', err)
+  }
+
+  if (failures.length) {
+    dataAvailability.partialFailure =
+      failures.join('; ') +
+      ' — failed sources are not empty results.'
+  }
+
+  return {
+    account: mapZohoAccountSnapshot(accountRaw!),
+    risks,
+    policies,
+    contacts,
+    quotations,
+    contact_policies: contactPolicies,
+    data_availability: dataAvailability,
   }
 }
 
@@ -949,6 +1137,16 @@ Deno.serve(async (req) => {
     if (req.method === 'GET' && resource === 'contacts') {
       const items = await listContacts(ctx.zohoAccountId)
       return json({ ok: true, contacts: items })
+    }
+
+    if (req.method === 'GET' && resource === 'client-risks') {
+      const items = await listClientRisks(ctx.zohoAccountId)
+      return json({ ok: true, risks: items })
+    }
+
+    if (req.method === 'GET' && resource === 'portfolio') {
+      const portfolio = await getPortfolioBundle(ctx.zohoAccountId)
+      return json({ ok: true, portfolio })
     }
 
     // Workforce API for Zoho Account widget / broker tools (Supabase remains employee SoT)

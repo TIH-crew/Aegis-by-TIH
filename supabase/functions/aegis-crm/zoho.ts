@@ -267,6 +267,9 @@ export interface ZohoAccountRecord {
   Vat_Number?: string
   Industry?: string
   Default_Email_Address?: string
+  Annual_Revenue?: number | string | null
+  Employees?: number | string | null
+  TIH_Client_Class?: string | null
 }
 
 export async function fetchZohoAccount(accountId: string): Promise<ZohoAccountRecord> {

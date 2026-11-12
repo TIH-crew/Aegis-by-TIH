@@ -10,6 +10,15 @@ export interface ZohoAccountRecord {
   Vat_Number?: string
   Industry?: string
   Default_Email_Address?: string
+  Annual_Revenue?: number | string | null
+  Employees?: number | string | null
+  TIH_Client_Class?: string | null
+}
+
+function toNullableNumber(value: unknown): number | null {
+  if (value == null || value === '') return null
+  const n = Number(value)
+  return Number.isFinite(n) ? n : null
 }
 
 export function mapZohoAccountSnapshot(account: ZohoAccountRecord) {
@@ -22,6 +31,9 @@ export function mapZohoAccountSnapshot(account: ZohoAccountRecord) {
     vat_number: account.Vat_Number?.trim() || null,
     industry: account.Industry?.trim() || null,
     email: account.Default_Email_Address?.trim() || null,
+    annual_revenue: toNullableNumber(account.Annual_Revenue),
+    employees: toNullableNumber(account.Employees),
+    tih_client_class: account.TIH_Client_Class?.toString().trim() || null,
   }
 }
 
