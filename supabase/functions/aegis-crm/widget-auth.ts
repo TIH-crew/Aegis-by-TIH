@@ -19,16 +19,6 @@ function getServiceClient() {
   return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } })
 }
 
-export function requireWidgetSecret(req: Request): boolean {
-  const expected = Deno.env.get('AEGIS_REQUEST_SECRET')
-  if (!expected) {
-    console.warn('AEGIS_REQUEST_SECRET is not set — widget session minting is disabled')
-    return false
-  }
-  const provided = req.headers.get('x-aegis-secret')
-  return Boolean(provided && provided === expected)
-}
-
 async function sha256Hex(value: string): Promise<string> {
   const data = new TextEncoder().encode(value)
   const hash = await crypto.subtle.digest('SHA-256', data)

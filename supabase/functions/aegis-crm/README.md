@@ -18,8 +18,10 @@ Requires `Authorization: Bearer <user_access_token>` and `apikey` header.
 | GET | `/contacts` | Contacts linked to the org's Zoho Account |
 | POST | `/broker-request` | Send to Broker — creates Zoho Task (+ optional Nimbis task / email notify) on Deal/Policy |
 | POST | `/claims` | Create claim in Zoho + `portal_claims` |
-| POST | `/workforce/widget-session` | Mint/revoke short-lived CRM widget session (`X-Aegis-Secret`) |
+| POST | `/workforce/widget-session` | Mint/revoke short-lived CRM widget session (Zoho Account + user re-verified) |
 | GET/POST/PATCH | `/workforce/*` | Workforce API (portal JWT **or** `X-Aegis-Widget-Session`) |
+| POST | `/workforce/contact-search` / `contact-promote` | Search/link/create Zoho Contacts for an employee |
+| POST | `/workforce/lead-search` / `lead-promote` | Search/link/create Zoho Leads for an employee |
 | POST | `/workforce/activation` | Employee activation validate / magic link / accept |
 
 ## Zoho modules

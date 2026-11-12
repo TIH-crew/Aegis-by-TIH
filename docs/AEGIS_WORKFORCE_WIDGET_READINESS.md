@@ -58,7 +58,7 @@ Applying `20261112` removes the previous “any account member can mutate `porta
 
 ### Problem
 
-Zoho CRM Account widgets do **not** automatically possess an AEGIS portal Supabase JWT. The existing invite widget uses `AEGIS_REQUEST_SECRET` + client-supplied `zoho_account_id` (weak for workforce data).
+Zoho CRM Account widgets do **not** automatically possess an AEGIS portal Supabase JWT. Workforce sessions are minted after server-side Zoho Account + user verification (no shared widget secret).
 
 ### Chosen flow
 
@@ -68,15 +68,13 @@ Zoho CRM Account widget
   │  ZOHO.CRM.CONFIG.getCurrentUser() → email + id
   ▼
 POST /aegis-crm/workforce/widget-session
-  Headers: X-Aegis-Secret: <AEGIS_REQUEST_SECRET>
   Body: { zoho_account_id, zoho_user_email, zoho_user_id? }
   │
-  ├─ 1. Verify shared secret (server)
-  ├─ 2. Re-fetch Account from Zoho API (must match id)
-  ├─ 3. Resolve Zoho user by email via Users API (must exist; id must match if supplied)
-  ├─ 4. Resolve portal_accounts by zoho_account_id
-  ├─ 5. Authorise: portal_users membership (broker/admin/owner/hr_admin) OR AEGIS_BROKER_EMAIL_DOMAINS
-  └─ 6. Issue opaque session token (hash stored); TTL default 30m
+  ├─ 1. Re-fetch Account from Zoho API (must match id)
+  ├─ 2. Resolve Zoho user by email via Users API (must exist; id must match if supplied)
+  ├─ 3. Resolve portal_accounts by zoho_account_id
+  ├─ 4. Authorise: portal_users membership (broker/admin/owner/hr_admin) OR AEGIS_BROKER_EMAIL_DOMAINS
+  └─ 5. Issue opaque session token (hash stored); TTL default 30m
   ▼
 Subsequent workforce calls
   Headers: X-Aegis-Widget-Session: <token>
@@ -88,9 +86,9 @@ Subsequent workforce calls
 | Trusted | Not trusted |
 |---------|-------------|
 | Server Zoho OAuth (refresh token) | Client-supplied Account ID alone |
-| Shared request secret (widget ↔ edge) | Client-supplied Zoho user id alone |
-| Session token hash in DB | Browser possession of service role / Zoho client secret |
-| Portal membership / broker domain allowlist | Unverified email claims |
+| Session token hash in DB | Client-supplied Zoho user id alone |
+| Portal membership / broker domain allowlist | Browser possession of service role / Zoho client secret |
+| | Unverified email claims |
 
 ### Session expiry / revocation
 
@@ -107,7 +105,7 @@ AEGIS web app continues to use `Authorization: Bearer <supabase_jwt>` → `porta
 Base: `/functions/v1/aegis-crm`
 
 Auth modes: `Authorization: Bearer <portal JWT>` **or** `X-Aegis-Widget-Session: <token>`  
-(Exception: widget-session mint uses `X-Aegis-Secret`; activation validate/send use invite token.)
+(Exception: widget-session mint is unauthenticated then Zoho-verified; activation validate/send use invite token.)
 
 | Method | Path | Authz | Notes |
 |--------|------|-------|-------|
@@ -121,6 +119,8 @@ Auth modes: `Authorization: Bearer <portal JWT>` **or** `X-Aegis-Widget-Session:
 | POST | `/workforce/employees/:id/deactivate` | HR or broker | Soft end; preserves CRM link |
 | POST | `/workforce/contact-search` | HR or broker | Candidate Contacts |
 | POST | `/workforce/contact-promote` | Broker+ | Idempotent create/link |
+| POST | `/workforce/lead-search` | HR or broker | Candidate Leads |
+| POST | `/workforce/lead-promote` | Broker+ | Idempotent create/link Lead |
 | POST | `/workforce/activation` | Invite token (+ JWT for accept) | validate / send_magic_link / accept |
 
 ### Contact promotion
@@ -135,14 +135,13 @@ Auth modes: `Authorization: Bearer <portal JWT>` **or** `X-Aegis-Widget-Session:
 
 1. Account-level widget (Developer Space) pointing at future workforce widget HTML.
 2. Widget must call `ZOHO.embeddedApp.init` + `PageLoad` + `CONFIG.getCurrentUser`.
-3. Widget config: `workforceApiUrl` → `…/functions/v1/aegis-crm`, `requestSecret` matching `AEGIS_REQUEST_SECRET`.
+3. Widget config: `workforceApiUrl` → `…/functions/v1/aegis-crm` (plus publishable anon key for the gateway).
 4. Optional later: custom Contact fields for AEGIS employee UUID (API names TBD — do not invent).
 
 ## 6. Required Supabase configuration
 
 | Secret / env | Purpose |
 |--------------|---------|
-| `AEGIS_REQUEST_SECRET` | Widget session minting (**required** in prod; mint disabled if unset) |
 | `AEGIS_APP_URL` | Activation / magic-link redirects |
 | `AEGIS_BROKER_EMAIL_DOMAINS` | Default `theinsurancehub.co.za` |
 | `AEGIS_WIDGET_SESSION_TTL_MS` | Default `1800000` (30m) |
@@ -176,10 +175,10 @@ Live Zoho mint E2E against production CRM is **not** claimed in this document.
 
 1. **Production migration approval** for `20261112` + `20261113`.
 2. **Deploy** updated `aegis-crm` to the target Supabase project.
-3. Set **`AEGIS_REQUEST_SECRET`** in production (mint refuses without it).
-4. Build the separate **Zoho CRM workforce widget UI** consuming these APIs.
-5. Confirm Zoho custom field API names if AEGIS IDs must be written onto Contacts.
-6. Assign `broker` / `hr_admin` portal roles where domain allowlist is insufficient.
+3. Host/pack the Zoho CRM widget at `CRM Widgets/Employees-AEGIS/EmployeeManagement` (list, profile, Contact/Lead convert).
+4. Confirm Zoho custom field API names if AEGIS IDs must be written onto Contacts/Leads.
+5. Assign `broker` / `hr_admin` portal roles where domain allowlist is insufficient.
+6. Apply `20261114_workforce_lead_links.sql` on any non-Atlantis target before Lead promote.
 
 ## 9. Deployment instructions
 
@@ -199,6 +198,6 @@ Live Zoho mint E2E against production CRM is **not** claimed in this document.
 **Backend: ready for widget development against Atlantis (dev), with conditions.**
 
 - Auth bridge, workforce CRUD/deactivate, exceptions, Contact search/promote, activation, and RLS are in place on the development project.
-- **Not production-ready** until migrations are explicitly approved on production, `aegis-crm` is deployed with `AEGIS_REQUEST_SECRET`, and the separate CRM widget is built.
+- **Not production-ready** until migrations are explicitly approved on production, `aegis-crm` is deployed, and the CRM widget is hosted in Zoho.
 
 Do not treat this as a production go-live approval.

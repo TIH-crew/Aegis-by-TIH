@@ -16,7 +16,6 @@ import { syncPortalFromZoho } from './sync-portal.ts'
 import { mapZohoAccountSnapshot, refreshPortalAccountFromZoho } from './zoho-account.ts'
 import {
   mintWidgetSession,
-  requireWidgetSecret,
   resolveWidgetSession,
   revokeWidgetSession,
 } from './widget-auth.ts'
@@ -308,6 +307,17 @@ async function listPolicies(zohoAccountId: string) {
   }))
 }
 
+function zohoCreatedId(result: Record<string, unknown>): string | null {
+  const details = result.details as { id?: string } | undefined
+  if (details?.id != null) return String(details.id)
+  if (result.id != null) return String(result.id)
+  return null
+}
+
+function escapeCoql(value: string) {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+}
+
 async function listContacts(zohoAccountId: string) {
   try {
     let rows: Record<string, unknown>[] = []
@@ -341,6 +351,56 @@ async function listContacts(zohoAccountId: string) {
     console.error('listContacts failed:', err)
     return []
   }
+}
+
+async function searchLeadsByIdentity(email: string, phone: string) {
+  const rows: Record<string, unknown>[] = []
+  const seen = new Set<string>()
+
+  const pushRows = (batch: Record<string, unknown>[]) => {
+    for (const r of batch) {
+      const id = String(r.id ?? '')
+      if (!id || seen.has(id)) continue
+      seen.add(id)
+      rows.push(r)
+    }
+  }
+
+  if (email) {
+    try {
+      pushRows(
+        await zohoCoql(
+          `select id, Full_Name, First_Name, Last_Name, Email, Phone, Company, Lead_Status from Leads where Email = '${escapeCoql(email)}' limit 20`,
+        ),
+      )
+    } catch (err) {
+      console.warn('Leads email COQL failed:', err)
+    }
+  }
+
+  if (phone) {
+    const digits = phone.replace(/\D/g, '').slice(-9)
+    if (digits.length >= 7) {
+      try {
+        pushRows(
+          await zohoCoql(
+            `select id, Full_Name, First_Name, Last_Name, Email, Phone, Company, Lead_Status from Leads where Phone like '%${escapeCoql(digits)}%' limit 20`,
+          ),
+        )
+      } catch (err) {
+        console.warn('Leads phone COQL failed:', err)
+      }
+    }
+  }
+
+  return rows.map((r) => ({
+    id: String(r.id),
+    name: String(r.Full_Name ?? r.Last_Name ?? r.First_Name ?? 'Lead'),
+    email: r.Email ? String(r.Email) : null,
+    phone: r.Phone ? String(r.Phone) : null,
+    company: r.Company ? String(r.Company) : null,
+    status: r.Lead_Status ? String(r.Lead_Status) : null,
+  }))
 }
 
 async function getAccountSnapshot(zohoAccountId: string) {
@@ -737,11 +797,8 @@ Deno.serve(async (req) => {
     const id = segments[1]
     const action = segments[2]
 
-    // --- Widget session mint / revoke (shared secret; no portal JWT) ---
+    // --- Widget session mint / revoke (Zoho Account + user re-verified server-side; no shared secret) ---
     if (req.method === 'POST' && resource === 'workforce' && id === 'widget-session') {
-      if (!requireWidgetSecret(req)) {
-        return json({ ok: false, error: 'Unauthorized' }, 401)
-      }
       const body = await req.json()
       if (body.action === 'revoke') {
         const token = String(body.session_token ?? req.headers.get('x-aegis-widget-session') ?? '')
@@ -943,31 +1000,68 @@ Deno.serve(async (req) => {
       const { data, error } = await admin
         .from('portal_employees')
         .select(
-          'id, full_name, first_name, last_name, email, phone, whatsapp_number, employee_number, department, job_title, status, invitation_status, employment_start_date, employment_end_date, zoho_contact_id, zoho_contact_link_status, created_at, updated_at',
+          'id, full_name, first_name, last_name, email, phone, whatsapp_number, employee_number, department, job_title, status, invitation_status, employment_start_date, employment_end_date, deactivated_at, deactivation_reason, zoho_contact_id, zoho_contact_link_status, zoho_contact_linked_at, zoho_lead_id, zoho_lead_link_status, zoho_lead_linked_at, created_at, updated_at',
         )
         .eq('account_id', ctx.accountId)
         .eq('id', action)
         .maybeSingle()
       if (error) throw error
       if (!data) return json({ ok: false, error: 'Employee not found' }, 404)
-      // Sensitive benefit balances are never returned here
-      return json({ ok: true, employee: data })
+
+      const [{ data: memberships }, { data: crmLinks }, { data: audit }] = await Promise.all([
+        admin
+          .from('portal_employee_benefit_memberships')
+          .select(
+            'id, benefit_type, enrolment_status, provider_confirmation_status, provider_name, membership_number, employment_verified, aegis_activation_status, notes, updated_at',
+          )
+          .eq('account_id', ctx.accountId)
+          .eq('employee_id', action)
+          .order('benefit_type'),
+        admin
+          .from('portal_employee_crm_links')
+          .select(
+            'id, zoho_contact_id, zoho_lead_id, crm_module, link_status, link_method, linked_at, sync_meta',
+          )
+          .eq('account_id', ctx.accountId)
+          .eq('employee_id', action)
+          .order('linked_at', { ascending: false }),
+        admin
+          .from('portal_workforce_audit_events')
+          .select('id, event_type, summary, actor_label, created_at')
+          .eq('account_id', ctx.accountId)
+          .eq('employee_id', action)
+          .order('created_at', { ascending: false })
+          .limit(20),
+      ])
+
+      // Sensitive benefit balances / claims are never returned here
+      return json({
+        ok: true,
+        employee: data,
+        memberships: memberships ?? [],
+        crm_links: crmLinks ?? [],
+        recent_audit: audit ?? [],
+      })
     }
 
     if (req.method === 'GET' && resource === 'workforce' && (!id || id === 'employees')) {
       const admin = getServiceClient()
       const url = new URL(req.url)
       const q = (url.searchParams.get('q') ?? '').trim()
+      const status = (url.searchParams.get('status') ?? '').trim()
       const limit = Math.min(Number(url.searchParams.get('limit') ?? 50), 200)
       const offset = Math.max(Number(url.searchParams.get('offset') ?? 0), 0)
       let query = admin
         .from('portal_employees')
         .select(
-          'id, full_name, first_name, last_name, email, phone, employee_number, department, job_title, status, invitation_status, zoho_contact_id, zoho_contact_link_status, created_at',
+          'id, full_name, first_name, last_name, email, phone, employee_number, department, job_title, status, invitation_status, zoho_contact_id, zoho_contact_link_status, zoho_lead_id, zoho_lead_link_status, created_at',
         )
         .eq('account_id', ctx.accountId)
         .order('full_name')
         .range(offset, offset + limit - 1)
+      if (status === 'active' || status === 'inactive') {
+        query = query.eq('status', status)
+      }
       if (q) {
         query = query.or(
           `full_name.ilike.%${q}%,email.ilike.%${q}%,employee_number.ilike.%${q}%`,
@@ -1217,7 +1311,7 @@ Deno.serve(async (req) => {
           Phone: employee.phone || employee.whatsapp_number || undefined,
           Account_Name: { id: ctx.zohoAccountId },
         }
-        let result: unknown
+        let result: Record<string, unknown>
         try {
           result = await zohoInsert('Contacts', [payload])
         } catch (err) {
@@ -1238,8 +1332,7 @@ Deno.serve(async (req) => {
           })
           return json({ ok: false, error: 'Zoho Contact create failed', employee_retained: true }, 502)
         }
-        const created = (result as { data?: Array<{ details?: { id?: string } }> })?.data?.[0]
-        contactId = created?.details?.id ?? null
+        contactId = zohoCreatedId(result)
         if (!contactId) {
           await admin
             .from('portal_employees')
@@ -1255,6 +1348,7 @@ Deno.serve(async (req) => {
           account_id: ctx.accountId,
           employee_id: employeeId,
           zoho_contact_id: contactId,
+          crm_module: 'Contacts',
           link_status: 'linked',
           link_method: 'broker_promote',
           idempotency_key: idempotencyKey,
@@ -1286,6 +1380,149 @@ Deno.serve(async (req) => {
       })
 
       return json({ ok: true, duplicated: false, zoho_contact_id: contactId, link })
+    }
+
+    if (req.method === 'POST' && resource === 'workforce' && id === 'lead-search') {
+      if (!canBrokerWorkforce(ctx.portalRole) && !canManageWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden' }, 403)
+      }
+      const body = await req.json()
+      const email = String(body.email ?? '').trim()
+      const phone = String(body.phone ?? '').trim()
+      if (!email && !phone) {
+        return json({ ok: false, error: 'email or phone required' }, 400)
+      }
+      const matches = await searchLeadsByIdentity(email, phone)
+      return json({ ok: true, matches, searched: { email: email || null, phone: phone || null } })
+    }
+
+    if (req.method === 'POST' && resource === 'workforce' && id === 'lead-promote') {
+      if (!canBrokerWorkforce(ctx.portalRole)) {
+        return json({ ok: false, error: 'Forbidden: broker role required' }, 403)
+      }
+      const body = await req.json()
+      const employeeId = String(body.employee_id ?? '')
+      const existingLeadId = body.zoho_lead_id ? String(body.zoho_lead_id) : null
+      const idempotencyKey = String(body.idempotency_key ?? `lead-promote-${employeeId}`)
+      if (!employeeId) return json({ ok: false, error: 'employee_id required' }, 400)
+
+      const admin = getServiceClient()
+      const { data: prior } = await admin
+        .from('portal_employee_crm_links')
+        .select('*')
+        .eq('account_id', ctx.accountId)
+        .eq('idempotency_key', idempotencyKey)
+        .maybeSingle()
+      if (prior) {
+        return json({
+          ok: true,
+          duplicated: true,
+          zoho_lead_id: prior.zoho_lead_id,
+          link: prior,
+        })
+      }
+
+      const { data: employee, error: empErr } = await admin
+        .from('portal_employees')
+        .select('*')
+        .eq('id', employeeId)
+        .eq('account_id', ctx.accountId)
+        .maybeSingle()
+      if (empErr) throw empErr
+      if (!employee) return json({ ok: false, error: 'Employee not found' }, 404)
+      if (employee.zoho_lead_id) {
+        return json({
+          ok: true,
+          duplicated: true,
+          zoho_lead_id: employee.zoho_lead_id,
+          message: 'Employee already linked to a Lead',
+        })
+      }
+
+      let leadId = existingLeadId
+      if (!leadId) {
+        const nameParts = String(employee.full_name ?? '').trim().split(/\s+/)
+        const first = employee.first_name || nameParts[0] || 'Unknown'
+        const last = employee.last_name || nameParts.slice(1).join(' ') || first
+        // Standard Leads fields only — no invented custom AEGIS API names
+        const payload: Record<string, unknown> = {
+          First_Name: first,
+          Last_Name: last,
+          Email: employee.email || undefined,
+          Phone: employee.phone || employee.whatsapp_number || undefined,
+          Company: ctx.orgName || undefined,
+          Lead_Source: 'AEGIS Workforce',
+        }
+        let result: Record<string, unknown>
+        try {
+          result = await zohoInsert('Leads', [payload])
+        } catch (err) {
+          await admin
+            .from('portal_employees')
+            .update({
+              zoho_lead_link_status: 'failed',
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', employeeId)
+          await admin.from('portal_workforce_audit_events').insert({
+            account_id: ctx.accountId,
+            employee_id: employeeId,
+            event_type: 'crm_lead_promote_failed',
+            summary: 'Zoho Lead create failed — employee retained in Supabase',
+            detail: { error: err instanceof Error ? err.message : String(err) },
+            actor_user_id: actorUserId(ctx),
+          })
+          return json({ ok: false, error: 'Zoho Lead create failed', employee_retained: true }, 502)
+        }
+        leadId = zohoCreatedId(result)
+        if (!leadId) {
+          await admin
+            .from('portal_employees')
+            .update({ zoho_lead_link_status: 'failed', updated_at: new Date().toISOString() })
+            .eq('id', employeeId)
+          return json({ ok: false, error: 'Zoho Lead create failed', result, employee_retained: true }, 502)
+        }
+      }
+
+      const { data: link, error: linkErr } = await admin
+        .from('portal_employee_crm_links')
+        .insert({
+          account_id: ctx.accountId,
+          employee_id: employeeId,
+          zoho_lead_id: leadId,
+          crm_module: 'Leads',
+          link_status: 'linked',
+          link_method: 'broker_promote',
+          idempotency_key: idempotencyKey,
+          linked_by: actorUserId(ctx),
+          sync_meta: { module: 'Leads' },
+        })
+        .select('*')
+        .single()
+      if (linkErr) throw linkErr
+
+      await admin
+        .from('portal_employees')
+        .update({
+          zoho_lead_id: leadId,
+          zoho_lead_link_status: 'linked',
+          zoho_lead_linked_at: new Date().toISOString(),
+          zoho_lead_linked_by: actorUserId(ctx),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', employeeId)
+
+      await admin.from('portal_workforce_audit_events').insert({
+        account_id: ctx.accountId,
+        employee_id: employeeId,
+        event_type: 'crm_lead_promoted',
+        summary: `Broker promoted employee to Zoho Lead ${leadId}`,
+        detail: { zoho_lead_id: leadId, idempotency_key: idempotencyKey },
+        actor_user_id: actorUserId(ctx),
+        actor_label: actorLabel(ctx),
+      })
+
+      return json({ ok: true, duplicated: false, zoho_lead_id: leadId, link })
     }
 
     if (req.method === 'GET' && resource === 'account') {
